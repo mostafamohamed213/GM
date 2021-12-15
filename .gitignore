@@ -1,2 +1,5 @@
 # Google App Engine generated folder
 appengine-generated/
+/Cars/bin/Debug/net5.0
+/.vs/Cars
+/Cars/obj

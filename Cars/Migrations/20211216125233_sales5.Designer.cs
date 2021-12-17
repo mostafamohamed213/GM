@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Cars.Migrations
 {
     [DbContext(typeof(CarsContext))]
-    [Migration("20211209051946_orderAndOrderDetails")]
-    partial class orderAndOrderDetails
+    [Migration("20211216125233_sales5")]
+    partial class sales5
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -184,6 +184,9 @@ namespace Cars.Migrations
                     b.Property<long>("EmployeeBranchID")
                         .HasColumnType("bigint");
 
+                    b.Property<bool>("Enable")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Model")
                         .HasColumnType("text");
 
@@ -200,8 +203,11 @@ namespace Cars.Migrations
                     b.Property<string>("SystemUserUpdate")
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("Year")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<bool?>("WithMaintenance")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Year")
+                        .HasColumnType("text");
 
                     b.HasKey("DraftOrderID");
 
@@ -249,6 +255,25 @@ namespace Cars.Migrations
                     b.ToTable("DraftOrderDetails");
                 });
 
+            modelBuilder.Entity("Cars.Models.Layer", b =>
+                {
+                    b.Property<int>("LayerID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("LayerID");
+
+                    b.ToTable("Layers");
+                });
+
             modelBuilder.Entity("Cars.Models.Order", b =>
                 {
                     b.Property<long>("OrderID")
@@ -267,6 +292,9 @@ namespace Cars.Migrations
 
                     b.Property<long>("EmployeeBranchID")
                         .HasColumnType("bigint");
+
+                    b.Property<bool?>("Enabled")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Prefix")
                         .HasColumnType("text");
@@ -303,11 +331,17 @@ namespace Cars.Migrations
                     b.Property<int>("BranchID")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Comments")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("DTsCreate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("DTsUpdate")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool?>("Enabled")
+                        .HasColumnType("boolean");
 
                     b.Property<bool?>("IsApproved")
                         .HasColumnType("boolean");
@@ -316,14 +350,26 @@ namespace Cars.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("LayerID")
+                        .HasColumnType("integer");
+
                     b.Property<int>("OrderDetailsTypeID")
                         .HasColumnType("integer");
 
                     b.Property<long>("OrderID")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("ParentOrderDetailsID")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("PartNumber")
+                        .HasColumnType("text");
+
                     b.Property<string>("Prefix")
                         .HasColumnType("text");
+
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("numeric");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
@@ -335,11 +381,21 @@ namespace Cars.Migrations
                     b.Property<string>("SystemUserUpdate")
                         .HasColumnType("text");
 
+                    b.Property<string>("UsedByUser")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("VendorLocationID")
+                        .HasColumnType("integer");
+
                     b.HasKey("OrderDetailsID");
+
+                    b.HasIndex("LayerID");
 
                     b.HasIndex("OrderDetailsTypeID");
 
                     b.HasIndex("OrderID");
+
+                    b.HasIndex("VendorLocationID");
 
                     b.ToTable("OrderDetails");
                 });
@@ -413,12 +469,34 @@ namespace Cars.Migrations
                     b.Property<string>("SystemUserUpdate")
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("Year")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<string>("Year")
+                        .HasColumnType("text");
 
                     b.HasKey("VehicleID");
 
                     b.ToTable("Vehicle");
+                });
+
+            modelBuilder.Entity("Cars.Models.VendorLocation", b =>
+                {
+                    b.Property<int>("VendorLocationID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("NameAr")
+                        .HasColumnType("text");
+
+                    b.Property<string>("NameEn")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("VendorLocationID");
+
+                    b.ToTable("VendorLocations");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -600,6 +678,10 @@ namespace Cars.Migrations
 
             modelBuilder.Entity("Cars.Models.OrderDetails", b =>
                 {
+                    b.HasOne("Cars.Models.Layer", "Layer")
+                        .WithMany()
+                        .HasForeignKey("LayerID");
+
                     b.HasOne("Cars.Models.OrderDetailsType", "OrderDetailsType")
                         .WithMany("OrderDetails")
                         .HasForeignKey("OrderDetailsTypeID")
@@ -612,9 +694,17 @@ namespace Cars.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Cars.Models.VendorLocation", "VendorLocation")
+                        .WithMany()
+                        .HasForeignKey("VendorLocationID");
+
+                    b.Navigation("Layer");
+
                     b.Navigation("Order");
 
                     b.Navigation("OrderDetailsType");
+
+                    b.Navigation("VendorLocation");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

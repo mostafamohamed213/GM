@@ -13,13 +13,14 @@ namespace Cars.Models
         [Key]
         public long DraftOrderID { get; set; }
         public string Chases { get; set; }
-        public string Phone { get; set; }     
-        public string Name { get; set; }     
-        public string Brand { get; set; }       
+        public string Phone { get; set; }
+        public string Name { get; set; }
+        public string Brand { get; set; }
         public string Model { get; set; }
-        public DateTime? Year { get; set; }
+        public string Year { get; set; }
         public long EmployeeBranchID { get; set; }
-
+        public bool? WithMaintenance { get; set; }
+        public bool Enable { get; set; }
 
         [Required]
         public string SystemUserCreate { get; set; }

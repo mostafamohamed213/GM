@@ -3,15 +3,17 @@ using System;
 using Cars.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Cars.Migrations
 {
     [DbContext(typeof(CarsContext))]
-    partial class CarsContextModelSnapshot : ModelSnapshot
+    [Migration("20211216125017_sales4")]
+    partial class sales4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -355,9 +357,6 @@ namespace Cars.Migrations
                         .HasColumnType("integer");
 
                     b.Property<long>("OrderID")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("ParentOrderDetailsID")
                         .HasColumnType("bigint");
 
                     b.Property<string>("PartNumber")

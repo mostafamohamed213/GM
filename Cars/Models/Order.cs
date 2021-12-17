@@ -14,17 +14,20 @@ namespace Cars.Models
         public long OrderID { get; set; }
         public bool? WithMaintenance { get; set; }
         public string Prefix { get; set; }
-        
+
         public long CustomerID { get; set; }
         [ForeignKey("CustomerID")]
-        public  Customer Customer { get; set; }
-       
+        public Customer Customer { get; set; }
+
         public long VehicleID { get; set; }
         [ForeignKey("VehicleID")]
-        public  Vehicle Vehicle { get; set; }
+        public Vehicle Vehicle { get; set; }
         public virtual List<OrderDetails> OrderDetails { get; set; }
         public long EmployeeBranchID { get; set; }
-
+        // flase = save as draft
+        // true =save 
+        // null = save order and order details without click button save or save as draft
+        public bool? Enabled { get; set; }
         [Required]
         public string SystemUserCreate { get; set; }
         public DateTime DTsCreate { get; set; }

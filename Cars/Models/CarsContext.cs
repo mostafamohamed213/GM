@@ -20,6 +20,9 @@ namespace Cars.Models
         public virtual DbSet<OrderDetails> OrderDetails { get; set; }
         public virtual DbSet<OrderDetailsType> OrderDetailsType { get; set; }
         public virtual DbSet<Vehicle> Vehicle { get; set; }
+        public virtual DbSet<Layer> Layers { get; set; }
+        public virtual DbSet<VendorLocation> VendorLocations { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
            

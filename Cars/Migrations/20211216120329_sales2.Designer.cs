@@ -3,15 +3,17 @@ using System;
 using Cars.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Cars.Migrations
 {
     [DbContext(typeof(CarsContext))]
-    partial class CarsContextModelSnapshot : ModelSnapshot
+    [Migration("20211216120329_sales2")]
+    partial class sales2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -329,9 +331,6 @@ namespace Cars.Migrations
                     b.Property<int>("BranchID")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Comments")
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("DTsCreate")
                         .HasColumnType("timestamp without time zone");
 
@@ -357,17 +356,8 @@ namespace Cars.Migrations
                     b.Property<long>("OrderID")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("ParentOrderDetailsID")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("PartNumber")
-                        .HasColumnType("text");
-
                     b.Property<string>("Prefix")
                         .HasColumnType("text");
-
-                    b.Property<decimal?>("Price")
-                        .HasColumnType("numeric");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
@@ -379,12 +369,6 @@ namespace Cars.Migrations
                     b.Property<string>("SystemUserUpdate")
                         .HasColumnType("text");
 
-                    b.Property<string>("UsedByUser")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("VendorLocationID")
-                        .HasColumnType("integer");
-
                     b.HasKey("OrderDetailsID");
 
                     b.HasIndex("LayerID");
@@ -392,8 +376,6 @@ namespace Cars.Migrations
                     b.HasIndex("OrderDetailsTypeID");
 
                     b.HasIndex("OrderID");
-
-                    b.HasIndex("VendorLocationID");
 
                     b.ToTable("OrderDetails");
                 });
@@ -475,26 +457,16 @@ namespace Cars.Migrations
                     b.ToTable("Vehicle");
                 });
 
-            modelBuilder.Entity("Cars.Models.VendorLocation", b =>
+            modelBuilder.Entity("Cars.Models.test", b =>
                 {
-                    b.Property<int>("VendorLocationID")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
+                    b.HasKey("ID");
 
-                    b.Property<string>("NameAr")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NameEn")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("VendorLocationID");
-
-                    b.ToTable("VendorLocations");
+                    b.ToTable("Tests");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -692,17 +664,11 @@ namespace Cars.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Cars.Models.VendorLocation", "VendorLocation")
-                        .WithMany()
-                        .HasForeignKey("VendorLocationID");
-
                     b.Navigation("Layer");
 
                     b.Navigation("Order");
 
                     b.Navigation("OrderDetailsType");
-
-                    b.Navigation("VendorLocation");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

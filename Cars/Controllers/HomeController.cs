@@ -1,4 +1,7 @@
 ﻿using Cars.Models;
+using Cars.ViewModels;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -24,20 +27,20 @@ namespace Cars.Controllers
 
         public IActionResult Index()
         {
-            var remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            string info = new WebClient().DownloadString("http://ipinfo.io/" + remoteIpAddress);
-                    remotip ipinfo = JsonConvert.DeserializeObject<remotip>(info);
+            ////var remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //string info = new WebClient().DownloadString("http://ipinfo.io/" + remoteIpAddress);
+            //        remotip ipinfo = JsonConvert.DeserializeObject<remotip>(info);
 
                  
-                    UsersLogs usersLogs = new UsersLogs
-                    {
-                        UserIP= remoteIpAddress,
-                        UserRegion=ipinfo.Region,
-                        UserCity= ipinfo.City,
-                        UserID= userId,
-                        CreateDts=DateTime.Now
-                    };
+            //        UsersLogs usersLogs = new UsersLogs
+            //        {
+            //            UserIP= remoteIpAddress,
+            //            UserRegion=ipinfo.Region,
+            //            UserCity= ipinfo.City,
+            //            UserID= userId,
+            //            CreateDts=DateTime.Now
+            //        };
             //_context.Add(usersLogs);
             // _context.SaveChanges();
 
@@ -53,6 +56,26 @@ namespace Cars.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpPost]
+        public IActionResult SetLanguage(string culture, string returnUrl)
+        {
+            if (culture.Contains("ar"))
+            {
+                StaticValues.RTL = true;
+            }
+            else
+            {
+                StaticValues.RTL = false;
+            }
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+            );
+
+            return LocalRedirect("/");
         }
     }
 }

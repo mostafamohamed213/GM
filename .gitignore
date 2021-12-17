@@ -3,3 +3,5 @@ appengine-generated/
 /Cars/bin/Debug/net5.0
 /.vs/Cars
 /Cars/obj
+/Cars/bin/Release/net5.0
+/Cars/Properties/PublishProfiles

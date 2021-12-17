@@ -8,6 +8,7 @@ namespace Cars.Models
 {
     public class UsersLogs
     {
+        public int UsersLogsID { get; set; }
         public string UserIP { get; set; }
         public string UserCity { get; set; }
 

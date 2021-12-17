@@ -12,5 +12,7 @@ namespace Cars.Models
         public string SeconedName { get; set; }
 
         public string LocationIP { get; set; }
+
+        public virtual ICollection<UsersLogs> UsersLogs { get; set; }
     }
 }

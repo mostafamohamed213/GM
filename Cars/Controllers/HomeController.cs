@@ -27,22 +27,22 @@ namespace Cars.Controllers
 
         public IActionResult Index()
         {
-            ////var remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            //var remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
             //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            //string info = new WebClient().DownloadString("http://ipinfo.io/" + remoteIpAddress);
-            //        remotip ipinfo = JsonConvert.DeserializeObject<remotip>(info);
+            //string info = new WebClient().DownloadString("http://ipinfo.io/" + "156.203.53.164"); //replace by remoteIpAddress
+            //remotip ipinfo = JsonConvert.DeserializeObject<remotip>(info);
 
-                 
-            //        UsersLogs usersLogs = new UsersLogs
-            //        {
-            //            UserIP= remoteIpAddress,
-            //            UserRegion=ipinfo.Region,
-            //            UserCity= ipinfo.City,
-            //            UserID= userId,
-            //            CreateDts=DateTime.Now
-            //        };
+
+            //UsersLogs usersLogs = new UsersLogs
+            //{
+            //    UserIP = remoteIpAddress,
+            //    UserRegion = ipinfo.Region,
+            //    UserCity = ipinfo.City,
+            //    UserID = userId,
+            //    CreateDts = DateTime.Now
+            //};
             //_context.Add(usersLogs);
-            // _context.SaveChanges();
+            //_context.SaveChanges();
 
             return View();
         }

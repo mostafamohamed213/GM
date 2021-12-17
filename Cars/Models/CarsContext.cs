@@ -22,7 +22,8 @@ namespace Cars.Models
         public virtual DbSet<Vehicle> Vehicle { get; set; }
         public virtual DbSet<Layer> Layers { get; set; }
         public virtual DbSet<VendorLocation> VendorLocations { get; set; }
-        
+
+        public virtual DbSet<UsersLogs> UsersLogs { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
            

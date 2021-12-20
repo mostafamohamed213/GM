@@ -246,11 +246,16 @@ namespace Cars.Controllers
             try
             {
                 OrderDetails orderDetails = orderServices.GetOrderDetailsByOrderDetailsID(OrderDetailsID);
+                if (orderDetails is null)
+                {
+                   return View("UsedByUser"); 
+                }
                 if (orderDetails is not null && !orderDetails.Price.HasValue)
                 {
                     ViewBag.types = orderServices.GetSelectListOrderDetailsType();
                     return View(orderDetails);
                 }
+                
                 return View("_CustomError");
             }
             catch (Exception)
@@ -261,51 +266,160 @@ namespace Cars.Controllers
 
         }
         [HttpPost]
-        public IActionResult EditOrderDetails(string Items, int Quantity, int OrderDetailsTypeID, bool IsApproved, long OrderDetailsID)
+        public IActionResult EditOrderDetails(OrderDetails orderDetails)
         {
-            
-            if (OrderDetailsID <= 0)
-            {
-                return Json(new { status = -1, @object = $"{localizer["ErrorOccurred"]}" });
-            }
-            if (string.IsNullOrEmpty(Items) || Quantity <= 0 || OrderDetailsTypeID <= 0)
-            {
+            if (ModelState.IsValid)
+            {            
 
-                var test = localizer["CheckItemsQuantityAndType"];
-                return Json(new { status = -1, @object = $"{localizer["CheckItemsQuantityAndType"]}" });
-            }
-
-            long OrderId = orderServices.EditOrderDetailsFromSales( Items, Quantity, OrderDetailsTypeID, IsApproved, OrderDetailsID);
-            if (OrderId > 0)
-            {
-
-                return RedirectToAction("ViewOrder" , new { OrderId = OrderId });
+                long OrderId = orderServices.EditOrderDetailsFromSales(orderDetails.Items, orderDetails.Quantity, orderDetails.OrderDetailsTypeID, orderDetails.IsApproved.HasValue ? orderDetails.IsApproved.Value : false , orderDetails.OrderDetailsID);
+                if (OrderId > 0)
+                {
+                    long orderDetailsId = orderServices.OpenOrderDetails(orderDetails.OrderDetailsID);
+                    if (orderDetailsId > 0)
+                    {
+                        return RedirectToAction("ViewOrder", new { OrderId = OrderId });
+                    }
+                    return View("_CustomError");
+                }
+                else
+                {
+                    return View("_CustomError");
+                }
             }
             else
             {
+                OrderDetails _orderDetails = orderServices.GetOrderDetailsByOrderDetailsID(orderDetails.OrderDetailsID);
+                _orderDetails.Items = orderDetails.Items;
+                _orderDetails.Quantity = orderDetails.Quantity;
+                _orderDetails.IsApproved = orderDetails.IsApproved;
+                _orderDetails.OrderDetailsTypeID = orderDetails.OrderDetailsTypeID;
+                ViewBag.types = orderServices.GetSelectListOrderDetailsType();
+                return View(_orderDetails);
+            }           
+
+        }
+        [HttpGet]
+        public IActionResult OpenOrderDetails(long OrderDetailsID)
+        {
+            long orderDetails = orderServices.OpenOrderDetails(OrderDetailsID);
+            return RedirectToAction("Index","Home");            
+        }
+        [HttpGet]
+        public IActionResult DeleteOrderDetails(long OrderDetailsID)
+        {
+            try
+            {
+                OrderDetails orderDetails = orderServices.GetOrderDetailsByOrderDetailsID(OrderDetailsID);
+                if (orderDetails is null)
+                {
+                    return View("UsedByUser");
+                }
+                if (orderDetails is not null && !orderDetails.Price.HasValue)
+                {
+                    ViewBag.WantDelete = true;
+                    ViewBag.types = orderServices.GetSelectListOrderDetailsType();
+
+                    return View("DeleteOrCancelOrderDetails", orderDetails);
+                }
+                return View("_CustomError");
+            }
+            catch (Exception)
+            {
+
                 return View("_CustomError");
             }
 
         }
         [HttpGet]
-        public IActionResult DeleteOrderDetails(long OrderDetailsID)
+        public IActionResult DeleteOrderDetailsFromViewOrder(long OrderDetailsID)
         {
-            //try
-            //{
-            //  int status = orderServices.GetOrderDetailsByOrderDetailsID(OrderDetailsID);
-            //    if (orderDetails is not null && !orderDetails.Price.HasValue)
-            //    {
-            //        ViewBag.types = orderServices.GetSelectListOrderDetailsType();
-            //        return View(orderDetails);
-            //    }
-            //    return View("_CustomError");
-            //}
-            //catch (Exception)
-            //{
+            try
+            {
+                long orderId = orderServices.DeleteOrderDetails(OrderDetailsID);
+                if (orderId > 0)
+                {
+                    var orderDetails = orderServices.GetOrderDetailsByOrderId(orderId);
+                    return RedirectToAction("ViewOrder", new { OrderId = orderId });
+                }
+                return View("_CustomError");
+            }
+            catch (Exception)
+            {
 
-            //    return View("_CustomError");
-            //}
-            return View();
+                return View("_CustomError");
+            }
+
+        }
+        [HttpGet]
+        public IActionResult CancelOrderDetails(long OrderDetailsID)
+        {
+            try
+            {
+                OrderDetails orderDetails = orderServices.GetOrderDetailsByOrderDetailsID(OrderDetailsID);
+                if (orderDetails is null)
+                {
+                    return View("UsedByUser");
+                }
+                if (orderDetails is not null && !orderDetails.Price.HasValue)
+                {
+                    ViewBag.WantDelete = false;
+                    ViewBag.types = orderServices.GetSelectListOrderDetailsType();
+
+                    return View("DeleteOrCancelOrderDetails", orderDetails);
+                }
+                return View("_CustomError");
+            }
+            catch (Exception)
+            {
+
+                return View("_CustomError");
+            }
+
+        }
+        [HttpGet]
+        public IActionResult CancelOrderDetailsFromViewOrder(long OrderDetailsID)
+        {
+            try
+            {
+                long orderId = orderServices.CancelOrderDetails(OrderDetailsID);
+                if (orderId > 0)
+                {
+                    var orderDetails = orderServices.GetOrderDetailsByOrderId(orderId);
+                    return RedirectToAction("ViewOrder", new { OrderId = orderId });
+                }
+                return View("_CustomError");
+            }
+            catch (Exception)
+            {
+
+                return View("_CustomError");
+            }
+
+        }
+        [HttpGet]
+        public IActionResult DisplayOrderDetails(long OrderDetailsID)
+        {
+            try
+            {
+                OrderDetails orderDetails = orderServices.GetOrderDetailsByOrderDetailsID(OrderDetailsID);
+                if (orderDetails is null)
+                {
+                    return View("UsedByUser");
+                }
+                if (orderDetails is not null )
+                {
+                    ViewBag.types = orderServices.GetSelectListOrderDetailsType();
+
+                    return View("DeleteOrCancelOrderDetails", orderDetails);
+                }
+                return View("_CustomError");
+            }
+            catch (Exception)
+            {
+
+                return View("_CustomError");
+            }
+
         }
 
     }

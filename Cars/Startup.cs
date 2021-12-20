@@ -56,7 +56,7 @@ namespace Cars
             services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
             services.AddTransient<OrderServices, OrderServices>();
-
+            services.AddTransient<SystemIssuesServices, SystemIssuesServices>();
             services.AddSession();
 
             services.Configure<SecurityStampValidatorOptions>(options =>

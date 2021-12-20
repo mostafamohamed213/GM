@@ -21,6 +21,7 @@ namespace Cars.Models
         public string PartNumber { get; set; }
         public decimal? Price { get; set; }
         public string Comments { get; set; }
+        public DateTime? UsedDateTime { get; set; }
         public string UsedByUser { get; set; }
         public long? ParentOrderDetailsID { get; set; }
         public long OrderID { get; set; }
@@ -40,9 +41,11 @@ namespace Cars.Models
         public Layer Layer { get; set; }
 
         // flase = save as draft
-        // true =save 
+        // true = save 
         // null = save order and order details without click button save or save as draft
         public bool? Enabled { get; set; }
+        public string CanceledByUserID { get; set; }
+        public string DeletedByUserID { get; set; }
         [Required]
         public string SystemUserCreate { get; set; }
         public DateTime DTsCreate { get; set; }

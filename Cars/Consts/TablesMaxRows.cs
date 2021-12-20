@@ -10,11 +10,13 @@ namespace Cars.Consts
         public static int IndexOrdersMaxRows { get; set; }
         public static int IndexOrdersDraftMaxRows { get; set; }
         public static int IndexOrderLinesMaxRows { get; set; }
+        public static int IndexOrderLinesUsedMaxRows  { get; set; }
         static TablesMaxRows()
         {
             IndexOrdersMaxRows = 10;
             IndexOrdersDraftMaxRows = 10;
             IndexOrderLinesMaxRows = 10;
+            IndexOrderLinesUsedMaxRows = 10;
         }
     }
 }

@@ -120,42 +120,62 @@
                         <th>@localizer["Type"]</th>
                         <th>@localizer["Approved"]</th>
                         <th></th>
+                        <th></th>
+                        
 
                     </tr>
                 </thead>
                 <tbody id="datatbodyid">
                     @foreach (var item in Model.OrderDetails)
                     {
-                        <tr>
-                            <td>@counter</td>
-                            <td>@item.OrderDetailsID</td>
-                            <td>@item.Items</td>
-                            <td>@item.Quantity</td>
-                            <td>@item.OrderDetailsType.NameEn</td>
-                            <td>
-                                @if (item.IsApproved.HasValue)
+                    <tr>
+                        <td>@counter</td>
+                        <td>@item.OrderDetailsID</td>
+                        <td>@item.Items</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.OrderDetailsType.NameEn</td>
+                        <td>
+                            @if (item.IsApproved.HasValue)
+                            {
+                                if (item.IsApproved.Value)
                                 {
-                                    if (item.IsApproved.Value)
+                                    <span class="fe fe-24 fe-check"></span>
+                                }
+                                else
+                                {
+                                    <span class="fe fe-24 fe-x"></span>
+                                }
+                            }
+                        </td>
+                    
+                            @if ((!item.Price.HasValue || item.Price.Value <= 0))
+                            {
+
+                                    @if (string.IsNullOrEmpty(item.CanceledByUserID))
                                     {
-                                        <span class="fe fe-24 fe-check"></span>
+
+                                        <td>
+                                            <a title="@localizer["Display"]" asp-action="DisplayOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-file-text  text-primary"></span></span></a>
+                                            <a title="@localizer["Edit"]" asp-action="EditOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-success"></span></span></a>
+                                            <a title="@localizer["Cancel"]" asp-action="CancelOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-x text-warning"></span></span></a>
+                                        </td>
                                     }
                                     else
-                                    {
-                                        <span class="fe fe-24 fe-x"></span>
+                                    {  <td>
+                                           <span class="text-warning">Canceled</span>
+                                       </td>
                                     }
-                                }
-                            </td>
-                            <td>
-                                @if (!item.Price.HasValue || item.Price.Value <= 0)
-                                {
-                                    @*<a title="@localizer["Edit"]" href="~/EditOrderDetails/Sales?orderDetailsID" > <span class="small text-muted"><span class="fe fe-24 fe-edit"></span></span></a>*@
+                                <td>
+                                    <a title="@localizer["Delete"]" asp-action="DeleteOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class=" fe fe-24 fe-x-circle text-danger"></span></span></a>
+                                </td>
+                            }
+                            else
+                            {  <td>
+                                    <a title="@localizer["Display"]" asp-action="DisplayOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-file-text  text-primary"></span></span></a>
+                               </td>
+                            }
+                        
 
-                                    <a title="@localizer["Edit"]" asp-action="EditOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit"></span></span></a>
-                                    <a href="#" title="@localizer["Delete"]"> <span class="small text-muted"><span class="fe fe-24 fe-x"></span></span></a>
-                                    @*<a href="#" title="@localizer["Cancel"]"> <span class="small text-muted"><span class="fe fe-24 fe-x"></span></span></a>*@
-
-                                }
-                            </td>
 
 
                         </tr>
@@ -224,7 +244,7 @@
 
 @section Scripts {
     <script>
-        ChangeColorSidebarItem("anavbarOrders", "aAddOrderHeader");
+        ChangeColorSidebarItem("anavbarOrders", "aOrderHeaders");
 
         $("#btnSaveOrderDetails").click(function () {
             $.ajax({
@@ -232,13 +252,14 @@
                 url: "/Sales/AddOrderDetails",
                 data: { "orderId": OrderID.value, "Items": OrderDetailsItems.value, "Quantity": OrderDetailsQuantity.value, "Type": OrderDetailsType.value, "Approved": OrderDetailsApproved.checked },
                 success: function (response) {
+                    console.log(response);
                     document.getElementById("btnCloseOrderDetails").disabled = true;
                     document.getElementById("btnSaveOrderDetails").disabled = true;
                     if (response.status == 1) {
                         document.getElementById("alertErrorCodeType").style.display = "none";
                         document.getElementById("spnErrorCodeType").innerHTML = "";
                         let counter = 1;
-                        if ((response.object != null || response.object != "null") && response.object.length > 0) {
+                        if ((response.object != null || response.object != null) && response.object.length > 0) {
                             document.getElementById('datatbodyid').innerHTML = "";
                             response.object.forEach((value, i) => {
                                 var row_1 = document.createElement('tr');
@@ -253,7 +274,7 @@
                                 var row_data_4 = document.createElement('td');
                                 row_data_4.innerHTML = value.type;
                                 var row_data_5 = document.createElement('td');
-                                if (value.IsApproved == 'null') {
+                                if (value.isApproved == null) {
                                     row_data_5.innerHTML = "";
                                 } else {
                                     if (value.isApproved == true) {
@@ -262,19 +283,37 @@
                                         row_data_5.innerHTML = '<span class="fe fe-24 fe-x"></span>'
                                     }
                                 }
-                                var row_data_6 = document.createElement('td');
-                                row_data_6.innerHTML = '<a title="Edit" href="/Sales/EditOrderDetails?OrderDetailsID=' + value.orderDetailsID + '" > <span class="small text-muted"><span class="fe fe-24 fe-edit"></span></span></a> <a href="#" title="Delete"> <span class="small text-muted"><span class="fe fe-24 fe-x"></span></span></a>';
 
-                                @* var row_data_7 = document.createElement('td');
-                                row_data_7.innerHTML = '<a href="#" title="@localizer["Delete"]"> <span class="small text-muted"><span class="fe fe-24 fe-x"></span></span></a>';*@
                                 row_1.append(row_data_0);
                                 row_1.append(row_data_1);
                                 row_1.append(row_data_2);
                                 row_1.append(row_data_3);
                                 row_1.append(row_data_4);
                                 row_1.append(row_data_5);
-                                row_1.append(row_data_6);
-                                //    row_1.append(row_data_7);
+
+                                if (value.price == null || value.price <= 0) {
+                                    if (value.canceledByUserID != null) {
+                                        var row_data_6 = document.createElement('td');
+                                        row_data_6.innerHTML = '<a title="Display" href="/Sales/DisplayOrderDetails?OrderDetailsID=' + value.orderDetailsID + '" > <span class="small text-muted"><span class="fe fe-24 fe-file-text text-primary"></span></span></a><a title="Edit" href="/Sales/EditOrderDetails?OrderDetailsID=' + value.orderDetailsID + '" > <span class="small text-muted"><span class="fe fe-24 fe-edit text-success"></span></span></a> <a title="Cancel" href="/Sales/CancelOrderDetails?OrderDetailsID=' + value.orderDetailsID + '" > <span class="small text-muted"><span class="fe fe-24 fe-x text-warning"></span></span></a>';
+                                        row_1.append(row_data_6);
+
+                                    } else {
+                                        var row_data_6 = document.createElement('td');
+                                        row_data_6.innerHTML = '<span class="text-warning">Canceled</span>';
+                                        row_1.append(row_data_6);
+                                    }
+                                    var row_data_7 = document.createElement('td');
+                                    row_data_7.innerHTML = '<a title="Delete" href="/Sales/DeleteOrderDetails?OrderDetailsID=' + value.orderDetailsID + '"> <span class="small text-muted"><span class=" fe fe-24 fe-x-circle text-danger"></span></span></a>';
+                                    row_1.append(row_data_7);
+
+                                } else {
+                                    var row_data_6 = document.createElement('td');
+                                    row_data_6.innerHTML = '<a title="Display" href="/Sales/DisplayOrderDetails?OrderDetailsID=' + value.orderDetailsID + '" > <span class="small text-muted"><span class="fe fe-24 fe-file-text text-primary"></span></span></a>';
+                                    row_1.append(row_data_6);
+
+                                }
+
+                        
                                 document.getElementById('datatbodyid').append(row_1);
                                 counter++;
                             });
@@ -339,7 +378,7 @@
        //                     }
        //                          var row_data_6 = document.createElement('td');
        //                          row_data_6.innerHTML = '<a title="Edit" href="/Sales/EditOrderDetails?orderDetailsID=' +value.orderDetailsID+'" > <span class="small text-muted"><span class="fe fe-24 fe-edit"></span></span></a> <a href="#" title="Delete"> <span class="small text-muted"><span class="fe fe-24 fe-x"></span></span></a>';
-       //                          
+       //
        //                          @* var row_data_7 = document.createElement('td');
        //                            row_data_7.innerHTML = '<a href="#" title="@localizer["Delete"]"> <span class="small text-muted"><span class="fe fe-24 fe-x"></span></span></a>';*@
        //                          row_1.append(row_data_0);
@@ -381,6 +420,8 @@
             OrderDetailsItems.value = '';
             OrderDetailsQuantity.value = '';
             document.getElementById("OrderDetailsApproved").checked = false;
+
+
         }
     </script>
 

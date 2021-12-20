@@ -43,7 +43,7 @@ namespace Cars
                 var supportedCultures = new[]
                 {
                    new CultureInfo("en-US"),
-                   new CultureInfo("ar_EG"),
+                   new CultureInfo("ar-EG"),
 
                 };
 

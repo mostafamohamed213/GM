@@ -20,8 +20,7 @@
     }
 </div>
 
-@if (Model.Any())
-{
+
     @if (AuthorizationService.AuthorizeAsync(User, Permissions.Users.Create).Result.Succeeded)
     {
         <a asp-action="Register" asp-controller="Accounts"
@@ -109,10 +108,11 @@
             </tbody>
         </table>
     </div>
+@{ 
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 
-
+}
     <div class="col-sm-8" style="overflow-x:auto">
         <a asp-action="ListUsers"
            asp-route-pageNumber="@(Model.PageIndex - 1)"
@@ -170,21 +170,3 @@
           Next
         </a>
     </div>
-}
-else
-{
-    <div class="card">
-        <div class="card-header">
-            No users created yet
-        </div>
-        <div class="card-body">
-            <h5 class="card-title">
-                Use the button below to create a user
-            </h5>
-            <a class="btn btn-primary" style="width:auto"
-               asp-controller="Accounts" asp-action="Register">
-                Add new user
-            </a>
-        </div>
-    </div>
-}

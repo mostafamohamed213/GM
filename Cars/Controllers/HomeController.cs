@@ -27,11 +27,14 @@ namespace Cars.Controllers
 
         public IActionResult Index()
         {
-            //var remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
-            //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            //string info = new WebClient().DownloadString("http://ipinfo.io/" + "156.203.53.164"); //replace by remoteIpAddress
-            //remotip ipinfo = JsonConvert.DeserializeObject<remotip>(info);
+            var remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string info = new WebClient().DownloadString("http://ipinfo.io/" + remoteIpAddress); //replace by remoteIpAddress
+            remotip ipinfo = JsonConvert.DeserializeObject<remotip>(info);
 
+            ViewBag.city = ipinfo.City;
+            ViewBag.Region = ipinfo.Region;
+            ViewBag.IP = remoteIpAddress;
 
             //UsersLogs usersLogs = new UsersLogs
             //{

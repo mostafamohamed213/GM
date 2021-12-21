@@ -61,15 +61,16 @@
 
 
             </div>
+            
             <div class="row h5">
-                <div class="col-md-4">
-                    <div class="col-md-3">
-                       ID : @Model.OrderID
-                    </div>
+                <div class="col-md-6">                    
+                    @if(Model.Enabled.HasValue && Model.Enabled.Value){
+                         <span> ID : 01:@Model.OrderID</span>
+                    }
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
                 </div>
             </div>
         </div>
@@ -129,7 +130,15 @@
                     {
                     <tr>
                         <td>@counter</td>
-                        <td>01:@Model.OrderID:@item.OrderDetailsID</td>
+                        @if (item.Enabled.HasValue && item.Enabled.Value)
+                        {
+                            <td>01:@Model.OrderID:@item.OrderDetailsID</td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+
                         <td>@item.Items</td>
                         <td>@item.Quantity</td>
                         <td>@item.OrderDetailsType.NameEn</td>
@@ -146,38 +155,40 @@
                                 }
                             }
                         </td>
-                    
-                            @if ((!item.Price.HasValue || item.Price.Value <= 0))
+
+                        @if ((!item.Price.HasValue || item.Price.Value <= 0))
+                        {
+
+                            @if (string.IsNullOrEmpty(item.CanceledByUserID))
                             {
 
-                                    @if (string.IsNullOrEmpty(item.CanceledByUserID))
-                                    {
-
-                                        <td>
-                                            <a title="@localizer["Display"]" asp-action="DisplayOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-file-text  text-primary"></span></span></a>
-                                            <a title="@localizer["Edit"]" asp-action="EditOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-success"></span></span></a>
-                                            <a title="@localizer["Cancel"]" asp-action="CancelOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-x text-warning"></span></span></a>
-                                        </td>
-                                    }
-                                    else
-                                    {  <td>
-                                           <span class="text-warning">Canceled</span>
-                                       </td>
-                                    }
                                 <td>
-                                    <a title="@localizer["Delete"]" asp-action="DeleteOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class=" fe fe-24 fe-x-circle text-danger"></span></span></a>
+                                    <a title="@localizer["Display"]" asp-action="DisplayOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-file-text  text-primary"></span></span></a>
+                                    <a title="@localizer["Edit"]" asp-action="EditOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-success"></span></span></a>
+                                    <a title="@localizer["Cancel"]" asp-action="CancelOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-x text-warning"></span></span></a>
                                 </td>
                             }
                             else
-                            {  <td>
-                                    <a title="@localizer["Display"]" asp-action="DisplayOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-file-text  text-primary"></span></span></a>
-                               </td>
+                            {
+                                <td>
+                                    <span class="text-warning">Canceled</span>
+                                </td>
                             }
-                        
+                            <td>
+                                <a title="@localizer["Delete"]" asp-action="DeleteOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class=" fe fe-24 fe-x-circle text-danger"></span></span></a>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <a title="@localizer["Display"]" asp-action="DisplayOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-file-text  text-primary"></span></span></a>
+                            </td>
+                        }
 
 
 
-                        </tr>
+
+                    </tr>
                         counter++;
                     }
                 </tbody>
@@ -265,7 +276,15 @@
                                 var row_data_0 = document.createElement('td');
                                 row_data_0.innerHTML = counter;
                                 var row_data_1 = document.createElement('td');
-                                row_data_1.innerHTML = value.orderDetailsID;
+                                if (value.enabled != null && value.enabled == true)
+                                    {
+                                        row_data_1.innerHTML = "01:" + value.orderID +":"+ value.orderDetailsID;
+                                    }
+                                    else
+                                    {
+                                       row_data_1.innerHTML = "";
+                                    }
+
                                 var row_data_2 = document.createElement('td');
                                 row_data_2.innerHTML = value.items;
                                 var row_data_3 = document.createElement('td');
@@ -312,7 +331,7 @@
 
                                 }
 
-                        
+
                                 document.getElementById('datatbodyid').append(row_1);
                                 counter++;
                             });

@@ -8,6 +8,7 @@ namespace Cars.ViewModels
     public class OrderDetailsViewModel
     {
         public long OrderDetailsID { get; set; }
+        public long OrderID { get; set; }
         public string Items { get; set; }
         public int Quantity { get; set; }
         public bool? IsApproved { get; set; }
@@ -17,6 +18,7 @@ namespace Cars.ViewModels
         public decimal? Price { get; set; }
         public string Comments { get; set; }
         public string CanceledByUserID { get; set; }
+        public bool Enabled { get; set; }
 
     }
 }

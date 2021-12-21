@@ -31,7 +31,7 @@
     <div class="col-12 mb-4">
         <div class="card shadow">
             <div class="card-header">
-                <strong class="card-title h4">@localizer["OrderHeaderDetails"]</strong>
+                <strong class="card-title h4">Order Header Details</strong>
             </div>
             <div class="card-body">
                 <div class="row h5">
@@ -81,10 +81,11 @@
                 </div>
                 <div class="row h5">
                     <div class="col-md-4">
-                        @*<button class="btn btn-success" id="btnAddOrderLine"> @localizer["AddOrderLine"]</button>*@
-                        @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ModalAddOrderLine">
-                                @localizer["AddOrderLine"]
-                            </button>*@
+                        @if (Model.Enabled.HasValue && Model.Enabled.Value)
+                        {
+                            <span> ID: 01:@Model.OrderID</span>
+                        }
+
                     </div>
                     <div class="col-md-4">
                     </div>
@@ -95,96 +96,101 @@
         </div>
     </div>
     <div class="card-body">
-            <div class="row">
-                <input asp-for="OrderDetailsID" style="display:none" />
-                <input asp-for="OrderID" style="display:none" />
-                <input asp-for="SystemUserCreate" style="display:none" />
+        @if (Model.Enabled.HasValue && Model.Enabled.Value)
+        {
+        <h3> ID :01:@Model.OrderID:@Model.OrderDetailsID</h3>
+        }
+        
+        <div class="row">
+            <input asp-for="OrderDetailsID" style="display:none" />
+            <input asp-for="OrderID" style="display:none" />
+            <input asp-for="SystemUserCreate" style="display:none" />
 
-                <div class="col-md-6">
-                    <div class="form-group mb-4">
-                        <label for="simpleinput">@localizer["Items"]</label>
-                        <input asp-for="Items" class="form-control" required disabled />
-                        <span asp-validation-for="Items" class="text-danger"></span>
-                    </div>
+            <div class="col-md-6">
+                <div class="form-group mb-4">
+                    <label for="simpleinput">@localizer["Items"]</label>
+                    <input asp-for="Items" class="form-control" required disabled />
+                    <span asp-validation-for="Items" class="text-danger"></span>
+                </div>
 
-                    <div class="form-group mb-3">
-                        <label for="example-password">@localizer["Type"]</label>
-                        <select disabled name="OrderDetailsTypeID" asp-for="OrderDetailsTypeID" asp-items="@ViewBag.types" class="form-control"></select>
-                        <span asp-validation-for="OrderDetailsTypeID" class="text-danger"></span>
-                    </div>
+                <div class="form-group mb-3">
+                    <label for="example-password">@localizer["Type"]</label>
+                    <select disabled name="OrderDetailsTypeID" asp-for="OrderDetailsTypeID" asp-items="@ViewBag.types" class="form-control"></select>
+                    <span asp-validation-for="OrderDetailsTypeID" class="text-danger"></span>
+                </div>
 
-                    <div class="form-group mb-3">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <a class="btn btn-light" onclick="OpenOrderDetails('@Model.OrderDetailsID')" style=" width: 100px;" href="~/"> @localizer["Close"]</a>
-                                @if (!Model.Price.HasValue)
+                <div class="form-group mb-3">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <a class="btn btn-light" onclick="OpenOrderDetails('@Model.OrderDetailsID')" style=" width: 100px;" href="~/"> @localizer["Close"]</a>
+                            @if (!Model.Price.HasValue)
+                            {
+                                @if (ViewBag.WantDelete == null)
                                 {
-                                    @if (ViewBag.WantDelete == null)
+                                    <a class="btn btn-primary" title="@localizer["Edit"]" asp-action="EditOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Edit</a>
+
+                                    <a class="btn btn-warning" title="@localizer["Cancel"]" asp-action="CancelOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Cancel</a>
+
+                                    <a class="btn btn-danger" title="@localizer["Delete"]" asp-action="DeleteOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Delete</a>
+
+                                }
+                                else
+                                {
+                                    @if (ViewBag.WantDelete == true)
                                     {
-                                        <a class="btn btn-primary" title="@localizer["Edit"]" asp-action="EditOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Edit</a>
 
-                                        <a class="btn btn-warning" title="@localizer["Cancel"]" asp-action="CancelOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Cancel</a>
-
-                                        <a class="btn btn-danger" title="@localizer["Delete"]" asp-action="DeleteOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Delete</a>
+                                        <a class="btn btn-danger" title="@localizer["Delete"]" asp-action="DeleteOrderDetailsFromViewOrder" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Delete</a>
 
                                     }
                                     else
                                     {
-                                        @if (ViewBag.WantDelete == true)
-                                        {
+                                        <a class="btn btn-warning" title="@localizer["Cancel"]" asp-action="CancelOrderDetailsFromViewOrder" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Cancel</a>
 
-                                            <a class="btn btn-danger" title="@localizer["Delete"]" asp-action="DeleteOrderDetailsFromViewOrder" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Delete</a>
-
-                                        }
-                                        else
-                                        {
-                                            <a class="btn btn-warning" title="@localizer["Cancel"]" asp-action="CancelOrderDetailsFromViewOrder" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Cancel</a>
-
-                                        }
                                     }
                                 }
+                            }
 
 
 
-                            </div>
-
-                           
                         </div>
 
-
-                    </div>
-                </div> <!-- /.col -->
-                <div class="col-md-6">
-
-                    <div class="form-group mb-3">
-                        <label for="example-email">@localizer["Quantity"]</label>
-                        <input asp-for="Quantity" class="form-control" required disabled/>
-                        <span asp-validation-for="Quantity" class="text-danger"></span>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="example-helping">
-                            @localizer["Approved"]  :
-                            @if (Model.IsApproved.HasValue && Model.IsApproved.Value)
-                            {
-                                <input id="IsApproved" type="checkbox" value="true" name="IsApproved" checked disabled/>
-                                <input type="hidden" value="false" name="IsApproved" />
-                            }
-                            else
-                            {
-                                <input id="IsApproved" type="checkbox" value="true" name="IsApproved" disabled />
-                                <input type="hidden" value="false" name="IsApproved" />
-                            }
-                        </label>
-
-
-                    </div>
-                    <div class="form-group mb-3">
 
                     </div>
 
 
                 </div>
+            </div> <!-- /.col -->
+            <div class="col-md-6">
+
+                <div class="form-group mb-3">
+                    <label for="example-email">@localizer["Quantity"]</label>
+                    <input asp-for="Quantity" class="form-control" required disabled />
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="example-helping">
+                        @localizer["Approved"]  :
+                        @if (Model.IsApproved.HasValue && Model.IsApproved.Value)
+                        {
+                            <input id="IsApproved" type="checkbox" value="true" name="IsApproved" checked disabled />
+                            <input type="hidden" value="false" name="IsApproved" />
+                        }
+                        else
+                        {
+                            <input id="IsApproved" type="checkbox" value="true" name="IsApproved" disabled />
+                            <input type="hidden" value="false" name="IsApproved" />
+                        }
+                    </label>
+
+
+                </div>
+                <div class="form-group mb-3">
+
+                </div>
+
+
             </div>
+        </div>
     </div>
 </div>
 @section Scripts {

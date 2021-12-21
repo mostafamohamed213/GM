@@ -36,6 +36,9 @@ namespace Cars.Controllers
             ViewBag.Region = ipinfo.Region;
             ViewBag.IP = remoteIpAddress;
 
+
+
+
             //UsersLogs usersLogs = new UsersLogs
             //{
             //    UserIP = remoteIpAddress,

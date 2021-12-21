@@ -351,7 +351,7 @@ namespace Cars.Service
                 List<OrderDetailsViewModel> model = new List<OrderDetailsViewModel>();
                 foreach (var item in List)
                 {
-                    model.Add(new OrderDetailsViewModel() { IsApproved=item.IsApproved,Items=item.Items,OrderDetailsID=item.OrderDetailsID,Quantity=item.Quantity,type=item.OrderDetailsType.NameEn ,Price=item.Price,PartNumber=item.PartNumber,BranchID=item.BranchID,Comments=item.Comments,CanceledByUserID=item.CanceledByUserID});
+                    model.Add(new OrderDetailsViewModel() { Enabled = item.Enabled.HasValue ? item.Enabled.Value : false , OrderID =item.OrderID,IsApproved=item.IsApproved,Items=item.Items,OrderDetailsID=item.OrderDetailsID,Quantity=item.Quantity,type=item.OrderDetailsType.NameEn ,Price=item.Price,PartNumber=item.PartNumber,BranchID=item.BranchID,Comments=item.Comments,CanceledByUserID=item.CanceledByUserID});
                 }
                 return model;
             }

@@ -64,10 +64,11 @@
                 </div>
                 <div class="row h5">
                     <div class="col-md-4">
-                        @*<button class="btn btn-success" id="btnAddOrderLine"> @localizer["AddOrderLine"]</button>*@
-                        @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ModalAddOrderLine">
-                                @localizer["AddOrderLine"]
-                            </button>*@
+                        @if (Model.Enabled.HasValue && Model.Enabled.Value)
+                        {
+                        <h3>ID : 01:@Model.OrderID</h3>
+                        }
+                       
                     </div>
                     <div class="col-md-4">
                     </div>
@@ -78,11 +79,15 @@
         </div>
     </div>
     <div class="card-body">
+        @if (Model.Enabled.HasValue && Model.Enabled.Value)
+        {
+            <h3> ID :01:@Model.OrderID:@Model.OrderDetailsID</h3>
+        }
         <form class="needs-validation" asp-action="EditOrderDetails" asp-controller="Sales" method="post">
             <div class="row">
                 <input asp-for="OrderDetailsID" style="display:none" />
                 <input asp-for="OrderID" style="display:none" />
-                <input asp-for="SystemUserCreate"  style="display:none"/>
+                <input asp-for="SystemUserCreate" style="display:none" />
 
                 <div class="col-md-6">
                     <div class="form-group mb-4">
@@ -103,13 +108,13 @@
                                 <a class="btn btn-danger" onclick="OpenOrderDetails('@Model.OrderDetailsID')" style=" width: 100px;" href="~/"> @localizer["Cancel"]</a>
                                 <input class="btn btn-success" style=" width: 100px;" type="submit" value="@localizer["Save"]" />
                                 @*@if (Model.DraftId.HasValue && Model.DraftId.Value > 0)
-                                    {
-                                        <input asp-for="DraftId" style="display:none" />
-                                    }
-                                    else
-                                    {
-                                        <input class="btn btn-primary" type="button" onclick="SaveOrderAsDraft()" value="@localizer["SaveAsDraft"]" />
-                                    }*@
+                                {
+                                    <input asp-for="DraftId" style="display:none" />
+                                }
+                                else
+                                {
+                                    <input class="btn btn-primary" type="button" onclick="SaveOrderAsDraft()" value="@localizer["SaveAsDraft"]" />
+                                }*@
                             </div>
                             <div class="col-md-5"></div>
 

@@ -63,10 +63,9 @@
             </div>
             <div class="row h5">
                 <div class="col-md-4">
-                    @*<button class="btn btn-success" id="btnAddOrderLine"> @localizer["AddOrderLine"]</button>*@
-                    @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ModalAddOrderLine">
-                        @localizer["AddOrderLine"]
-                    </button>*@
+                    <div class="col-md-3">
+                       ID : @Model.OrderID
+                    </div>
                 </div>
                 <div class="col-md-4">
                 </div>
@@ -130,7 +129,7 @@
                     {
                     <tr>
                         <td>@counter</td>
-                        <td>@item.OrderDetailsID</td>
+                        <td>01:@Model.OrderID:@item.OrderDetailsID</td>
                         <td>@item.Items</td>
                         <td>@item.Quantity</td>
                         <td>@item.OrderDetailsType.NameEn</td>
@@ -198,7 +197,7 @@
         else
         {
             <a asp-action="SaveAsDraft" asp-controller="Sales" asp-route-OrderId="@Model.OrderID" class="btn btn-light">@localizer["SaveAsDraft"]</a>
-            <a style="width : 100px" asp-action="SaveOrder" asp-controller="Sales" asp-route-OrderId="@Model.OrderID" class="btn btn-success">@localizer["Save"] </a>
+            <a style="width : 100px" asp-action="SaveOrder" asp-controller="Sales" asp-route-OrderId="@Model.OrderID" class="btn btn-success">Submit</a>
 
         }
 
@@ -292,7 +291,7 @@
                                 row_1.append(row_data_5);
 
                                 if (value.price == null || value.price <= 0) {
-                                    if (value.canceledByUserID != null) {
+                                    if (value.canceledByUserID == null) {
                                         var row_data_6 = document.createElement('td');
                                         row_data_6.innerHTML = '<a title="Display" href="/Sales/DisplayOrderDetails?OrderDetailsID=' + value.orderDetailsID + '" > <span class="small text-muted"><span class="fe fe-24 fe-file-text text-primary"></span></span></a><a title="Edit" href="/Sales/EditOrderDetails?OrderDetailsID=' + value.orderDetailsID + '" > <span class="small text-muted"><span class="fe fe-24 fe-edit text-success"></span></span></a> <a title="Cancel" href="/Sales/CancelOrderDetails?OrderDetailsID=' + value.orderDetailsID + '" > <span class="small text-muted"><span class="fe fe-24 fe-x text-warning"></span></span></a>';
                                         row_1.append(row_data_6);

@@ -16,7 +16,7 @@
                 <table class="table table-bordered table-striped mb-0">
                     <thead>
                         <tr>
-                            <th class="p-2"><input type="checkbox"  id="select-all" /> Select All</th>
+                            <th class="p-2"><input type="checkbox" id="select-all" /> Select All</th>
                             <th>Module</th>
                             <th>Permission</th>
                         </tr>
@@ -28,13 +28,13 @@
                                 <td>
                                     <div class="form-check m-1">
                                         <input type="hidden" asp-for="@Model.RoleCalims[i].DisplayValue" />
-                                   
-                                            <input asp-for="@Model.RoleCalims[i].IsSelected" id="@Model.RoleCalims[i].DisplayValue.Split('.')[1]@Model.RoleCalims[i].DisplayValue.Split('.')[2]" onclick="checkfun('@Model.RoleCalims[i].DisplayValue.Split('.')[1]','@Model.RoleCalims[i].DisplayValue.Split('.')[2]')"  class="form-check-input" />
-                                   
-                                     
+
+                                        <input asp-for="@Model.RoleCalims[i].IsSelected" id="@Model.RoleCalims[i].DisplayValue.Split('.')[1]@Model.RoleCalims[i].DisplayValue.Split('.')[2]" onclick="checkfun('@Model.RoleCalims[i].DisplayValue.Split('.')[1]','@Model.RoleCalims[i].DisplayValue.Split('.')[2]')" class="form-check-input" />
+
+
                                         @*<label class="form-check-label" asp-for="@Model.Roles[i].IsSelected">
-            @Model.Roles[i].DisplayValue
-        </label>*@
+                                                @Model.Roles[i].DisplayValue
+                                            </label>*@
                                     </div>
                                 </td>
                                 <td>@Model.RoleCalims[i].DisplayValue.Split('.')[1]</td>
@@ -57,20 +57,19 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
 
-$('#select-all').click(function(event) {
-    if(this.checked) {
-        // Iterate each checkbox
-        $(':checkbox').each(function() {
-            this.checked = true;
+        $('#select-all').click(function (event) {
+            if (this.checked) {
+                // Iterate each checkbox
+                $(':checkbox').each(function () {
+                    this.checked = true;
+                });
+            } else {
+                $(':checkbox').each(function () {
+                    this.checked = false;
+                });
+            }
         });
-    } else {
-        $(':checkbox').each(function() {
-            this.checked = false;
-        });
-    }
-});
-        function checkfun(module, per)
-        {
+        function checkfun(module, per) {
             if (document.getElementById(module + per).checked == true) {
                 if (per == "Create" || per == "Edit" || per == "Active_DeActive" || per == "ManagePermissions") {
                     document.getElementById(module + "View").checked = true;
@@ -84,12 +83,11 @@ $('#select-all').click(function(event) {
                     document.getElementById(module + "Active_DeActive").checked = false;
 
                 }
-                else if (per == "View" && module == "Roles")
-                {
+                else if (per == "View" && module == "Roles") {
                     document.getElementById(module + "Create").checked = false;
                     document.getElementById(module + "Edit").checked = false;
                     document.getElementById(module + "ManagePermissions").checked = false;
-                   
+
                 }
                 else if (per == "View" && module == "Users") {
                     document.getElementById(module + "Create").checked = false;
@@ -102,4 +100,11 @@ $('#select-all').click(function(event) {
             }
         }
     </script>
+}
+
+@section Scripts {
+    <script>
+        ChangeColorSidebarItem("", "aAdministration");
+    </script>
+
 }

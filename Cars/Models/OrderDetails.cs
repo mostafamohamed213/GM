@@ -53,9 +53,9 @@ namespace Cars.Models
         public string SystemUserUpdate { get; set; }
         public DateTime? DTsUpdate { get; set; }
 
-        public decimal Labor_Hours { get; set; }
+        public decimal? Labor_Hours { get; set; } 
 
-        public double Labor_Value { get; set; }
+        public double? Labor_Value { get; set; }
     }
 
 }

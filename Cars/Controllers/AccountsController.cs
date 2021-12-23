@@ -48,7 +48,7 @@ namespace Cars.Controllers
         public IActionResult Index()
         {
 
-
+            ViewBag.x = "s";
             return View();
         }
 

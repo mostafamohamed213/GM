@@ -19,13 +19,13 @@ namespace Cars.Service
 
         public PagingViewModel<OrderDetails> GetOrderLinesUsed(int currentPage)
         {
-            var orders = db.OrderDetails.Where(c => c.Enabled.HasValue && c.Enabled.Value && string.IsNullOrEmpty(c.DeletedByUserID) && !string.IsNullOrEmpty(c.UsedByUser)).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexOrderLinesUsedMaxRows).Take(TablesMaxRows.IndexOrderLinesUsedMaxRows).ToList();
+            var orders = db.OrderDetails.Where(c => c.StatusID != 1 && c.StatusID != 5 && !string.IsNullOrEmpty(c.UsedByUser)).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexOrderLinesUsedMaxRows).Take(TablesMaxRows.IndexOrderLinesUsedMaxRows).ToList();
 
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             //var Brands = unitOfWork.Brands.
             //   FindAll(null, (currentPage - 1) * TablesMaxRows.InventoryBrandIndex, TablesMaxRows.InventoryBrandIndex, d => d.Name, OrderBy.Ascending);
             viewModel.items = orders.ToList();
-            var itemsCount = db.OrderDetails.Where(c => c.Enabled.HasValue && c.Enabled.Value && string.IsNullOrEmpty(c.DeletedByUserID) && !string.IsNullOrEmpty(c.UsedByUser)).Count();
+            var itemsCount = db.OrderDetails.Where(c => c.StatusID != 1 && c.StatusID != 5 && !string.IsNullOrEmpty(c.UsedByUser)).Count();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexOrderLinesUsedMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
@@ -57,7 +57,7 @@ namespace Cars.Service
         }
         internal OrderDetails GetOrderDetailsByOrderDetailsID(long orderDetailsID)
         {
-            var orderDetails = db.OrderDetails.Where(c => string.IsNullOrEmpty(c.DeletedByUserID)).Include("OrderDetailsType").Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
+            var orderDetails = db.OrderDetails.Where(c => c.StatusID != 5).Include("OrderDetailsType").Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
            
           
             return orderDetails;

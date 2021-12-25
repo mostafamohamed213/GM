@@ -23,11 +23,10 @@ namespace Cars.Models
         [ForeignKey("VehicleID")]
         public Vehicle Vehicle { get; set; }
         public virtual List<OrderDetails> OrderDetails { get; set; }
-        public long EmployeeBranchID { get; set; }
-        // flase = save as draft
-        // true =save 
-        // null = save order and order details without click button save or save as draft
-        public bool? Enabled { get; set; }
+        public long EmployeeBranchID { get; set; }       
+        public int StatusID { get; set; }
+        [ForeignKey("StatusID")]
+        public Status Status { get; set; }
         [Required]
         public string SystemUserCreate { get; set; }
         public DateTime DTsCreate { get; set; }

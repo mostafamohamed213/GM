@@ -109,7 +109,7 @@
                     @if ((!item.Price.HasValue || item.Price.Value <= 0))
                     {
 
-                        @if (string.IsNullOrEmpty(item.CanceledByUserID))
+                        @if (item.StatusID != 4)
                         {
 
                             <td>

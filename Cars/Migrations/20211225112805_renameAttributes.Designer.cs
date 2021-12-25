@@ -3,15 +3,17 @@ using System;
 using Cars.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Cars.Migrations
 {
     [DbContext(typeof(CarsContext))]
-    partial class CarsContextModelSnapshot : ModelSnapshot
+    [Migration("20211225112805_renameAttributes")]
+    partial class renameAttributes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -272,11 +274,11 @@ namespace Cars.Migrations
                     b.Property<long>("EmployeeBranchID")
                         .HasColumnType("bigint");
 
+                    b.Property<bool?>("Enabled")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Prefix")
                         .HasColumnType("text");
-
-                    b.Property<int>("StatusID")
-                        .HasColumnType("integer");
 
                     b.Property<string>("SystemUserCreate")
                         .IsRequired()
@@ -294,8 +296,6 @@ namespace Cars.Migrations
                     b.HasKey("OrderID");
 
                     b.HasIndex("CustomerID");
-
-                    b.HasIndex("StatusID");
 
                     b.HasIndex("VehicleID");
 
@@ -784,12 +784,6 @@ namespace Cars.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Cars.Models.Status", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Cars.Models.Vehicle", "Vehicle")
                         .WithMany("Orders")
                         .HasForeignKey("VehicleID")
@@ -797,8 +791,6 @@ namespace Cars.Migrations
                         .IsRequired();
 
                     b.Navigation("Customer");
-
-                    b.Navigation("Status");
 
                     b.Navigation("Vehicle");
                 });

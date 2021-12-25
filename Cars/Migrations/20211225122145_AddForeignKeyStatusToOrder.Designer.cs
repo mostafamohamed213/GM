@@ -3,15 +3,17 @@ using System;
 using Cars.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Cars.Migrations
 {
     [DbContext(typeof(CarsContext))]
-    partial class CarsContextModelSnapshot : ModelSnapshot
+    [Migration("20211225122145_AddForeignKeyStatusToOrder")]
+    partial class AddForeignKeyStatusToOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -271,6 +273,9 @@ namespace Cars.Migrations
 
                     b.Property<long>("EmployeeBranchID")
                         .HasColumnType("bigint");
+
+                    b.Property<bool?>("Enabled")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Prefix")
                         .HasColumnType("text");

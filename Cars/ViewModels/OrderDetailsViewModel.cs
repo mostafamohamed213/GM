@@ -17,8 +17,5 @@ namespace Cars.ViewModels
         public string PartNumber { get; set; }
         public decimal? Price { get; set; }
         public string Comments { get; set; }
-        public string CanceledByUserID { get; set; }
-        public bool Enabled { get; set; }
-
     }
 }

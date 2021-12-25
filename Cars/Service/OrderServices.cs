@@ -35,14 +35,14 @@ namespace Cars.Service
         }
         public PagingViewModel<Order> getOrders(int currentPage)
         {
-           var orders= db.Orders.Where(c => c.Enabled.HasValue && c.Enabled.Value).
+           var orders= db.Orders.Where(c => c.StatusID != 1 && c.StatusID != 5).
                 Include("Vehicle").Include("Customer").Include("Customer.CustomerContacts").Skip((currentPage - 1) * TablesMaxRows.IndexOrdersMaxRows).Take(TablesMaxRows.IndexOrdersMaxRows).ToList();
 
             PagingViewModel<Order> viewModel = new PagingViewModel<Order> ();
             //var Brands = unitOfWork.Brands.
             //   FindAll(null, (currentPage - 1) * TablesMaxRows.InventoryBrandIndex, TablesMaxRows.InventoryBrandIndex, d => d.Name, OrderBy.Ascending);
             viewModel.items = orders.ToList();
-            var itemsCount = db.Orders.Where(c => c.Enabled.HasValue && c.Enabled.Value).Count();
+            var itemsCount = db.Orders.Where(c => c.StatusID != 1 && c.StatusID != 5).Count();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexOrdersMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
@@ -52,13 +52,13 @@ namespace Cars.Service
         }
         public PagingViewModel<OrderDetails> getOrderLines(int currentPage)
         {
-            var orders = db.OrderDetails.Where(c=>c.Enabled.HasValue && c.Enabled.Value && string.IsNullOrEmpty(c.DeletedByUserID)).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexOrderLinesMaxRows).Take(TablesMaxRows.IndexOrderLinesMaxRows).ToList();
+            var orders = db.OrderDetails.Where(c=> c.StatusID != 1 && c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexOrderLinesMaxRows).Take(TablesMaxRows.IndexOrderLinesMaxRows).ToList();
 
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             //var Brands = unitOfWork.Brands.
             //   FindAll(null, (currentPage - 1) * TablesMaxRows.InventoryBrandIndex, TablesMaxRows.InventoryBrandIndex, d => d.Name, OrderBy.Ascending);
             viewModel.items = orders.ToList();
-            var itemsCount = db.OrderDetails.Where(c => c.Enabled.HasValue && c.Enabled.Value && string.IsNullOrEmpty(c.DeletedByUserID)).Count();
+            var itemsCount = db.OrderDetails.Where(c => c.StatusID != 1 && c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Count();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexOrderLinesMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
@@ -68,13 +68,13 @@ namespace Cars.Service
         }
         public PagingViewModel<Order> getOrdersDraft(int currentPage)
         {
-            var orders = db.Orders.Include("Vehicle").Include("Customer").Include("Customer.CustomerContacts").Where(c=> !c.Enabled.HasValue || !c.Enabled.Value).Skip((currentPage - 1) * TablesMaxRows.IndexOrdersDraftMaxRows).Take(TablesMaxRows.IndexOrdersDraftMaxRows).ToList();
+            var orders = db.Orders.Include("Vehicle").Include("Customer").Include("Customer.CustomerContacts").Where(c=> c.StatusID == 1).Skip((currentPage - 1) * TablesMaxRows.IndexOrdersDraftMaxRows).Take(TablesMaxRows.IndexOrdersDraftMaxRows).ToList();
 
             PagingViewModel<Order> viewModel = new PagingViewModel<Order>();
             //var Brands = unitOfWork.Brands.
             //   FindAll(null, (currentPage - 1) * TablesMaxRows.InventoryBrandIndex, TablesMaxRows.InventoryBrandIndex, d => d.Name, OrderBy.Ascending);
             viewModel.items = orders.ToList();
-            var itemsCount = db.Orders.Where(c => !c.Enabled.HasValue || !c.Enabled.Value).Count();
+            var itemsCount = db.Orders.Where(c => c.StatusID == 1).Count();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexOrdersDraftMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
@@ -85,7 +85,7 @@ namespace Cars.Service
 
         internal OrderDetails GetOrderDetailsByOrderDetailsID(long orderDetailsID)
         {
-            var orderDetails = db.OrderDetails.Where(c => string.IsNullOrEmpty(c.DeletedByUserID)).Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
+            var orderDetails = db.OrderDetails.Where(c => c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2 )).Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
             if (string.IsNullOrEmpty(orderDetails.UsedByUser))
             {
                 orderDetails.UsedByUser = "1";
@@ -105,7 +105,7 @@ namespace Cars.Service
             try
             {
                 Order order = db.Orders.Where(c => c.OrderID == orderId).Include("Vehicle").Include("Customer")
-                                .Include("Customer.CustomerContacts").Include(c=>c.OrderDetails.Where(x=> string.IsNullOrEmpty(x.DeletedByUserID))).Include("OrderDetails.OrderDetailsType").FirstOrDefault();
+                                .Include("Customer.CustomerContacts").Include(c=>c.OrderDetails.Where(x=> x.StatusID != 5)).Include("OrderDetails.OrderDetailsType").FirstOrDefault();
                 if (order is not null)
                 {
                     return order;
@@ -149,19 +149,19 @@ namespace Cars.Service
 
         internal int SaveAsDraft(long orderId)
         {
-           
+
             Order order = db.Orders.Include("OrderDetails").FirstOrDefault(c => c.OrderID == orderId);
-            Layer  _layer= db.Layers.FirstOrDefault(c => c.LayerID == 1);
+            Workflow _Workflow = db.Workflows.FirstOrDefault(c => c.WorkflowID == 1);
             if (order is not null)
             {
-                order.Enabled = false;
+                order.StatusID = 1;
                 if (order.OrderDetails.Count > 0)
                 {
                     foreach (var item in order.OrderDetails)
                     {
-                        item.Enabled = false;
-                        item.LayerID = _layer.LayerID;
-                        item.Layer = _layer;
+                        item.StatusID = 1;
+                        item.WorkflowID = _Workflow.WorkflowID;
+                        item.Workflow = _Workflow;
                     }
                 }
                 db.SaveChanges();
@@ -173,17 +173,35 @@ namespace Cars.Service
         internal int SaveOrder(long orderId)
         {
             Order order = db.Orders.Include("OrderDetails").FirstOrDefault(c => c.OrderID == orderId);
-            Layer _layer = db.Layers.FirstOrDefault(c => c.LayerID == 2);
+            Workflow _Workflow = db.Workflows.FirstOrDefault(c => c.WorkflowID == 2);
             if (order is not null)
             {
-                order.Enabled = true;
+                order.StatusID = 2;
                 if (order.OrderDetails.Count > 0)
                 {
                     foreach (var item in order.OrderDetails)
                     {
-                        item.Enabled = true;
-                        item.LayerID = _layer.LayerID;
-                        item.Layer = _layer;
+                        item.StatusID = 2;
+                        item.WorkflowID = _Workflow.WorkflowID;
+                        item.Workflow = _Workflow;
+
+                        WorkflowOrderDetailsLog workflowOrder = new WorkflowOrderDetailsLog()
+                        {
+                            DTsCreate = DateTime.Now,
+                            OrderDetailsID = item.OrderDetailsID,
+                            SystemUserID = "1",
+                            WorkflowID = 2,
+                            Active =true,                            
+                        };
+                        db.Add(workflowOrder);
+                        OrderDetailsStatusLog statusLog = new OrderDetailsStatusLog()
+                        {
+                            DTsCreate = DateTime.Now,
+                            OrderDetailsID = item.OrderDetailsID,
+                            SystemUserID = "1",
+                            StatusID = 2,                           
+                        };
+                        db.Add(statusLog);
                     }
                 }
                 db.SaveChanges();
@@ -236,7 +254,9 @@ namespace Cars.Service
                         Customer = customer,
                         EmployeeBranchID = 10,
                         Vehicle = vehicle,
-                        WithMaintenance = model.WithMaintenance
+                        WithMaintenance = model.WithMaintenance,
+                        StatusID =1
+
                     };
                     db.Orders.Add(order);
                     db.SaveChanges();
@@ -265,11 +285,16 @@ namespace Cars.Service
             try
             {
                 OrderDetails orderDetails = GetOrderDetailsByOrderDetailsID(orderDetailsID);
-                orderDetails.DeletedByUserID = "1";
-                orderDetails.UsedByUser = null;
-                orderDetails.UsedDateTime = null;
-                orderDetails.DTsUpdate = DateTime.Now;
-                orderDetails.SystemUserUpdate = "1";
+                orderDetails.StatusID = 5;
+                OrderDetailsStatusLog statusLog = new OrderDetailsStatusLog()
+                {
+                    DTsCreate = DateTime.Now,
+                    OrderDetailsID = orderDetails.OrderDetailsID,
+                    SystemUserID = "1",
+                    StatusID = 5,                    
+                };
+                db.Add(statusLog);
+
                 db.SaveChanges();
                 return orderDetails.OrderID;
             }
@@ -285,11 +310,15 @@ namespace Cars.Service
             try
             {
                 OrderDetails orderDetails = GetOrderDetailsByOrderDetailsID(orderDetailsID);
-                orderDetails.CanceledByUserID = "1";
-                orderDetails.UsedByUser = null;
-                orderDetails.UsedDateTime = null;
-                orderDetails.DTsUpdate = DateTime.Now;
-                orderDetails.SystemUserUpdate = "1";
+                orderDetails.StatusID = 4;
+                OrderDetailsStatusLog statusLog = new OrderDetailsStatusLog()
+                {
+                    DTsCreate = DateTime.Now,
+                    OrderDetailsID = orderDetails.OrderDetailsID,
+                    SystemUserID = "1",
+                    StatusID = 4,
+                };
+                db.Add(statusLog);
                 db.SaveChanges();
                 return orderDetails.OrderID;
             }
@@ -330,9 +359,7 @@ namespace Cars.Service
                 orderDetails.Items = items.Trim();
                 orderDetails.Quantity = quantity;
                 orderDetails.OrderDetailsTypeID = type;
-                orderDetails.IsApproved = approved;
-                orderDetails.DTsUpdate = DateTime.Now;
-                orderDetails.SystemUserUpdate = "-1";
+                orderDetails.IsApproved = approved;                
                 db.SaveChanges();
                 return orderDetails.OrderID;
             }
@@ -344,14 +371,16 @@ namespace Cars.Service
        
 
         internal List<OrderDetailsViewModel> GetOrderDetailsByOrderId(long orderid)
-        {           
-           var List = db.OrderDetails.Where(c => c.OrderID == orderid && string.IsNullOrEmpty(c.DeletedByUserID)).Include("OrderDetailsType").ToList();
+        {
+            var List = db.OrderDetails.Where(c => c.OrderID == orderid && c.StatusID != 5).Include("OrderDetailsType").ToList();
             if (List.Count > 0)
             {
                 List<OrderDetailsViewModel> model = new List<OrderDetailsViewModel>();
                 foreach (var item in List)
                 {
-                    model.Add(new OrderDetailsViewModel() { Enabled = item.Enabled.HasValue ? item.Enabled.Value : false , OrderID =item.OrderID,IsApproved=item.IsApproved,Items=item.Items,OrderDetailsID=item.OrderDetailsID,Quantity=item.Quantity,type=item.OrderDetailsType.NameEn ,Price=item.Price,PartNumber=item.PartNumber,BranchID=item.BranchID,Comments=item.Comments,CanceledByUserID=item.CanceledByUserID});
+                    //model.Add(new OrderDetailsViewModel() { Enabled = item.Enabled.HasValue ? item.Enabled.Value : false, OrderID = item.OrderID, IsApproved = item.IsApproved, Items = item.Items, OrderDetailsID = item.OrderDetailsID, Quantity = item.Quantity, type = item.OrderDetailsType.NameEn, Price = item.Price, PartNumber = item.PartNumber, BranchID = item.BranchID, Comments = item.Comments, CanceledByUserID = item.c });
+                    model.Add(new OrderDetailsViewModel() {OrderID = item.OrderID, IsApproved = item.IsApproved, Items = item.Items, OrderDetailsID = item.OrderDetailsID, Quantity = item.Quantity, type = item.OrderDetailsType.NameEn, Price = item.Price, PartNumber = item.PartNumber, BranchID = item.BranchID, Comments = item.Comments});
+
                 }
                 return model;
             }
@@ -374,10 +403,32 @@ namespace Cars.Service
                     IsApproved = approved ? approved : null,
                     OrderID = orderID,
                     BranchID = -1,
-                    Enabled =order.Enabled
+                    StatusID = order.StatusID,
+                    WorkflowID = order.StatusID == 2 ? 2 : 1
                 };
                 db.OrderDetails.Add(orderDetails);
                 db.SaveChanges();
+                if (order.StatusID == 2)
+                {
+                    WorkflowOrderDetailsLog workflowOrder = new WorkflowOrderDetailsLog()
+                    {
+                        DTsCreate = DateTime.Now,
+                        OrderDetailsID = orderDetails.OrderDetailsID,
+                        SystemUserID = "1",
+                        WorkflowID = 2,
+                        Active = true,
+                    };
+                    db.Add(workflowOrder);
+                    OrderDetailsStatusLog statusLog = new OrderDetailsStatusLog()
+                    {
+                        DTsCreate = DateTime.Now,
+                        OrderDetailsID = orderDetails.OrderDetailsID,
+                        SystemUserID = "1",
+                        StatusID = 2,                       
+                    };
+                    db.Add(statusLog);
+                    db.SaveChanges();
+                }               
                 return 1;
             }
             catch (Exception)

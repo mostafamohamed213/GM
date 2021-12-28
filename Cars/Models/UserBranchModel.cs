@@ -7,15 +7,19 @@ using System.Threading.Tasks;
 
 namespace Cars.Models
 {
-    public class BranchModel
+    public class UserBranchModel
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
+        public int UserBranchID { get; set; }
+        public string UserID { get; set; }
+        [ForeignKey("UserID")]
+        public virtual ApplicationUser User { get; set; }
         public int BranchID { get; set; }
-        public string Name { get; set; }
-        public string BranchIP { get; set; }
+        [ForeignKey("BranchID")]
+        public virtual BranchModel Branch { get; set; }
         public bool IsActive { get; set; }
         public DateTime DTsCreate { get; set; }
-        public DateTime? DTsUpdate { get; set; }
+        public DateTime? DTsEnd { get; set; }
     }
 }

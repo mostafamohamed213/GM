@@ -62,4 +62,8 @@
     <None Include="wwwroot\Template\js\uppy.min.js" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Branch\" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,166 @@
+﻿@model Cars.ViewModels.PagingViewModel<OrderDetails>
+    @using Microsoft.AspNetCore.Mvc.Localization
+    @inject IViewLocalizer localizer
+    @{
+    ViewData["Title"] = "Labor";
+    int counter = 1;
+    }
+
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="toolbar">
+                <form class="form" id="OrderLinesTablelength" method="get" asp-action="ChangeOrderLinesTablelength" asp-controller="Labor">
+                    <div class="form-row">
+                        <div class="form-group col-auto mr-auto">
+                            <label class="my-1 mr-2 sr-only" for="inlineFormCustomSelectPref13">@localizer["Show"]</label>
+                            <select name="length" class="custom-select mr-sm-2" onchange="document.getElementById('Index').submit();" id="inlineFormCustomSelectPref13">
+                                @if (Model.Tablelength == 10)
+                                {
+                                <option value="10" selected>10</option>
+                                }
+                                else
+                                {
+                                <option value="10">10</option>
+                                }
+                                @if (Model.Tablelength == 25)
+                                {
+                                <option value="25" selected>25</option>
+                                }
+                                else
+                                {
+                                <option value="25">25</option>
+                                }
+                                @if (Model.Tablelength == 50)
+                                {
+                                <option value="50" selected>50</option>
+                                }
+                                else
+                                {
+                                <option value="50">50</option>
+                                }
+                                @if (Model.Tablelength == 100)
+                                {
+                                <option value="100" selected>100</option>
+                                }
+                                else
+                                {
+                                <option value="100">100</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group col-auto">
+                            <label for="search" class="sr-only">Search</label>
+                            <input type="text" class="form-control" id="search1" value="" placeholder="Search">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- table -->
+            <table class="table table-borderless table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>@localizer["ID"]</th>
+                        <th>@localizer["Items"]</th>
+
+
+                        <th>@localizer["Type"]</th>
+                        <th>@localizer["Approved"]</th>
+                        @*
+                        <th>@localizer["Brand"]</th>
+                        <th>@localizer["Model"]</th>
+                        <th>@localizer["Year"]</th>*@
+                        <th>@localizer["Date"]</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.items)
+                    {
+                    <tr>
+                        <td>
+                            @counter
+                        </td>
+                        <td>
+                            01:@item.OrderID:@item.OrderDetailsID
+                        </td>
+                        <td>
+                            @item.Items
+                        </td>
+                        <td>
+                            @item.OrderDetailsType.NameEn
+                        </td>
+                        <td>
+                            @if (item.IsApproved.HasValue)
+                            {
+                                if (item.IsApproved.Value)
+                                {
+                                    <span class="fe fe-24 fe-check"></span>
+                                }
+                                else
+                                {
+                                    <span class="fe fe-24 fe-x"></span>
+                                }
+                            }
+                        </td>
+                        <td>
+                            @item.DTsCreate
+                        </td>
+                        @if (string.IsNullOrEmpty(item.Labor_Hours.ToString()) && string.IsNullOrEmpty(item.Labor_Value.ToString()))
+                        {
+
+                            @if (item.StatusID != 4)
+                            {
+
+                                <td>
+                                    <a title="@localizer["Edit"]" asp-action="AddLaborvalues" asp-controller="Labor" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-success"></span></span></a>
+                                </td>
+                            }
+                        }
+
+                    </tr>
+                    counter++;
+                    }
+
+                </tbody>
+            </table>
+            <nav aria-label="Table Paging" class="mb-0 text-muted">
+                <ul class="pagination justify-content-center mb-0">
+                    <li class='page-item @(Model.CurrentPageIndex == 1 ? "disabled":"")' id="dataTable_previous">
+                        <a asp-action="GetOrderLines" asp-controller="Labor" asp-route-currentPage="@(Model.CurrentPageIndex-1)" class="page-link">@localizer["Previous"]</a>
+                    </li>
+                    @*
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>*@
+                    @for (int i = 1; i <= Model.PageCount; i++)
+                    {
+                    @if (i != Model.CurrentPageIndex)
+                    {
+                    <li class="page-item">
+                        <a asp-action="GetOrderLines" asp-controller="Labor" asp-route-currentPage="@i" class="page-link">@i</a>
+                    </li>
+                    }
+                    else
+                    {
+                    <li class="page-item active">
+                        <span class="page-link">@i</span>
+                    </li>
+                    }
+
+                    }
+                    <li class='page-item @(Model.PageCount == Model.CurrentPageIndex ? "disabled":"")' id="dataTable_next">
+                        <a asp-action="GetOrderLines" asp-controller="Labor" asp-route-currentPage="@(Model.CurrentPageIndex+1)" class="page-link">@localizer["Next"]</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    @section Scripts {
+    <script>
+        ChangeColorSidebarItem("anavbarOrders", "aOrderLines");
+
+    </script>
+
+    }

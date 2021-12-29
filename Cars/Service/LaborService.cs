@@ -1,0 +1,143 @@
+﻿using Cars.Consts;
+using Cars.Models;
+using Cars.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Cars.Service
+{
+    public class LaborService
+    {
+        public CarsContext db { get; set; }
+        public LaborService(CarsContext carsContext)
+        {
+            db = carsContext;
+        }
+
+        public PagingViewModel<Order> getOrdersWithChangelength(int currentPageIndex, int length)
+        {
+            TablesMaxRows.IndexOrdersMaxRows = length;
+            return getOrders(currentPageIndex);
+        }
+        public PagingViewModel<OrderDetails> getOrderLinesWithChangelength(int currentPageIndex, int length)
+        {
+            TablesMaxRows.IndexOrderLinesMaxRows = length;
+            return getOrderLines(currentPageIndex);
+        }
+        public PagingViewModel<OrderDetails> getOrderLines(int currentPage)
+        {
+            var orders = db.OrderDetails.Where(c => c.StatusID != 1 && c.Price > 0 && c.Labor_Hours == null && c.Labor_Value==null && c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexOrderLinesMaxRows).Take(TablesMaxRows.IndexOrderLinesMaxRows).ToList();
+
+            PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
+            //var Brands = unitOfWork.Brands.
+            //   FindAll(null, (currentPage - 1) * TablesMaxRows.InventoryBrandIndex, TablesMaxRows.InventoryBrandIndex, d => d.Name, OrderBy.Ascending);
+            viewModel.items = orders.ToList();
+            var itemsCount = db.OrderDetails.Where(c => c.StatusID != 1 && c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Count();
+            double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexOrderLinesMaxRows));
+            viewModel.PageCount = (int)Math.Ceiling(pageCount);
+            viewModel.CurrentPageIndex = currentPage;
+            viewModel.itemsCount = itemsCount;
+            viewModel.Tablelength = TablesMaxRows.IndexOrderLinesMaxRows;
+            return viewModel;
+        }
+
+        public PagingViewModel<Order> getOrders(int currentPage)
+        {
+            var orders = db.Orders.Include("Vehicle").Include("Customer").Include("Customer.CustomerContacts").Where(c => c.StatusID == 1).Skip((currentPage - 1) * TablesMaxRows.IndexOrdersDraftMaxRows).Take(TablesMaxRows.IndexOrdersDraftMaxRows).ToList();
+
+            PagingViewModel<Order> viewModel = new PagingViewModel<Order>();
+            //var Brands = unitOfWork.Brands.
+            //   FindAll(null, (currentPage - 1) * TablesMaxRows.InventoryBrandIndex, TablesMaxRows.InventoryBrandIndex, d => d.Name, OrderBy.Ascending);
+            viewModel.items = orders.ToList();
+            var itemsCount = db.Orders.Where(c => c.StatusID == 1).Count();
+            double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexOrdersMaxRows));
+            viewModel.PageCount = (int)Math.Ceiling(pageCount);
+            viewModel.CurrentPageIndex = currentPage;
+            viewModel.itemsCount = itemsCount;
+            viewModel.Tablelength = TablesMaxRows.IndexOrdersMaxRows;
+            return viewModel;
+        }
+
+        public Order GetOrderByID(long orderId)
+        {
+            try
+            {
+                Order order = db.Orders.Where(c => c.OrderID == orderId).Include("Vehicle").Include("Customer")
+                                .Include("Customer.CustomerContacts").Include(c => c.OrderDetails.Where(x => x.StatusID != 5)).Include("OrderDetails.OrderDetailsType").FirstOrDefault();
+                if (order is not null)
+                {
+                    return order;
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+        }
+        internal OrderDetails GetOrderDetailsByOrderDetailsID(long orderDetailsID)
+        {
+            var orderDetails = db.OrderDetails.Where(c => c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);     
+                orderDetails.UsedDateTime = DateTime.Now;
+                db.SaveChanges();
+                return orderDetails;
+        }
+        internal SelectList GetSelectListOrderDetailsType()
+        {
+            var OrderDetailsTypes = db.OrderDetailsType.ToList();
+            if (OrderDetailsTypes.Count() > 0)
+            {
+                return new SelectList(OrderDetailsTypes, "OrderDetailsTypeID", "NameEn");
+            }
+            return null;
+        }
+
+        internal long EditOrderDetailsFromSales(string items, int quantity, int type, bool approved, decimal? labor_hours, double? labor_value, long orderDetailsID)
+        {
+            try
+            {
+                OrderDetails orderDetails = db.OrderDetails.FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
+                if (orderDetails is null)
+                {
+                    return 0;
+                }
+
+                 orderDetails.Items = items.Trim();
+                orderDetails.Quantity = quantity;
+                orderDetails.OrderDetailsTypeID = type;
+                orderDetails.IsApproved = approved;         
+                orderDetails.Labor_Hours = labor_hours;
+                orderDetails.Labor_Value = labor_value;
+              
+                db.SaveChanges();
+                return orderDetails.OrderID;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+        }
+
+        internal long OpenOrderDetails(long orderDetailsID)
+        {
+            try
+            {
+                var orderDetails = db.OrderDetails.FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
+                orderDetails.UsedByUser = null;
+                orderDetails.UsedDateTime = null;
+                db.SaveChanges();
+                return orderDetails.OrderDetailsID;
+            }
+            catch (Exception)
+            {
+
+                return 0;
+            }
+        }
+    }
+}

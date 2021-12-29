@@ -36,26 +36,20 @@ namespace Cars.Models
         [ForeignKey("VendorLocationID")]
         public VendorLocation VendorLocation { get; set; }
 
-        public int? LayerID { get; set; }
-        [ForeignKey("LayerID")]
-        public Layer Layer { get; set; }
-
-        // flase = save as draft
-        // true = save 
-        // null = save order and order details without click button save or save as draft
-        public bool? Enabled { get; set; }
-        public string CanceledByUserID { get; set; }
-        public string DeletedByUserID { get; set; }
-        [Required]
+        public int WorkflowID { get; set; }
+        [ForeignKey("WorkflowID")]
+        public Workflow Workflow { get; set; }  
+      
         public string SystemUserCreate { get; set; }
-        public DateTime DTsCreate { get; set; }
-
-        public string SystemUserUpdate { get; set; }
-        public DateTime? DTsUpdate { get; set; }
+        public DateTime DTsCreate { get; set; }     
 
         public decimal? Labor_Hours { get; set; } 
 
         public double? Labor_Value { get; set; }
+
+        public int StatusID { get; set; }
+        [ForeignKey("StatusID")]
+        public Status Status { get; set; }
     }
 
 }

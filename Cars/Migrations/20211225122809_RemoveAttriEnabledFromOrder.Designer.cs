@@ -3,15 +3,17 @@ using System;
 using Cars.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Cars.Migrations
 {
     [DbContext(typeof(CarsContext))]
-    partial class CarsContextModelSnapshot : ModelSnapshot
+    [Migration("20211225122809_RemoveAttriEnabledFromOrder")]
+    partial class RemoveAttriEnabledFromOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,33 +92,6 @@ namespace Cars.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
-                });
-
-            modelBuilder.Entity("Cars.Models.BranchModel", b =>
-                {
-                    b.Property<int>("BranchID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("BranchIP")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("DTsCreate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DTsUpdate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.HasKey("BranchID");
-
-                    b.ToTable("Branches");
                 });
 
             modelBuilder.Entity("Cars.Models.Customer", b =>
@@ -496,37 +471,6 @@ namespace Cars.Migrations
                     b.HasKey("StatusID");
 
                     b.ToTable("Status");
-                });
-
-            modelBuilder.Entity("Cars.Models.UserBranchModel", b =>
-                {
-                    b.Property<int>("UserBranchID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int>("BranchID")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("DTsCreate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DTsEnd")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("UserID")
-                        .HasColumnType("text");
-
-                    b.HasKey("UserBranchID");
-
-                    b.HasIndex("BranchID");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("UserBranches");
                 });
 
             modelBuilder.Entity("Cars.Models.UsersLogs", b =>
@@ -919,23 +863,6 @@ namespace Cars.Migrations
                     b.Navigation("OrderDetails");
 
                     b.Navigation("Status");
-                });
-
-            modelBuilder.Entity("Cars.Models.UserBranchModel", b =>
-                {
-                    b.HasOne("Cars.Models.BranchModel", "Branch")
-                        .WithMany()
-                        .HasForeignKey("BranchID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Cars.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID");
-
-                    b.Navigation("Branch");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Cars.Models.UsersLogs", b =>

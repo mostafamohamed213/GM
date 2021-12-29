@@ -64,7 +64,7 @@
             
             <div class="row h5">
                 <div class="col-md-6">                    
-                    @if(Model.Enabled.HasValue && Model.Enabled.Value){
+                    @if(Model.StatusID != 1){
                          <span> ID : 01:@Model.OrderID</span>
                     }
                 </div>
@@ -130,14 +130,14 @@
                     {
                     <tr>
                         <td>@counter</td>
-                        @if (item.Enabled.HasValue && item.Enabled.Value)
+                        @*@if (item.Enabled.HasValue && item.Enabled.Value)
                         {
                             <td>01:@Model.OrderID:@item.OrderDetailsID</td>
                         }
                         else
                         {
                             <td></td>
-                        }
+                        }*@
 
                         <td>@item.Items</td>
                         <td>@item.Quantity</td>
@@ -159,7 +159,7 @@
                         @if ((!item.Price.HasValue || item.Price.Value <= 0))
                         {
 
-                            @if (string.IsNullOrEmpty(item.CanceledByUserID))
+                            @if (item.StatusID != 4)
                             {
 
                                 <td>
@@ -200,12 +200,12 @@
 <div class="row">
     <div class="col-md-9"></div>
     <div class="col-md-3">
-        @if (Model.Enabled.HasValue && Model.Enabled.Value)
+        @if (Model.StatusID != 1)
         {
             <a style="width : 100px" asp-action="GetOrders" asp-controller="Sales"  class="btn btn-primary">@localizer["Back"] </a>
 
         }
-        else
+        else if (Model.StatusID == 1)
         {
             <a asp-action="SaveAsDraft" asp-controller="Sales" asp-route-OrderId="@Model.OrderID" class="btn btn-light">@localizer["SaveAsDraft"]</a>
             <a style="width : 100px" asp-action="SaveOrder" asp-controller="Sales" asp-route-OrderId="@Model.OrderID" class="btn btn-success">Submit</a>
@@ -276,7 +276,7 @@
                                 var row_data_0 = document.createElement('td');
                                 row_data_0.innerHTML = counter;
                                 var row_data_1 = document.createElement('td');
-                                if (value.enabled != null && value.enabled == true)
+                                if (value.statusID != 1 && value.statusID != 5)
                                     {
                                         row_data_1.innerHTML = "01:" + value.orderID +":"+ value.orderDetailsID;
                                     }
@@ -310,7 +310,7 @@
                                 row_1.append(row_data_5);
 
                                 if (value.price == null || value.price <= 0) {
-                                    if (value.canceledByUserID == null) {
+                                    if (value.statusID != 4) {
                                         var row_data_6 = document.createElement('td');
                                         row_data_6.innerHTML = '<a title="Display" href="/Sales/DisplayOrderDetails?OrderDetailsID=' + value.orderDetailsID + '" > <span class="small text-muted"><span class="fe fe-24 fe-file-text text-primary"></span></span></a><a title="Edit" href="/Sales/EditOrderDetails?OrderDetailsID=' + value.orderDetailsID + '" > <span class="small text-muted"><span class="fe fe-24 fe-edit text-success"></span></span></a> <a title="Cancel" href="/Sales/CancelOrderDetails?OrderDetailsID=' + value.orderDetailsID + '" > <span class="small text-muted"><span class="fe fe-24 fe-x text-warning"></span></span></a>';
                                         row_1.append(row_data_6);

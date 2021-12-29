@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Cars.Models
 {
-    public class Layer
+    public class Workflow
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public int LayerID { get; set; }
+        public int WorkflowID { get; set; }
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }

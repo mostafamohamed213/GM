@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Cars.Controllers
@@ -55,12 +56,14 @@ namespace Cars.Controllers
             try
             {
                 OrderDetails orderDetails = services.GetOrderDetailsByOrderDetailsID(OrderDetailsID);
-                if (orderDetails is null && orderDetails.UsedByUser==null)
+               // orderDetails.UsedByUser = null;
+                if (orderDetails.UsedByUser!=null)
                 {
                     return View("UsedByUser");
                 }
                 if (orderDetails is not null && !orderDetails.Labor_Hours.HasValue && !orderDetails.Labor_Value.HasValue)
                 {
+                    orderDetails.UsedByUser= User.FindFirstValue(ClaimTypes.NameIdentifier);
                     ViewBag.types = services.GetSelectListOrderDetailsType();
                     return View(orderDetails);
                 }
@@ -71,6 +74,44 @@ namespace Cars.Controllers
             {
 
                 return View("_CustomError");
+            }
+
+        }
+
+        [HttpPost]
+        public IActionResult AddLaborvalues(OrderDetails orderDetails)
+        {
+            if (ModelState.IsValid)
+            {
+
+                long OrderId = services.EditOrderDetailsFromSales(orderDetails.Items, orderDetails.Quantity, orderDetails.OrderDetailsTypeID, orderDetails.IsApproved.HasValue ? orderDetails.IsApproved.Value : false, orderDetails?.Labor_Hours, orderDetails.Labor_Value, orderDetails.OrderDetailsID);
+                if (OrderId > 0)
+                {
+                    long orderDetailsId = services.OpenOrderDetails(orderDetails.OrderDetailsID);
+                    if (orderDetailsId > 0)
+                    {
+                        return RedirectToAction("GetOrderLines", new { currentPage = 1 });
+                    }
+                    return View("_CustomError");
+                }
+                else
+                {
+                    return View("_CustomError");
+                }
+            }
+            else
+            {
+                OrderDetails _orderDetails = services.GetOrderDetailsByOrderDetailsID(orderDetails.OrderDetailsID);
+                _orderDetails.Items = orderDetails.Items;
+                _orderDetails.Quantity = orderDetails.Quantity;
+                _orderDetails.IsApproved = orderDetails.IsApproved;
+                _orderDetails.OrderDetailsTypeID = orderDetails.OrderDetailsTypeID;
+                ViewBag.types = services.GetSelectListOrderDetailsType();
+                _orderDetails.Labor_Hours = orderDetails.Labor_Hours;
+                _orderDetails.Labor_Value = orderDetails.Labor_Value;
+                _orderDetails.UsedByUser = null;
+                _orderDetails.UsedDateTime = null;
+                return View(_orderDetails);
             }
 
         }

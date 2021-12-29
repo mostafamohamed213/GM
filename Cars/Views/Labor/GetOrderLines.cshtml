@@ -94,29 +94,29 @@
                         <td>
                             @if (item.IsApproved.HasValue)
                             {
-                            if (item.IsApproved.Value)
-                            {
-                            <span class="fe fe-24 fe-check"></span>
-                            }
-                            else
-                            {
-                            <span class="fe fe-24 fe-x"></span>
-                            }
+                                if (item.IsApproved.Value)
+                                {
+                                    <span class="fe fe-24 fe-check"></span>
+                                }
+                                else
+                                {
+                                    <span class="fe fe-24 fe-x"></span>
+                                }
                             }
                         </td>
                         <td>
                             @item.DTsCreate
                         </td>
-                        @if (string.IsNullOrEmpty(item.Labor_Hours.ToString ()) && string.IsNullOrEmpty(item.Labor_Value.ToString ()))
+                        @if (string.IsNullOrEmpty(item.Labor_Hours.ToString()) && string.IsNullOrEmpty(item.Labor_Value.ToString()))
                         {
 
-                        @if (string.IsNullOrEmpty(item.CanceledByUserID))
-                        {
+                            @if (item.StatusID != 4)
+                            {
 
-                        <td>
-                            <a title="@localizer["Edit"]" asp-action="AddLaborvalues" asp-controller="Labor" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-success"></span></span></a>
-                        </td>
-                        }
+                                <td>
+                                    <a title="@localizer["Edit"]" asp-action="AddLaborvalues" asp-controller="Labor" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-success"></span></span></a>
+                                </td>
+                            }
                         }
 
                     </tr>

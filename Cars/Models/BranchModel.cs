@@ -12,10 +12,14 @@ namespace Cars.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int BranchID { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public string BranchIP { get; set; }
         public bool IsActive { get; set; }
         public DateTime DTsCreate { get; set; }
         public DateTime? DTsUpdate { get; set; }
+
+        public virtual ICollection<UserBranchModel> UserBranches { get; set; }
     }
 }

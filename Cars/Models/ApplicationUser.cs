@@ -14,5 +14,6 @@ namespace Cars.Models
         public string LocationIP { get; set; }
 
         public virtual ICollection<UsersLogs> UsersLogs { get; set; }
+        public virtual ICollection<UserBranchModel> UserBranches { get; set; }
     }
 }

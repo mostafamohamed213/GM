@@ -56,6 +56,7 @@ namespace Cars
             services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
             services.AddTransient<OrderServices, OrderServices>();
+            services.AddTransient<BranchService, BranchService>();
             services.AddScoped<LaborService, LaborService>();
             services.AddTransient<SystemIssuesServices, SystemIssuesServices>();
             services.AddSession();

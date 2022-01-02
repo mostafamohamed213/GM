@@ -114,10 +114,10 @@ namespace Cars.Service
                 orderDetails.IsApproved = approved;         
                 orderDetails.Labor_Hours = labor_hours;
                 orderDetails.Labor_Value = labor_value;
-                orderDetails.WorkflowID = 3;
+                orderDetails.WorkflowID = 4;
 
 
-                db.SaveChanges();
+                    db.SaveChanges();
                 return orderDetails.OrderID;
             }
             catch (Exception)

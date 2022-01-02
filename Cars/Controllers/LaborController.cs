@@ -69,6 +69,9 @@ namespace Cars.Controllers
                 {
                     orderDetails.UsedByUser= User.FindFirstValue(ClaimTypes.NameIdentifier);
                     orderDetails.UsedDateTime = DateTime.Now;
+
+                  
+                        
                     db.SaveChanges();
                     ViewBag.types = services.GetSelectListOrderDetailsType();
                     return View(orderDetails);
@@ -93,7 +96,26 @@ namespace Cars.Controllers
                 long OrderId = services.EditOrderDetailsFromSales(orderDetails.Items, orderDetails.Quantity, orderDetails.OrderDetailsTypeID, orderDetails.IsApproved.HasValue ? orderDetails.IsApproved.Value : false, orderDetails?.Labor_Hours, orderDetails.Labor_Value, orderDetails.OrderDetailsID);
                 if (OrderId > 0)
                 {
-                    long orderDetailsId = services.OpenOrderDetails(orderDetails.OrderDetailsID);
+                        WorkflowOrderDetailsLog workflowOrder = new WorkflowOrderDetailsLog()
+                        {
+                            DTsCreate = DateTime.Now,
+                            OrderDetailsID = orderDetails.OrderDetailsID,
+                            SystemUserID = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                            WorkflowID = 3,
+                            Active = true,
+                        };
+                        db.Add(workflowOrder);
+                        OrderDetailsStatusLog statusLog = new OrderDetailsStatusLog()
+                        {
+                            DTsCreate = DateTime.Now,
+                            OrderDetailsID = orderDetails.OrderDetailsID,
+                            SystemUserID = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                            StatusID = 2,
+                        };
+                        db.Add(statusLog);
+                        db.SaveChanges();
+                    
+                        long orderDetailsId = services.OpenOrderDetails(orderDetails.OrderDetailsID);
                     if (orderDetailsId > 0)
                     {
                         return RedirectToAction("GetOrderLines", new { currentPage = 1 });
@@ -117,7 +139,27 @@ namespace Cars.Controllers
                 _orderDetails.Labor_Value = orderDetails.Labor_Value;
                 _orderDetails.UsedByUser = null;
                 _orderDetails.UsedDateTime =null;
-                _orderDetails.WorkflowID = 3;
+                _orderDetails.WorkflowID = 4;
+
+                    WorkflowOrderDetailsLog workflowOrder = new WorkflowOrderDetailsLog()
+                    {
+                        DTsCreate = DateTime.Now,
+                        OrderDetailsID = orderDetails.OrderDetailsID,
+                        SystemUserID = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                        WorkflowID = 3,
+                        Active = true,
+                    };
+                    db.Add(workflowOrder);
+                    OrderDetailsStatusLog statusLog = new OrderDetailsStatusLog()
+                    {
+                        DTsCreate = DateTime.Now,
+                        OrderDetailsID = orderDetails.OrderDetailsID,
+                        SystemUserID = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                        StatusID = 2,
+                    };
+                    db.Add(statusLog);
+                    db.SaveChanges();
+                
                 return View(_orderDetails);
             }
 

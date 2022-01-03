@@ -85,7 +85,7 @@ namespace Cars.Service
 
         internal OrderDetails GetOrderDetailsByOrderDetailsID(long orderDetailsID)
         {
-            var orderDetails = db.OrderDetails.Where(c => c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2 )).Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
+            var orderDetails = db.OrderDetails.Where(c => c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2 ) && c.OrderDetailsID == orderDetailsID).Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault();
             if (string.IsNullOrEmpty(orderDetails.UsedByUser))
             {
                 orderDetails.UsedByUser = "1";
@@ -190,7 +190,7 @@ namespace Cars.Service
                             DTsCreate = DateTime.Now,
                             OrderDetailsID = item.OrderDetailsID,
                             SystemUserID = "1",
-                            WorkflowID = 2,
+                            WorkflowID = 1,
                             Active =true,                            
                         };
                         db.Add(workflowOrder);
@@ -415,7 +415,7 @@ namespace Cars.Service
                         DTsCreate = DateTime.Now,
                         OrderDetailsID = orderDetails.OrderDetailsID,
                         SystemUserID = "1",
-                        WorkflowID = 2,
+                        WorkflowID = 1,
                         Active = true,
                     };
                     db.Add(workflowOrder);

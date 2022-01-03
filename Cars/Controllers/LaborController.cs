@@ -105,14 +105,6 @@ namespace Cars.Controllers
                             Active = true,
                         };
                         db.Add(workflowOrder);
-                        OrderDetailsStatusLog statusLog = new OrderDetailsStatusLog()
-                        {
-                            DTsCreate = DateTime.Now,
-                            OrderDetailsID = orderDetails.OrderDetailsID,
-                            SystemUserID = User.FindFirstValue(ClaimTypes.NameIdentifier),
-                            StatusID = 2,
-                        };
-                        db.Add(statusLog);
                         db.SaveChanges();
                     
                         long orderDetailsId = services.OpenOrderDetails(orderDetails.OrderDetailsID);
@@ -150,14 +142,6 @@ namespace Cars.Controllers
                         Active = true,
                     };
                     db.Add(workflowOrder);
-                    OrderDetailsStatusLog statusLog = new OrderDetailsStatusLog()
-                    {
-                        DTsCreate = DateTime.Now,
-                        OrderDetailsID = orderDetails.OrderDetailsID,
-                        SystemUserID = User.FindFirstValue(ClaimTypes.NameIdentifier),
-                        StatusID = 2,
-                    };
-                    db.Add(statusLog);
                     db.SaveChanges();
                 
                 return View(_orderDetails);

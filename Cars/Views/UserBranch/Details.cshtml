@@ -1,0 +1,55 @@
+﻿@model Cars.Models.UserBranchViewModel
+
+@{
+    ViewData["Title"] = "User Branch Details";
+    Layout = "~/Views/Shared/_AuthenticatedLayout.cshtml";
+}
+
+<h1>User Branch Details</h1>
+
+<div>
+    <h4>Branch</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Username)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Username)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.BranchName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.BranchName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IsActive)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IsActive)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-userid=@Model.UserId asp-route-userbranchid="@Model.UserBranchID" class="btn btn-primary mb-3" style="width:auto">Edit</a>
+    <br />
+    <a asp-action="Index" asp-controller="Branch" class="btn btn-primary mb-3" style="width:auto">Back to List</a>
+</div>
+@section Scripts {
+    <script>
+        ChangeColorSidebarItem("linkbranches", "auserbranches");
+    </script>
+}

@@ -1,5 +1,4 @@
-﻿@*@model IEnumerable<Cars.Models.BranchModel>*@
-@model PaginatedList<Cars.Models.BranchModel>
+﻿@model PaginatedList<Cars.Models.UserBranchViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,7 +12,7 @@
             <div class="input-group">
                 <div class="col-sm-12 row" id="searchdiv">
                     <div class="input-group col-md-5">
-                        <input type="search" class="form-control rounded" placeholder="Name, IP" aria-label="Search"
+                        <input type="search" class="form-control rounded" placeholder="User FirstName, UserName, Email, Branch Name" aria-label="Search"
                                aria-describedby="search-addon" name="SearchString" value="@ViewData["CurrentFilter"]" />
                     </div>
                     <button type="submit" class="btn btn-outline-primary">Search</button>
@@ -21,7 +20,7 @@
             </div>
         </div>
         <div class="col-sm-3">
-            <a asp-action="Index" class="btn btn-primary mb-3" style="width:auto;">Back To All Branches</a>
+            <a asp-action="Index" class="btn btn-primary mb-3" style="width:auto;">Back To All Users Branches</a>
         </div>
     </div>
 
@@ -33,9 +32,11 @@
     <table class="table table-bordered table-striped mb-0">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>BranchIP</th>
-                <th>IsActive</th>
+                <th>First Name</th>
+                <th>UserName</th>
+                <th>Email</th>
+                <th>Branch Name</th>
+                <th>Active Branch</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -45,19 +46,25 @@
             {
             <tr>
                 <td>
-                    @item.Name
+                    @item.FirstName
                 </td>
                 <td>
-                    @item.BranchIP
+                    @item.Username
+                </td>
+                <td>
+                    @item.Email
+                </td>
+                <td>
+                    @item.BranchName
                 </td>
                 <td>
                     @item.IsActive
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.BranchID" class="btn btn-primary mb-3 ml-3" style="width:auto">Details</a>
+                    <a asp-action="Details" asp-route-userid=@item.UserId asp-route-userbranchid="@item.UserBranchID" class="btn btn-primary mb-3 ml-3" style="width:auto">Details</a>
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.BranchID" class="btn btn-primary mb-3 ml-3" style="width:auto">Edit</a>
+                    <a asp-action="Edit" asp-route-userid=@item.UserId asp-route-userbranchid="@item.UserBranchID" class="btn btn-primary mb-3 ml-3" style="width:auto">Edit</a>
                 </td>
             </tr>
             }
@@ -126,7 +133,7 @@
 </div>
 @section Scripts {
     <script>
-        ChangeColorSidebarItem("linkbranches", "abranches");
+        ChangeColorSidebarItem("linkbranches", "auserbranches");
     </script>
 }
 

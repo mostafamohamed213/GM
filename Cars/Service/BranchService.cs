@@ -1,4 +1,5 @@
-﻿using Cars.Models;
+﻿using Cars.Controllers;
+using Cars.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,48 @@ namespace Cars.Service
         public BranchService(CarsContext carsContext)
         {
             _context = carsContext;
+        }
+
+        public async Task<PaginatedList<BranchModel>> GetAllAsync(string currentFilter, string searchString, int? pageNumber, int pageSize)
+        {
+            try
+            {
+                if (searchString != null)
+                    pageNumber = 1;
+                else
+                    searchString = currentFilter;
+
+                IQueryable<BranchModel> branches;
+
+                //Search by name, IP
+                if (!String.IsNullOrEmpty(searchString))
+                    branches = _context.Branches.Where(s => s.Name.ToLower().Trim().Contains(searchString.ToLower().Trim()) || s.BranchIP.ToLower().Trim().Contains(searchString.ToLower().Trim())).AsNoTracking();
+                else
+                    branches = _context.Branches.AsNoTracking();
+
+                return await PaginatedList<BranchModel>.CreateAsync(branches, pageNumber ?? 1, pageSize);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<IEnumerable<BranchModel>> GetAllActiveNotUsedAsync(string userID, int? userBranchID)
+        {
+            try
+            {
+                //Exclude Curent Branch from List 
+                if (userBranchID != null && userBranchID > 0)
+                    return await _context.Branches.Where(x => x.IsActive == true && !_context.UserBranches.Where(y => y.UserID == userID && y.UserBranchID != userBranchID).Select(y => y.BranchID).Contains(x.BranchID))
+                    .AsNoTracking().ToListAsync();
+                return await _context.Branches.Where(x => x.IsActive == true && !_context.UserBranches.Where(y => y.UserID == userID).Select(y => y.BranchID).Contains(x.BranchID))
+                .AsNoTracking().ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         public async Task<BranchModel> GetByIDAsync(int branchID)

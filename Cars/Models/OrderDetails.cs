@@ -38,8 +38,11 @@ namespace Cars.Models
 
         public int WorkflowID { get; set; }
         [ForeignKey("WorkflowID")]
-        public Workflow Workflow { get; set; }  
-      
+        public Workflow Workflow { get; set; }
+        public long? QuotationID { get; set; }
+        [ForeignKey("QuotationID")]
+        public Quotation Quotation { get; set; }
+
         public string SystemUserCreate { get; set; }
         public DateTime DTsCreate { get; set; }     
 

@@ -1,7 +1,10 @@
 ﻿using Cars.Consts;
 using Cars.Models;
 using Cars.ViewModels;
+using Cars.Service;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -36,7 +39,7 @@ namespace Cars.Service
             //var Brands = unitOfWork.Brands.
             //   FindAll(null, (currentPage - 1) * TablesMaxRows.InventoryBrandIndex, TablesMaxRows.InventoryBrandIndex, d => d.Name, OrderBy.Ascending);
             viewModel.items = orders.ToList();
-            var itemsCount = db.OrderDetails.Where(c => c.StatusID != 1 && c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Count();
+            var itemsCount = db.OrderDetails.Where(c => c.StatusID != 1 && c.StatusID != 5 && c.Labor_Hours == null && c.Labor_Value == null && c.Price > 0 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Count();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexOrderLinesMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
@@ -82,9 +85,7 @@ namespace Cars.Service
         }
         internal OrderDetails GetOrderDetailsByOrderDetailsID(long orderDetailsID)
         {
-            var orderDetails = db.OrderDetails.Where(c => c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);     
-                orderDetails.UsedDateTime = DateTime.Now;
-                db.SaveChanges();
+            var orderDetails = db.OrderDetails.Where(c => c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
                 return orderDetails;
         }
         internal SelectList GetSelectListOrderDetailsType()
@@ -107,14 +108,16 @@ namespace Cars.Service
                     return 0;
                 }
 
-                 orderDetails.Items = items.Trim();
+                orderDetails.Items = items.Trim();
                 orderDetails.Quantity = quantity;
                 orderDetails.OrderDetailsTypeID = type;
                 orderDetails.IsApproved = approved;         
                 orderDetails.Labor_Hours = labor_hours;
                 orderDetails.Labor_Value = labor_value;
-              
-                db.SaveChanges();
+                orderDetails.WorkflowID = 4;
+
+
+                    db.SaveChanges();
                 return orderDetails.OrderID;
             }
             catch (Exception)

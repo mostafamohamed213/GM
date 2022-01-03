@@ -54,12 +54,14 @@ namespace Cars
 
             services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
             services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
-
+            services.AddTransient<PricingService, PricingService>();
             services.AddTransient<OrderServices, OrderServices>();
             services.AddTransient<BranchService, BranchService>();
             services.AddTransient<UserBranchService, UserBranchService>();
             services.AddScoped<LaborService, LaborService>();
             services.AddTransient<SystemIssuesServices, SystemIssuesServices>();
+            services.AddTransient<OrderLineUsedService, OrderLineUsedService>();
+
             services.AddSession();
 
             services.Configure<SecurityStampValidatorOptions>(options =>

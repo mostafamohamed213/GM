@@ -98,9 +98,9 @@
     <div class="card-body">
         @if (Model.StatusID != 1)
         {
-        <h3> ID :01:@Model.OrderID:@Model.OrderDetailsID</h3>
+            <h3> ID :01:@Model.OrderID:@Model.OrderDetailsID</h3>
         }
-        
+
         <div class="row">
             <input asp-for="OrderDetailsID" style="display:none" />
             <input asp-for="OrderID" style="display:none" />
@@ -119,46 +119,7 @@
                     <span asp-validation-for="OrderDetailsTypeID" class="text-danger"></span>
                 </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <a class="btn btn-light" onclick="OpenOrderDetails('@Model.OrderDetailsID')" style=" width: 100px;" href="~/"> @localizer["Close"]</a>
-                            @if (!Model.Price.HasValue)
-                            {
-                                @if (ViewBag.WantDelete == null)
-                                {
-                                    <a class="btn btn-primary" title="@localizer["Edit"]" asp-action="EditOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Edit</a>
 
-                                    <a class="btn btn-warning" title="@localizer["Cancel"]" asp-action="CancelOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Cancel</a>
-
-                                    <a class="btn btn-danger" title="@localizer["Delete"]" asp-action="DeleteOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Delete</a>
-
-                                }
-                                else
-                                {
-                                    @if (ViewBag.WantDelete == true)
-                                    {
-
-                                        <a class="btn btn-danger" title="@localizer["Delete"]" asp-action="DeleteOrderDetailsFromViewOrder" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Delete</a>
-
-                                    }
-                                    else
-                                    {
-                                        <a class="btn btn-warning" title="@localizer["Cancel"]" asp-action="CancelOrderDetailsFromViewOrder" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Cancel</a>
-
-                                    }
-                                }
-                            }
-
-
-
-                        </div>
-
-
-                    </div>
-
-
-                </div>
             </div> <!-- /.col -->
             <div class="col-md-6">
 
@@ -184,12 +145,47 @@
 
 
                 </div>
-                <div class="form-group mb-3">
 
-                </div>
 
 
             </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <a class="btn btn-light" onclick="OpenOrderDetails('@Model.OrderDetailsID')" style=" width: 100px;" href="~/"> @localizer["Close"]</a>
+                @if (!Model.Price.HasValue)
+                {
+                    @if (ViewBag.WantDelete == null)
+                    {
+                        <a class="btn btn-primary" title="@localizer["Edit"]" asp-action="EditOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Edit</a>
+
+                        <a class="btn btn-warning" title="@localizer["Cancel"]" asp-action="CancelOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Cancel</a>
+
+                        <a class="btn btn-danger" title="@localizer["Delete"]" asp-action="DeleteOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Delete</a>
+
+                    }
+                    else
+                    {
+                        @if (ViewBag.WantDelete == true)
+                        {
+
+                            <a class="btn btn-danger" title="@localizer["Delete"]" asp-action="DeleteOrderDetailsFromViewOrder" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Delete</a>
+
+                        }
+                        else
+                        {
+                            <a class="btn btn-warning" title="@localizer["Cancel"]" asp-action="CancelOrderDetailsFromViewOrder" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Cancel</a>
+
+                        }
+                    }
+                }
+
+
+
+            </div>
+
+
         </div>
     </div>
 </div>

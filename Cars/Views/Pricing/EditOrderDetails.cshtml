@@ -1,0 +1,250 @@
+﻿@model Cars.Models.OrderDetails
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer localizer
+@{
+    ViewData["Title"] = "Edit Order Line";
+    int counter = 1;
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header">
+        <strong class="card-title">Details</strong>
+    </div>
+    <br />
+    <div class="col-12 mb-4">
+        <div class="card shadow">
+            <div class="card-header">
+                <strong class="card-title h4">Order Header</strong>
+            </div>
+            <div class="card-body">
+                <div class="row h5">
+                    <div class="col-md-3">
+                        @localizer["Chases"] : @Model.Order.Vehicle.Chases
+                    </div>
+                    <div class="col-md-3 border-left border-right">
+                        @localizer["CarName"] : @Model.Order.Vehicle.Name
+                    </div>
+                    <div class="col-md-3 border-left border-right">
+                        @localizer["Phone"] : @Model.Order.Customer.CustomerContacts.FirstOrDefault().Phone
+                    </div>
+                    <div class="col-md-3">
+                        @localizer["Maintenance"] : @if (Model.Order.WithMaintenance.HasValue && Model.Order.WithMaintenance.Value)
+                        {
+                            <span class="fe fe-24 fe-check"></span>
+                        }
+                        else
+                        {
+                            <span class="fe fe-24 fe-x"></span>
+                        }
+                    </div>
+
+                </div>
+                <div class="row h5">
+
+                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Brand))
+                    {
+                        <div class="col-md-3">
+                            @localizer["Brand"] : @Model.Order.Vehicle.Brand
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Model))
+                    {
+                        <div class="col-md-3 border-left border-right">
+                            @localizer["Model"] : @Model.Order.Vehicle.Model
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Year))
+                    {
+                        <div class="col-md-3">
+                            @localizer["Year"] : @Model.Order.Vehicle.Year
+                        </div>
+                    }
+
+
+                </div>
+                <div class="row h5">
+                    <div class="col-md-4">
+                        @if (Model.StatusID != 1)
+                        {
+                            <span>ID : 01:@Model.OrderID</span>
+                        }
+
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="card shadow">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <strong class="card-title h4">Order Line</strong>
+                    </div>
+
+                    <div cclass="col-md-2">
+                        @if (Model.OrderDetailsType.NameEn.Contains("Any") && (Model.Children is null || Model.Children.Count < 4))
+                        {
+                            <small class="badge badge-pill text-white ">
+                                <a class="btn btn-success" asp-action="AddOrderLine" asp-controller="Pricing" asp-route-orderDetailsID="@Model.OrderDetailsID">
+                                    Duplication
+                                </a>
+                            </small>
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+            <div  class="card-body">
+                <div class="row h5">
+                    <div class="col-md-3">
+                        @localizer["Item"] : @Model.Items
+                    </div>
+                    <div class="col-md-3 border-left border-right">
+                        @localizer["Quantity"] : @Model.Quantity
+                    </div>
+                    <div class="col-md-3 border-left border-right">
+                        @localizer["Type"] : @Model.OrderDetailsType.NameEn
+                    </div>
+                    <div class="col-md-3">
+                        @localizer["Approved"] : @if (Model.IsApproved.HasValue && Model.IsApproved.Value)
+                        {
+                            <span class="fe fe-24 fe-check"></span>
+                        }
+                        else
+                        {
+                            <span class="fe fe-24 fe-x"></span>
+                        }
+                    </div>
+
+                </div>
+                <div class="row h5">
+                    <div class="col-md-4">
+                        @if (Model.StatusID != 1)
+                        {
+                            <span> ID :01:@Model.OrderID:@Model.OrderDetailsID</span>
+                        }
+
+                    </div>
+                    <div class="col-md-8">
+                    </div>
+
+                </div>
+            </div>
+            @if (Model.Children is not null && Model.Children.Count > 0)
+            {
+                <div class="card shadow">
+                    <div class="card-body">
+
+                        <div id="divTableOrderDetails">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>@localizer["ID"]</th>
+                                        <th>@localizer["Type"]</th>
+                                        <th>@localizer["Price"]</th>
+                                        <th>@localizer["Part Number"]</th>
+                                        <th>@localizer["Vendor Location"]</th>
+                                        <th>@localizer["Date"]</th>
+
+
+
+                                    </tr>
+                                </thead>
+                                <tbody id="datatbodyid">
+                                    @foreach (var item in Model.Children)
+                                    {
+                                        <tr>
+                                            <td>@counter</td>
+                                            <td>01:@Model.OrderID:@item.OrderDetailsID</td>
+                                            <td>@item.OrderDetailsType.NameEn</td>
+                                            <td>@item.Price</td>
+                                            <td>@item.PartNumber</td>
+                                            <td>@item.VendorLocation.NameEn</td>
+                                            <td>@item.DTsCreate</td>
+                                        </tr>
+                                        counter++;
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+    </div>
+    <div class="card-body">
+
+        <form class="needs-validation" asp-action="EditOrderDetails" asp-controller="Pricing" method="post">
+            <div class="row">
+                <input asp-for="OrderDetailsID" style="display:none" />
+                <input asp-for="OrderID" style="display:none" />
+                <input asp-for="SystemUserCreate" style="display:none" />
+
+                <div class="col-md-6">
+                    <div class="form-group mb-4">
+                        <label for="simpleinput">@localizer["Part Number"]</label>
+                        <input asp-for="PartNumber" class="form-control" required />
+                        <span asp-validation-for="PartNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="example-password">@localizer["Price"]</label>
+                        @*<input asp-for="Price" type="" class="form-control" required />*@
+                        <input asp-for="Price" type="number" step="any" class="form-control" required />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                </div> <!-- /.col -->
+                <div class="col-md-6">
+
+                    <div class="form-group mb-3">
+                        <label for="example-email">@localizer["Location"]</label>
+                        <select asp-for="VendorLocationID" asp-items="@ViewBag.vendorLocations" class="form-control" required></select>
+                        <span asp-validation-for="VendorLocationID" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="col-sm-3" for="exampleFormControlTextarea1">@localizer["Comment"]</label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" id="Comments" name="Comments" style="width:99%" rows="2"></textarea>
+                        </div>
+                        <span asp-validation-for="Comments" class="text-danger"></span>
+
+                    </div>
+                    <div class="form-group mb-3">
+
+                    </div>
+
+
+                </div>
+
+            </div>
+            <a class="btn btn-danger" onclick="OpenOrderDetails('@Model.OrderDetailsID')" style=" width: 100px;" href="~/"> @localizer["Cancel"]</a>
+            <input class="btn btn-success" style=" width: 100px;" type="submit" value="@localizer["Save"]" />
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+@section Scripts {
+    <script>
+        ChangeColorSidebarItem("anavbarOrdersLinesPricing", "aOrderLinesForPricing");
+        @*window.addEventListener('beforeunload', function (e) {
+           OpenOrderDetails("@Model.OrderDetailsID");
+        });*@
+
+
+    </script>
+}
+

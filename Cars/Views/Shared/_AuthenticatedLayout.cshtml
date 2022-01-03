@@ -161,7 +161,25 @@
             </li>
 
         </ul>*@
+                <p class="text-muted nav-heading mt-4 mb-1">
+                    <span>@localizer["Pricing"]</span>
+                </p>
+                <ul class="navbar-nav flex-fill w-100 mb-2">
+                    <li class="nav-item dropdown">
+                        <a href="#ui-elements-Pricing" data-toggle="collapse" aria-expanded="false" id="anavbarOrdersLinesPricing" class="dropdown-toggle nav-link">
+                            <i class="fe fe-box fe-16"></i>
+                            <span class="ml-3 item-text">@localizer["Orders"]</span>
+                        </a>
+                        <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements-Pricing">
+                            <li class="nav-item">
+                                <a class="nav-link pl-3" asp-action="Index" asp-controller="Pricing" asp-route-currentPage="1" id="aOrderLinesForPricing">
+                                    <span class="ml-1 item-text">Orders Lines</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
 
+                </ul>
 
                 <p class="text-muted nav-heading mt-4 mb-1">
                     <span>Administration</span>
@@ -214,11 +232,11 @@
                     
                     @*<li class="nav-item w-100">
 
-            <a class="nav-link" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
-                <i class="fe fe-box fe-16"></i>
-                <span class="ml-3 item-text">Order lines used</span>
-            </a>
-        </li>*@
+                <a class="nav-link" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
+                    <i class="fe fe-box fe-16"></i>
+                    <span class="ml-3 item-text">Order lines used</span>
+                </a>
+            </li>*@
 
                 </ul>
                 <p class="text-muted nav-heading mt-4 mb-1">
@@ -622,7 +640,7 @@
                 $("#" + ParentID).click();
 
             }
-            let ItemIds = ['aOrderHeaders', 'aAddOrderHeader', 'aDraftOrderHeader', 'aOrderLines', 'aAdministration', 'aOrderLinesUsed'];
+            let ItemIds = ['aOrderHeaders', 'aAddOrderHeader', 'aDraftOrderHeader', 'aOrderLines', 'aAdministration', 'aOrderLinesUsed', 'aOrderLinesForPricing'];
             ItemIds.forEach(function (i) {
              
                 if (i == ItemID) {

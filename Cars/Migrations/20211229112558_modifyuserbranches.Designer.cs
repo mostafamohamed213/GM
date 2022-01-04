@@ -3,15 +3,17 @@ using System;
 using Cars.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Cars.Migrations
 {
     [DbContext(typeof(CarsContext))]
-    partial class CarsContextModelSnapshot : ModelSnapshot
+    [Migration("20211229112558_modifyuserbranches")]
+    partial class modifyuserbranches
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -381,9 +383,6 @@ namespace Cars.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
-                    b.Property<long?>("QuotationID")
-                        .HasColumnType("bigint");
-
                     b.Property<int>("StatusID")
                         .HasColumnType("integer");
 
@@ -407,8 +406,6 @@ namespace Cars.Migrations
                     b.HasIndex("OrderDetailsTypeID");
 
                     b.HasIndex("OrderID");
-
-                    b.HasIndex("QuotationID");
 
                     b.HasIndex("StatusID");
 
@@ -484,101 +481,6 @@ namespace Cars.Migrations
                     b.HasKey("OrderDetailsTypeID");
 
                     b.ToTable("OrderDetailsType");
-                });
-
-            modelBuilder.Entity("Cars.Models.Quotation", b =>
-                {
-                    b.Property<long>("QuotationID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<bool>("Confirmed")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("DTsCreate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DTsUpdate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("StatusID")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("SystemUserCreate")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("SystemUserUpdate")
-                        .HasColumnType("text");
-
-                    b.HasKey("QuotationID");
-
-                    b.HasIndex("StatusID");
-
-                    b.ToTable("Quotations");
-                });
-
-            modelBuilder.Entity("Cars.Models.QuotationDocument", b =>
-                {
-                    b.Property<long>("QuotationDocumentID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("DTsCreate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Path")
-                        .HasColumnType("text");
-
-                    b.Property<long>("QuotationID")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("SystemUserID")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("QuotationDocumentID");
-
-                    b.HasIndex("QuotationID");
-
-                    b.ToTable("QuotationDocuments");
-                });
-
-            modelBuilder.Entity("Cars.Models.QuotationStatusLogs", b =>
-                {
-                    b.Property<long>("QuotationStatusLogID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<DateTime>("DTsCreate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Detatils")
-                        .HasColumnType("text");
-
-                    b.Property<long>("QuotationID")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("StatusID")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("SystemUserID")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("QuotationStatusLogID");
-
-                    b.HasIndex("QuotationID");
-
-                    b.HasIndex("StatusID");
-
-                    b.ToTable("QuotationStatusLogs");
                 });
 
             modelBuilder.Entity("Cars.Models.Status", b =>
@@ -977,12 +879,8 @@ namespace Cars.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Cars.Models.Quotation", "Quotation")
-                        .WithMany("OrderDetails")
-                        .HasForeignKey("QuotationID");
-
                     b.HasOne("Cars.Models.Status", "Status")
-                        .WithMany("OrderDetails")
+                        .WithMany()
                         .HasForeignKey("StatusID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1000,8 +898,6 @@ namespace Cars.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("OrderDetailsType");
-
-                    b.Navigation("Quotation");
 
                     b.Navigation("Status");
 
@@ -1025,47 +921,6 @@ namespace Cars.Migrations
                         .IsRequired();
 
                     b.Navigation("OrderDetails");
-
-                    b.Navigation("Status");
-                });
-
-            modelBuilder.Entity("Cars.Models.Quotation", b =>
-                {
-                    b.HasOne("Cars.Models.Status", "Status")
-                        .WithMany("Quotation")
-                        .HasForeignKey("StatusID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Status");
-                });
-
-            modelBuilder.Entity("Cars.Models.QuotationDocument", b =>
-                {
-                    b.HasOne("Cars.Models.Quotation", "Quotation")
-                        .WithMany("QuotationDocument")
-                        .HasForeignKey("QuotationID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Quotation");
-                });
-
-            modelBuilder.Entity("Cars.Models.QuotationStatusLogs", b =>
-                {
-                    b.HasOne("Cars.Models.Quotation", "Quotation")
-                        .WithMany()
-                        .HasForeignKey("QuotationID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Cars.Models.Status", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Quotation");
 
                     b.Navigation("Status");
                 });
@@ -1193,20 +1048,6 @@ namespace Cars.Migrations
             modelBuilder.Entity("Cars.Models.OrderDetailsType", b =>
                 {
                     b.Navigation("OrderDetails");
-                });
-
-            modelBuilder.Entity("Cars.Models.Quotation", b =>
-                {
-                    b.Navigation("OrderDetails");
-
-                    b.Navigation("QuotationDocument");
-                });
-
-            modelBuilder.Entity("Cars.Models.Status", b =>
-                {
-                    b.Navigation("OrderDetails");
-
-                    b.Navigation("Quotation");
                 });
 
             modelBuilder.Entity("Cars.Models.Vehicle", b =>

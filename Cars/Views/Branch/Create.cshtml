@@ -24,14 +24,14 @@
                 <span asp-validation-for="BranchIP" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary mb-3 ml-3" style="width:auto" />
+                <input type="submit" value="Create" class="btn btn-primary mb-3" style="width:auto" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index" class="btn btn-primary mb-3 ml-3" style="width:auto">Back to List</a>
+    <a asp-action="Index" class="btn btn-primary mb-3" style="width:auto">Back to List</a>
 </div>
 
 @if (ViewBag.ErrorMessage != null)
@@ -45,4 +45,7 @@
 }
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        ChangeColorSidebarItem("linkbranches", "abranches");
+    </script>
 }

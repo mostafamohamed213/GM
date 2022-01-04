@@ -302,7 +302,7 @@ namespace Cars.Controllers
         public IActionResult OpenOrderDetails(long OrderDetailsID)
         {
             long orderDetails = orderServices.OpenOrderDetails(OrderDetailsID);
-            return RedirectToAction("Index","Home");            
+            return Ok();            
         }
         [HttpGet]
         public IActionResult DeleteOrderDetails(long OrderDetailsID)

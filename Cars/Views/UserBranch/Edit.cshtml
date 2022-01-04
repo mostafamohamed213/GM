@@ -1,0 +1,70 @@
+﻿@model Cars.Models.UserBranchViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_AuthenticatedLayout.cshtml";
+}
+
+<h1>Edit Branch</h1>
+
+<h4>Branch</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="UserId" />
+            @*<input type="hidden" asp-for="BranchID" />*@
+            <input type="hidden" asp-for="UserBranchID" />
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Username" class="control-label"></label>
+                <input asp-for="Username" class="form-control" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BranchID" class="control-label">Branch</label>
+                <select asp-for="BranchID" class="form-control" asp-items=@ViewBag.Branches></select>
+                <span asp-validation-for="BranchID" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary mb-3" style="width:auto" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" asp-controller="UserBranch" class="btn btn-primary mb-3" style="width:auto">Back to List</a>
+</div>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.ErrorMessage");
+            };
+    </script>
+
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        ChangeColorSidebarItem("linkbranches", "auserbranches");
+    </script>
+}

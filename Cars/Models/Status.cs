@@ -16,5 +16,7 @@ namespace Cars.Models
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
+        public virtual List<OrderDetails> OrderDetails { get; set; }
+        public virtual List<Quotation> Quotation { get; set; }
     }
 }

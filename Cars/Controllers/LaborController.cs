@@ -26,11 +26,11 @@ namespace Cars.Controllers
             return View();
         }
 
-        public IActionResult GetOrderLines(int currentPage)
+        public IActionResult GetOrderLines(int currentPage,string? type, decimal? from , decimal? to ,int?vendor)
         {
             try
             {
-                var model = services.getOrderLines(currentPage);
+                var model = services.getByType(currentPage,type,from ,to,vendor);
                 return View(model);
             }
             catch (Exception)
@@ -45,7 +45,7 @@ namespace Cars.Controllers
         {
             try
             {
-                return View("OrderLines", services.getOrderLinesWithChangelength(1, length));
+                return View("GetOrderLines", services.getOrderLinesWithChangelength(1, length));
             }
             catch (Exception)
             {
@@ -148,5 +148,17 @@ namespace Cars.Controllers
             }
 
         }
+     /*   public IActionResult typeserch(string type ,int currentPage,decimal from ,decimal to)
+        {
+            try
+            {
+                var model = services.getByType(currentPage,type,from ,to);
+                return RedirectToAction("GetOrderLines", new { currentPage = 1 });
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+        }*/
     }
 }

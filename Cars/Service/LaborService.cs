@@ -48,6 +48,47 @@ namespace Cars.Service
             return viewModel;
         }
 
+        public PagingViewModel<OrderDetails> getByType(int currentPage,string? type, decimal? from ,decimal? to,int? vendor)
+        {
+            var orders = db.OrderDetails.Where(c => c.StatusID != 1 && c.Price > 0 && c.Labor_Hours == null && c.Labor_Value == null && c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexOrderLinesMaxRows).Take(TablesMaxRows.IndexOrderLinesMaxRows).ToList();
+
+            
+            if (type != "all" && type!=null)
+            {
+                orders = db.OrderDetails.Where(c => c.StatusID != 1 && c.Price > 0 && c.OrderDetailsType.NameEn == type && c.Labor_Hours == null && c.Labor_Value == null && c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexOrderLinesMaxRows).Take(TablesMaxRows.IndexOrderLinesMaxRows).ToList();
+            }
+
+            if(from!=null || to!=null || vendor != null)
+            {
+                if(from !=null)
+                {
+                    orders = orders.Where(c=> c.Price > from ).ToList();
+                }
+                if(to!=null)
+                {
+                    orders = orders.Where(c => c.Price <to).ToList();
+                }
+                if(vendor != null)
+                {
+                    orders = orders.Where(c => c.VendorLocationID==vendor).ToList();
+                }
+            }
+
+           
+
+            PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
+            //var Brands = unitOfWork.Brands.
+            //   FindAll(null, (currentPage - 1) * TablesMaxRows.InventoryBrandIndex, TablesMaxRows.InventoryBrandIndex, d => d.Name, OrderBy.Ascending);
+            viewModel.items = orders.ToList();
+            var itemsCount = db.OrderDetails.Where(c => c.StatusID != 1 && c.StatusID != 5 && c.Labor_Hours == null && c.Labor_Value == null && c.Price > 0 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Count();
+            double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexOrderLinesMaxRows));
+            viewModel.PageCount = (int)Math.Ceiling(pageCount);
+            viewModel.CurrentPageIndex = currentPage;
+            viewModel.itemsCount = itemsCount;
+            viewModel.Tablelength = TablesMaxRows.IndexOrderLinesMaxRows;
+            return viewModel;
+        }
+
         public PagingViewModel<Order> getOrders(int currentPage)
         {
             var orders = db.Orders.Include("Vehicle").Include("Customer").Include("Customer.CustomerContacts").Where(c => c.StatusID == 1).Skip((currentPage - 1) * TablesMaxRows.IndexOrdersDraftMaxRows).Take(TablesMaxRows.IndexOrdersDraftMaxRows).ToList();

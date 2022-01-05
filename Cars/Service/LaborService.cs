@@ -50,12 +50,12 @@ namespace Cars.Service
 
         public PagingViewModel<OrderDetails> getByType(int currentPage,string? type, decimal? from ,decimal? to,int? vendor)
         {
-            var orders = db.OrderDetails.Where(c => c.StatusID != 1 && c.Price > 0 && c.Labor_Hours == null && c.Labor_Value == null && c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexOrderLinesMaxRows).Take(TablesMaxRows.IndexOrderLinesMaxRows).ToList();
+            var orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.Price > 0  && c.WorkflowID == 3).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).ToList();
 
             
             if (type != "all" && type!=null)
             {
-                orders = db.OrderDetails.Where(c => c.StatusID != 1 && c.Price > 0 && c.OrderDetailsType.NameEn == type && c.Labor_Hours == null && c.Labor_Value == null && c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexOrderLinesMaxRows).Take(TablesMaxRows.IndexOrderLinesMaxRows).ToList();
+                orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.Price > 0 && c.OrderDetailsType.NameEn == type && c.WorkflowID == 3).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).ToList();
             }
 
             if(from!=null || to!=null || vendor != null)
@@ -77,10 +77,8 @@ namespace Cars.Service
            
 
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
-            //var Brands = unitOfWork.Brands.
-            //   FindAll(null, (currentPage - 1) * TablesMaxRows.InventoryBrandIndex, TablesMaxRows.InventoryBrandIndex, d => d.Name, OrderBy.Ascending);
             viewModel.items = orders.ToList();
-            var itemsCount = db.OrderDetails.Where(c => c.StatusID != 1 && c.StatusID != 5 && c.Labor_Hours == null && c.Labor_Value == null && c.Price > 0 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Count();
+            var itemsCount = orders.Count();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexOrderLinesMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
@@ -126,7 +124,7 @@ namespace Cars.Service
         }
         internal OrderDetails GetOrderDetailsByOrderDetailsID(long orderDetailsID)
         {
-            var orderDetails = db.OrderDetails.Where(c => c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
+            var orderDetails = db.OrderDetails.Where(c => c.StatusID ==2 && c.WorkflowID == 3).Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
                 return orderDetails;
         }
         internal SelectList GetSelectListOrderDetailsType()

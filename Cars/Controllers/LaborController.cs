@@ -14,6 +14,8 @@ namespace Cars.Controllers
         public CarsContext db { get; set; }
         public LaborService services { get; set; }
 
+        private static object Lock = new object();
+
         public LaborController(LaborService _services, CarsContext carsContext)
         {
             services = _services;
@@ -30,6 +32,14 @@ namespace Cars.Controllers
         {
             try
             {
+                
+                ViewData["type"] = db.OrderDetailsType.ToList();
+                TempData["lastype"] = type;
+
+                ViewData["vendor"] = db.VendorLocations.ToList();
+                if(vendor!=null)
+                TempData["lastvendor"] = db.VendorLocations.Where(v=>v.VendorLocationID==vendor).Select(v=>v.NameEn).FirstOrDefault();
+
                 var model = services.getByType(currentPage,type,from ,to,vendor);
                 return View(model);
             }
@@ -45,6 +55,7 @@ namespace Cars.Controllers
         {
             try
             {
+                ViewData["type"] = db.OrderDetailsType.ToList();
                 return View("GetOrderLines", services.getOrderLinesWithChangelength(1, length));
             }
             catch (Exception)
@@ -56,25 +67,28 @@ namespace Cars.Controllers
         [HttpGet]
         public IActionResult AddLaborvalues(long OrderDetailsID)
         {
+
             try
             {
-
-                OrderDetails orderDetails = services.GetOrderDetailsByOrderDetailsID(OrderDetailsID);
-               // orderDetails.UsedByUser = null;
-                if (orderDetails.UsedByUser!=null)
+                lock (Lock)
                 {
-                    return View("UsedByUser");
-                }
-                if (orderDetails is not null && !orderDetails.Labor_Hours.HasValue && !orderDetails.Labor_Value.HasValue)
-                {
-                    orderDetails.UsedByUser= User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    orderDetails.UsedDateTime = DateTime.Now;
+                    OrderDetails orderDetails = services.GetOrderDetailsByOrderDetailsID(OrderDetailsID);
+                    // orderDetails.UsedByUser = null;
+                    if (orderDetails.UsedByUser != null)
+                    {
+                        return View("UsedByUser");
+                    }
+                    if (orderDetails is not null && !orderDetails.Labor_Hours.HasValue && !orderDetails.Labor_Value.HasValue)
+                    {
+                        orderDetails.UsedByUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                        orderDetails.UsedDateTime = DateTime.Now;
 
-                  
-                        
-                    db.SaveChanges();
-                    ViewBag.types = services.GetSelectListOrderDetailsType();
-                    return View(orderDetails);
+
+
+                        db.SaveChanges();
+                        ViewBag.types = services.GetSelectListOrderDetailsType();
+                        return View(orderDetails);
+                    }
                 }
 
                 return View("_CustomError");
@@ -127,23 +141,8 @@ namespace Cars.Controllers
                 _orderDetails.IsApproved = orderDetails.IsApproved;
                 _orderDetails.OrderDetailsTypeID = orderDetails.OrderDetailsTypeID;
                 ViewBag.types = services.GetSelectListOrderDetailsType();
-                _orderDetails.Labor_Hours = orderDetails.Labor_Hours;
-                _orderDetails.Labor_Value = orderDetails.Labor_Value;
                 _orderDetails.UsedByUser = null;
-                _orderDetails.UsedDateTime =null;
-                _orderDetails.WorkflowID = 4;
-
-                    WorkflowOrderDetailsLog workflowOrder = new WorkflowOrderDetailsLog()
-                    {
-                        DTsCreate = DateTime.Now,
-                        OrderDetailsID = orderDetails.OrderDetailsID,
-                        SystemUserID = User.FindFirstValue(ClaimTypes.NameIdentifier),
-                        WorkflowID = 3,
-                        Active = true,
-                    };
-                    db.Add(workflowOrder);
-                    db.SaveChanges();
-                
+                _orderDetails.UsedDateTime =null;                
                 return View(_orderDetails);
             }
 

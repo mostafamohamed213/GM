@@ -58,11 +58,20 @@
                 <div class="form-group col-auto">
                     <input type="hidden" value="1" name="currentPage" />
                     <label for="type"> Type:</label>
+
                     <select name="type" id="typefilter">
                         <option value="all">all </option>
-                        <option value="Genuine">Genuine </option>
-                        <option value="Not Genuine">Not Genuine </option>
-                        <option value="Any"> Any </option>
+                        @foreach (OrderDetailsType typ in ViewData["type"] as IList<OrderDetailsType>)
+                        {
+                            if (TempData["lastype"] != null && TempData["lastype"].ToString() == @typ.NameEn)
+                            {
+                                <option value="@typ.NameEn" selected>@typ.NameEn </option>
+                            }
+                            else
+                            {
+                                <option value="@typ.NameEn">@typ.NameEn </option>
+                            }
+                        }
                     </select>
                     &nbsp; &nbsp; &nbsp; &nbsp;
                     <label for="type"> Price :  &nbsp; &nbsp; From</label>
@@ -75,9 +84,17 @@
                     <label for="vendorfilter"> Vendor Location:</label>
                     <select name="vendor" id="vendorfilter">
                         <option value="all">all </option>
-                        <option value="1"> AAAA </option>
-                        <option value="2">BBBB </option>
-                        <option value="3">CCCC </option>
+                        @foreach (VendorLocation vendor in ViewData["vendor"] as IList<VendorLocation>)
+                        {
+                            if (TempData["lastvendor"] != null && TempData["lastvendor"].ToString() == @vendor.NameEn)
+                            {
+                                <option value="@vendor.VendorLocationID" selected>@vendor.NameEn </option>
+                            }
+                            else
+                            {
+                                <option value="@vendor.VendorLocationID">@vendor.NameEn </option>
+                            }
+                        }
                     </select>
                     &nbsp; &nbsp; &nbsp; &nbsp;
                     <input type="submit" value="Search" />

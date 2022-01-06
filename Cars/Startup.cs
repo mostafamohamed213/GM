@@ -61,6 +61,7 @@ namespace Cars
             services.AddScoped<LaborService, LaborService>();
             services.AddTransient<SystemIssuesServices, SystemIssuesServices>();
             services.AddTransient<OrderLineUsedService, OrderLineUsedService>();
+            services.AddTransient<QuotationService, QuotationService>();
 
             services.AddSession();
 

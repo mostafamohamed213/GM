@@ -28,35 +28,26 @@ namespace Cars.Service
                 else
                     searchString = currentFilter;
 
-                List<UserBranchViewModel> usersBranches = new List<UserBranchViewModel>();
                 var users = await _userManager.Users.Include(c => c.UserBranches).ThenInclude(c => c.Branch).AsNoTracking().ToListAsync();
-                foreach (var u in users)
+
+                var usersBranches = users.Select(x =>
                 {
-                    if (u.UserBranches != null && u.UserBranches.Count() > 0)
+                    var userbranch = x.UserBranches.Where(y => y.IsActive == true).FirstOrDefault();
+                    var user = new UserBranchViewModel()
                     {
-                        List<UserBranchViewModel> userBranches = new List<UserBranchViewModel>();
-                        userBranches = u.UserBranches.Select(x => new UserBranchViewModel()
-                        {
-                            BranchID = x.BranchID,
-                            BranchName = x.Branch.Name,
-                            IsActive = x.IsActive,
-                            UserBranchID = x.UserBranchID,
-                            UserId = u.Id,
-                            Email = u.Email,
-                            FirstName = u.FirstName,
-                            Username = u.UserName
-                        }).ToList();
-                        usersBranches.AddRange(userBranches);
-                    }
-                    else
-                        usersBranches.Add(new UserBranchViewModel()
-                        {
-                            UserId = u.Id,
-                            Email = u.Email,
-                            FirstName = u.FirstName,
-                            Username = u.UserName
-                        });
-                }
+                        UserId = x.Id,
+                        Email = x.Email,
+                        FirstName = x.FirstName,
+                        Username = x.UserName
+                    };
+                    if (userbranch != null)
+                    {
+                        user.BranchID = userbranch.BranchID;
+                        user.UserBranchID = userbranch.UserBranchID;
+                        user.BranchName = userbranch.Branch.Name;
+                    };
+                    return user;
+                });
 
                 //Search by Username, BranchName, FirstName, Email
                 if (!String.IsNullOrEmpty(searchString))
@@ -220,7 +211,7 @@ namespace Cars.Service
                         activeUserBranch.IsActive = false;
                         activeUserBranch.DTsEnd = DateTime.UtcNow;
                     }
-                    var UpdateUserActiceBranch = await UpdateAsync(currentUserBranch);
+                    var UpdateUserActiceBranch = await UpdateAsync(activeUserBranch);
                     if (UpdateUserActiceBranch <= 0)
                         return 0;
                     return await AddAsync(model.UserId, model.BranchID);

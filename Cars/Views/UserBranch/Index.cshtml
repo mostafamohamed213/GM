@@ -36,7 +36,6 @@
                 <th>UserName</th>
                 <th>Email</th>
                 <th>Branch Name</th>
-                <th>Active Branch</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -56,9 +55,6 @@
                 </td>
                 <td>
                     @item.BranchName
-                </td>
-                <td>
-                    @item.IsActive
                 </td>
                 <td>
                     <a asp-action="Details" asp-route-userid=@item.UserId asp-route-userbranchid="@item.UserBranchID" class="btn btn-primary mb-3 ml-3" style="width:auto">Details</a>

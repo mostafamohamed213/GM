@@ -41,16 +41,11 @@ namespace Cars.Service
             }
         }
 
-        public async Task<IEnumerable<BranchModel>> GetAllActiveNotUsedAsync(string userID, int? userBranchID)
+        public async Task<IEnumerable<BranchModel>> GetAllActiveAsync()
         {
             try
             {
-                //Exclude Curent Branch from List 
-                if (userBranchID != null && userBranchID > 0)
-                    return await _context.Branches.Where(x => x.IsActive == true && !_context.UserBranches.Where(y => y.UserID == userID && y.UserBranchID != userBranchID).Select(y => y.BranchID).Contains(x.BranchID))
-                    .AsNoTracking().ToListAsync();
-                return await _context.Branches.Where(x => x.IsActive == true && !_context.UserBranches.Where(y => y.UserID == userID).Select(y => y.BranchID).Contains(x.BranchID))
-                .AsNoTracking().ToListAsync();
+                return await _context.Branches.Where(x => x.IsActive == true).AsNoTracking().ToListAsync();
             }
             catch (Exception ex)
             {

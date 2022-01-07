@@ -1,0 +1,142 @@
+﻿@model Cars.Models.Quotation
+
+@{
+    ViewData["Title"] = "Display Quotation";
+}
+
+
+<div class="row justify-content-center">
+    <div class="col-12">
+        <h2 class="page-title">Display Quotation</h2>
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <strong class="card-title">Details</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        ID : @Model.QuotationID
+                    </div>
+                    <div class="col-md-3">
+                        Confirmation :
+                        @if (Model.Confirmed)
+                        {
+                            <span class="text-success">Yes</span>
+                        }
+                        else
+                        {
+                            <span class="text-danger">No</span>
+                        }
+
+                    </div>
+                    <div class="col-md-6">
+                      
+                    </div>
+
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <h5 class="card-title">Order Lines</h5>
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Item</th>
+                                            <th>Quantity</th>
+                                            <th>Price</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @if (Model.OrderDetails is not null && Model.OrderDetails.Count > 0)
+                                        {
+                                            @foreach (var order in Model.OrderDetails)
+                                            {
+                                                <tr>
+                                                    <td>01:@order.OrderID:@order.OrderDetailsID</td>
+                                                    <td>@order.Items</td>
+                                                    <td>@order.Quantity</td>
+                                                    <td>@order.Price</td>
+                                                </tr>
+                                            }
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <h5 class="card-title">Documents</h5>
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>File Name</th>
+                                            <th></th>
+
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @if (Model.QuotationDocument is not null && Model.QuotationDocument.Count > 0)
+                                        {
+                                            @foreach (var file in Model.QuotationDocument)
+                                            {
+                                                <tr>
+                                                    <td>@file.Comment</td>
+
+                                                    <td>
+                                                        <a href="@file.Path" download">Download</a>
+
+                                                        @*<button onclick="downloadFiles(@file.QuotationDocumentID)" class="btn btn-success">Download</button>*@
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <br />
+                <a class="btn btn-primary" asp-action="Index" asp-controller="Quotation">Back</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    @*<script>
+        function downloadFiles(quotationDocumentID) {
+            $.ajax({
+                type: "Get",
+                url: "/Quotation/DownloadFile",
+                data: { "quotationDocumentID": quotationDocumentID},
+                success: function (response) {
+
+                },
+                failure: function (response) {
+                    alert("Error");
+                },
+                error: function (response) {
+                    alert("Error");
+                }
+            });
+        }
+      
+
+    </script>*@
+
+}

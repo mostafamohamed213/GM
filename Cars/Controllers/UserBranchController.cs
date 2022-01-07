@@ -71,8 +71,11 @@ namespace Cars.Controllers
                     return View("_CustomError");
 
                 //Get Active Branches Dropdown
-                var branches = await _branchService.GetAllActiveNotUsedAsync(userid, userbranchid);
-                ViewData["Branches"] = new SelectList(branches, "BranchID", "Name");
+                var branches = await _branchService.GetAllActiveAsync();
+                if (userBranch.UserBranchID <= 0)
+                    ViewData["Branches"] = new SelectList(branches, "BranchID", "Name");
+                else
+                    ViewData["Branches"] = new SelectList(branches, "BranchID", "Name", userBranch.BranchID);
                 return View(userBranch);
             }
             catch (Exception)
@@ -116,8 +119,11 @@ namespace Cars.Controllers
                 }
 
                 //Get Active Branches Dropdown
-                var branches = await _branchService.GetAllActiveNotUsedAsync(userid, userbranchid);
-                ViewData["Branches"] = new SelectList(branches, "BranchID", "Name");
+                var branches = await _branchService.GetAllActiveAsync();
+                if (userBranchModel.UserBranchID <= 0)
+                    ViewData["Branches"] = new SelectList(branches, "BranchID", "Name");
+                else
+                    ViewData["Branches"] = new SelectList(branches, "BranchID", "Name", userBranchModel.BranchID);
                 return View(userBranchModel);
             }
             catch (Exception)

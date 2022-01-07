@@ -79,11 +79,11 @@ namespace Cars.Service
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             viewModel.items = orders.ToList();
             var itemsCount = orders.Count();
-            double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexOrderLinesMaxRows));
+            double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexLaborMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
             viewModel.itemsCount = itemsCount;
-            viewModel.Tablelength = TablesMaxRows.IndexOrderLinesMaxRows;
+            viewModel.Tablelength = TablesMaxRows.IndexLaborMaxRows;
             return viewModel;
         }
 
@@ -147,17 +147,22 @@ namespace Cars.Service
                     return 0;
                 }
 
-                orderDetails.Items = items.Trim();
-                orderDetails.Quantity = quantity;
-                orderDetails.OrderDetailsTypeID = type;
-                orderDetails.IsApproved = approved;         
-                orderDetails.Labor_Hours = labor_hours;
-                orderDetails.Labor_Value = labor_value;
-                orderDetails.WorkflowID = 4;
-
-
+                //orderDetails.Items = items.Trim();
+                //orderDetails.Quantity = quantity;
+                //orderDetails.OrderDetailsTypeID = type;
+                //orderDetails.IsApproved = approved;         
+                if (labor_hours != null && labor_value != null)
+                {
+                    orderDetails.Labor_Hours = labor_hours;
+                    orderDetails.Labor_Value = labor_value;
+                    orderDetails.WorkflowID = 4;
                     db.SaveChanges();
-                return orderDetails.OrderID;
+                    return orderDetails.OrderID;
+                }
+                else
+                {
+                    return 0;
+                }
             }
             catch (Exception)
             {

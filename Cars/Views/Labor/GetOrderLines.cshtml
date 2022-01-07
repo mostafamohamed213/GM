@@ -9,6 +9,7 @@
 <div class="card shadow">
     <div class="card-body">
         <div class="toolbar">
+
             <form class="form" id="OrderLinesTablelength" method="get" asp-action="ChangeOrderLinesTablelength" asp-controller="Labor">
                 <div class="form-row">
                     <div class="form-group col-auto mr-auto">
@@ -48,59 +49,78 @@
                             }
                         </select>
                     </div>
-                    <div class="form-group col-auto">
-                        <label for="search" class="sr-only">Search</label>
-                        <input type="text" class="form-control" id="search1" value="" placeholder="Search">
-                    </div>
+
                 </div>
             </form>
             <form class="form" id="typefilter" method="get" asp-action="GetOrderLines" asp-controller="Labor" asp-route-currentPage="1">
                 <div class="form-group col-auto">
-                    <input type="hidden" value="1" name="currentPage" />
-                    <label for="type"> Type:</label>
+                    <div class="input-group col-12">
+                        <input type="hidden" value="1" name="currentPage" />
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Type</span>
+                        </div>
+                       
+                        <select name="type" id="typefilter" class="custom-select col-4">
+                            <option value="all">all </option>
+                            @foreach (OrderDetailsType typ in ViewData["type"] as IList<OrderDetailsType>)
+                            {
+                                if (TempData["lastype"] != null && TempData["lastype"].ToString() == @typ.NameEn)
+                                {
+                                    <option value="@typ.NameEn" selected>@typ.NameEn </option>
+                                }
+                                else
+                                {
+                                    <option value="@typ.NameEn">@typ.NameEn </option>
+                                }
+                            }
+                        </select>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Vendor Location:</span>
+                        </div>
 
-                    <select name="type" id="typefilter">
-                        <option value="all">all </option>
-                        @foreach (OrderDetailsType typ in ViewData["type"] as IList<OrderDetailsType>)
-                        {
-                            if (TempData["lastype"] != null && TempData["lastype"].ToString() == @typ.NameEn)
+                        <select name="vendor" id="vendorfilter" class="custom-select col-4">
+                            <option value="all">all </option>
+                            @foreach (VendorLocation vendor in ViewData["vendor"] as IList<VendorLocation>)
                             {
-                                <option value="@typ.NameEn" selected>@typ.NameEn </option>
+                                if (TempData["lastvendor"] != null && TempData["lastvendor"].ToString() == @vendor.NameEn)
+                                {
+                                    <option value="@vendor.VendorLocationID" selected>@vendor.NameEn </option>
+                                }
+                                else
+                                {
+                                    <option value="@vendor.VendorLocationID">@vendor.NameEn </option>
+                                }
                             }
-                            else
-                            {
-                                <option value="@typ.NameEn">@typ.NameEn </option>
-                            }
-                        }
-                    </select>
-                    &nbsp; &nbsp; &nbsp; &nbsp;
-                    <label for="type"> Price :  &nbsp; &nbsp; From</label>
-                    <input type="number" name="from" />
+                        </select>
+                    </div>
+                    <br /> <br />
+                        <div class="input-group col-12">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Price From</span>
+                            </div>
+                            <input type="number" name="from" class="form-control" aria-label="Amount" />
+                            <div class="input-group-append">
+                                <span class="input-group-text">EG</span>
+                            </div>
+                            &nbsp; &nbsp; &nbsp; &nbsp;
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Price To</span>
+                            </div>
+                            <input type="number" name="to" class="form-control" aria-label="Amount" />
+                            <div class="input-group-append">
+                                <span class="input-group-text">EG</span>
+                            </div>
+                        </div>
 
-                    <label for="type"> To</label>
-                    <input type="number" name="to" />
 
-                    &nbsp; &nbsp; &nbsp; &nbsp;
-                    <label for="vendorfilter"> Vendor Location:</label>
-                    <select name="vendor" id="vendorfilter">
-                        <option value="all">all </option>
-                        @foreach (VendorLocation vendor in ViewData["vendor"] as IList<VendorLocation>)
-                        {
-                            if (TempData["lastvendor"] != null && TempData["lastvendor"].ToString() == @vendor.NameEn)
-                            {
-                                <option value="@vendor.VendorLocationID" selected>@vendor.NameEn </option>
-                            }
-                            else
-                            {
-                                <option value="@vendor.VendorLocationID">@vendor.NameEn </option>
-                            }
-                        }
-                    </select>
-                    &nbsp; &nbsp; &nbsp; &nbsp;
-                    <input type="submit" value="Search" />
-                </div>
-            </form>
-       
+                        <br /><br />
+                        <div class="text-center">
+                        <input class="btn btn-primary " style="" type="submit" value="Search" />
+                            </div>
+                    </div>
+</form>
+
         </div>
         <!-- table -->
         <table class="table table-borderless table-hover">
@@ -211,8 +231,3 @@
     </script>
 
 }
-<script>
-    var theSelect = document.getElementById('typefilter');
-    var lastValue = theSelect.options[theSelect.options.length - 1].value;
-    document.getElementById("typefilter").value = lastValue;
-</script>

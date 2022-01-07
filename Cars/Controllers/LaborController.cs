@@ -105,7 +105,7 @@ namespace Cars.Controllers
         public IActionResult AddLaborvalues(OrderDetails orderDetails)
         {
             if (ModelState.IsValid)
-            {
+            { 
 
                 long OrderId = services.EditOrderDetailsFromSales(orderDetails.Items, orderDetails.Quantity, orderDetails.OrderDetailsTypeID, orderDetails.IsApproved.HasValue ? orderDetails.IsApproved.Value : false, orderDetails?.Labor_Hours, orderDetails.Labor_Value, orderDetails.OrderDetailsID);
                 if (OrderId > 0)
@@ -136,11 +136,11 @@ namespace Cars.Controllers
             else
             {
                 OrderDetails _orderDetails = services.GetOrderDetailsByOrderDetailsID(orderDetails.OrderDetailsID);
-                _orderDetails.Items = orderDetails.Items;
+              /*  _orderDetails.Items = orderDetails.Items;
                 _orderDetails.Quantity = orderDetails.Quantity;
                 _orderDetails.IsApproved = orderDetails.IsApproved;
                 _orderDetails.OrderDetailsTypeID = orderDetails.OrderDetailsTypeID;
-                ViewBag.types = services.GetSelectListOrderDetailsType();
+                ViewBag.types = services.GetSelectListOrderDetailsType();*/
                 _orderDetails.UsedByUser = null;
                 _orderDetails.UsedDateTime =null;                
                 return View(_orderDetails);

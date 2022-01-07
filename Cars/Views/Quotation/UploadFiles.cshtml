@@ -1,0 +1,45 @@
+﻿@model Cars.ViewModels.CreateQuotationViewModel
+@{
+    ViewData["Title"] = "Upload Files";
+}
+
+@*<form enctype="multipart/form-data" method="post" asp-controller="Quotation" asp-action="UploadFiles">
+    <dl>
+        <dt>
+            <label>Upload</label>
+        </dt>
+        <dd>
+            <input type="file" name="FormFiles" id="FormFiles" multiple />
+            <input type="hidden" asp-for="QuotationId" />
+        </dd>
+    </dl>
+    <input class="btn btn-success" type="submit" value="Upload and continue" />
+</form>*@
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <strong class="card-title">Upload Files</strong>
+            </div>
+            <div class="card-body">              
+                <form enctype="multipart/form-data" method="post" asp-controller="Quotation" asp-action="UploadFiles">
+                    <dl>
+                        <dt>
+                            <label>Upload</label>
+                        </dt>
+                        <dd>
+                            <input type="file" name="FormFiles" id="FormFiles" multiple />
+                            <input type="hidden" asp-for="QuotationId" />
+                        </dd>
+                    </dl>
+                    <input class="btn btn-success" type="submit" value="Upload and continue" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -30,6 +30,8 @@ namespace Cars.Models
         public virtual DbSet<QuotationDocument> QuotationDocuments { get; set; }
         public virtual DbSet<QuotationStatusLogs> QuotationStatusLogs { get; set; }
         public virtual DbSet<Quotation> Quotations { get; set; }
+        public virtual DbSet<Finance> Finances { get; set; }
+        public virtual DbSet<FinanceDocument> FinanceDocuments { get; set; }
 
         public virtual DbSet<UsersLogs> UsersLogs { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

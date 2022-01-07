@@ -42,6 +42,9 @@ namespace Cars.Models
         public long? QuotationID { get; set; }
         [ForeignKey("QuotationID")]
         public Quotation Quotation { get; set; }
+        public long? FinanceID { get; set; }
+        [ForeignKey("FinanceID")]
+        public Finance Finance { get; set; }
 
         public string SystemUserCreate { get; set; }
         public DateTime DTsCreate { get; set; }     

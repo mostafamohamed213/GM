@@ -63,20 +63,20 @@ namespace Cars.Controllers
             //var users = userManager.Users;
             // return View(users);
             int count = users.Count();
-            var query = users.AsEnumerable().Select(async xs => new Users_in_Role_ViewModel
+            var query = users.Select(async xs => new Users_in_Role_ViewModel
             {
                 Username = xs.UserName,
                 FirstName = xs.FirstName,
                 Email = xs.Email,
                 UserId = xs.Id,
                 Role = string.Join(",", await userManager.GetRolesAsync(xs))
-            }).ToList();
+            });
 
             int pageSize = 10;
             int TotalPages = (int)Math.Ceiling(count / (double)pageSize);
             ViewBag.pages = TotalPages;
             ViewBag.currentpage = pageNumber ?? 1;
-            return View(await PaginatedList<Users_in_Role_ViewModel>.CreateAsync(query, pageNumber ?? 1, pageSize));
+            return View(query);
         }
 
         [Authorize(Permissions.Roles.View)]

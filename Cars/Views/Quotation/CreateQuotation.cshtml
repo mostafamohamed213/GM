@@ -50,38 +50,50 @@
                                         }
                                     </tbody>
                                 </table>*@
+                            @if (Model is not null && Model.Count > 0)
+                            {
+                                <table class="table table-bordered table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Item</th>
+                                            <th>Quantity</th>
+                                            <th>Price</th>
+                                            <th>Phone</th>
+                                            <th>Select</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var order in Model)
+                                        {
+                                            <tr>
+                                                <td>01:@order.OrderID:@order.OrderDetailsID</td>
+                                                <td>@order.Items</td>
+                                                <td>@order.Quantity</td>
+                                                <td>@order.Price</td>
+                                                <td>@order.Order.Customer.CustomerContacts.FirstOrDefault()?.Phone</td>
+                                                <td>
+                                                    <div class="custom-control custom-switch">
+                                                        <input type="checkbox" class="custom-control-input" onchange="addOrRemoveOrderLinesId(this,@order.OrderDetailsID)" id="@order.OrderDetailsID">
+                                                        <label class="custom-control-label" for="@order.OrderDetailsID"></label>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
 
-                            <table class="table table-bordered table-hover mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Item</th>
-                                        <th>Quantity</th>
-                                        <th>Price</th>
-                                        <th>Phone</th>
-                                        <th>Select</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var order in Model)
-                                    {
-                                    <tr>
-                                        <td>01:@order.OrderID:@order.OrderDetailsID</td>
-                                        <td>@order.Items</td>
-                                        <td>@order.Quantity</td>
-                                        <td>@order.Price</td>
-                                        <td>@order.Order.Customer.CustomerContacts.FirstOrDefault()?.Phone</td>
-                                        <td>
-                                            <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" onchange="addOrRemoveOrderLinesId(this,@order.OrderDetailsID)" id="@order.OrderDetailsID">
-                                                <label class="custom-control-label" for="@order.OrderDetailsID"></label>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    }
 
-                                </tbody>
-                            </table>
+
+
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <div>No order yet</div>
+                                <a class="btn btn-success" asp-action="Index" asp-controller="Quotation">Back</a>
+
+                            }
+
 
                         </div>
                     </div>
@@ -90,11 +102,16 @@
         </div> <!-- .col-12 -->
     </div> <!-- .row -->
 </div>
+@if (Model is not null && Model.Count > 0)
+{
+    <a class="btn btn-primary" asp-action="Index" asp-controller="Quotation">Back</a>
 
-<button class="btn btn-success" onclick="submitForm()">Save and continue</button>
-<form id="formCreateQuotation" asp-action="CreateQuotation" asp-controller="Quotation" method="post">
-    <input type="hidden" name="orderLinesIdList" id="orderLinesIdList" />
-</form>
+    <button class="btn btn-success" onclick="submitForm()">Save and continue</button>
+    <form id="formCreateQuotation" asp-action="CreateQuotation" asp-controller="Quotation" method="post">
+        <input type="hidden" name="orderLinesIdList" id="orderLinesIdList" />
+    </form>
+}
+
 @section Scripts {
     <script src='~/Template/js/jquery.dataTables.min.js'></script>
     <script src='~/Template/js/dataTables.bootstrap4.min.js'></script>

@@ -40,10 +40,10 @@ namespace Cars.Service
                     DateTime now = DateTime.Now;
                     VendorLocation addvendorLocation = new VendorLocation()
                     {
-                        DTsCreate = now,
+                        SystemUserCreate = model.SystemUserCreate,
                         NameEn = model.NameEn,
                         Description = model.Description,
-                        Enable =true,
+                        Enable =true
                     };                   
                     db.VendorLocations.Add(addvendorLocation);
                     db.SaveChanges();
@@ -91,7 +91,9 @@ namespace Cars.Service
                 }
                 EditVendorLocation.NameEn = model.NameEn;
                 EditVendorLocation.Description = model.Description;
+                EditVendorLocation.SystemUserUpdate = model.SystemUserUpdate;
                 EditVendorLocation.DTsUpdate = DateTime.Now;
+                db.SaveChanges();
                 return VendorLocationID;
             }
             catch (Exception)

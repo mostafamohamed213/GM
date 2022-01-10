@@ -61,17 +61,14 @@ namespace Cars.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddRunner(RunnerViewModel model)
+        public IActionResult AddRunner([FromBody]RunnerViewModel model)
         {
             try
             {
+                model.SystemUserCreate= User.FindFirstValue(ClaimTypes.NameIdentifier);
                 long addRunner = services.AddRunner(model);
                 if (addRunner > 0)
                 {
-                    var runner = db.Runners.FirstOrDefault(r => r.RunnerID == addRunner);
-
-                    runner.SystemUserCreate = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    db.SaveChanges();
                     return View(addRunner);
                 }
                 return View("_CustomError");
@@ -102,17 +99,14 @@ namespace Cars.Controllers
         }
 
         [HttpPut]
-        public IActionResult EditRunner(long RunnerID, RunnerViewModel model)
+        public IActionResult EditRunner(long RunnerID,[FromBody] RunnerViewModel model)
         {
             try
             {
+                model.SystemUserUpdate= User.FindFirstValue(ClaimTypes.NameIdentifier);
                 long editRunner = services.EditRunner(RunnerID, model);
                 if (editRunner > 0)
                 {
-                    var runner = db.Runners.FirstOrDefault(r => r.RunnerID == editRunner);
-
-                    runner.SystemUserUpdate = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    db.SaveChanges();
                     return View(editRunner);
                 }
                 return View("_CustomError");

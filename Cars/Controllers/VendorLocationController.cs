@@ -60,17 +60,14 @@ namespace Cars.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddVendorLocation(VendorLocationViewModel model)
+        public IActionResult AddVendorLocation([FromBody]VendorLocationViewModel model)
         {
             try
             {
+                model.SystemUserCreate= User.FindFirstValue(ClaimTypes.NameIdentifier);
                 long addVendor = services.AddVendorLocation(model);
                 if(addVendor>0)
                 {
-                    var vendor = db.VendorLocations.FirstOrDefault(v => v.VendorLocationID == addVendor);
-
-                    vendor.SystemUserCreate= User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    db.SaveChanges();
                     return View(addVendor);
                 }
                 return View("_CustomError");
@@ -101,17 +98,14 @@ namespace Cars.Controllers
         }
 
         [HttpPut]
-        public IActionResult EditVendorLocation(long VendorID, VendorLocationViewModel model)
+        public IActionResult EditVendorLocation([FromQuery]long VendorID,[FromBody] VendorLocationViewModel model)
         {
             try
             {
+                model.SystemUserUpdate= User.FindFirstValue(ClaimTypes.NameIdentifier);
                 long editVendor = services.EditVendorLocation(VendorID, model);
                 if (editVendor > 0)
                 {
-                    var vendor = db.VendorLocations.FirstOrDefault(v => v.VendorLocationID == editVendor);
-
-                    vendor.SystemUserUpdate = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    db.SaveChanges();
                     return View(editVendor);
                 }
                 return View("_CustomError");

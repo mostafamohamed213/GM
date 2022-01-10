@@ -15,6 +15,7 @@ namespace Cars.ViewModels
         [Required]
         public string SystemUserCreate { get; set; }
         public DateTime DTsCreate { get; set; }
-
+        public string SystemUserUpdate { get; set; }
+        public DateTime? DTsUpdate { get; set; }
     }
 }

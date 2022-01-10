@@ -37,22 +37,15 @@ namespace Cars.Service
             {
                 if (model is not null)
                 {
-                    DateTime now = DateTime.Now;
                     Runner addRunner = new Runner()
                     {
-                        DTsCreate = now,
-
+                        SystemUserCreate=model.SystemUserCreate,
                         Name = model.Name,
                         Details = model.Details,
                         Enable = true,
                     };
-
-
-
                     db.Runners.Add(addRunner);
                     db.SaveChanges();
-
-
                     return addRunner.RunnerID;
                 }
                 return 0;
@@ -96,9 +89,12 @@ namespace Cars.Service
                 {
                     return 0;
                 }
+
                 EditRunner.Name = model.Name;
                 EditRunner.Details = model.Details;
+                EditRunner.SystemUserUpdate = model.SystemUserUpdate;
                 EditRunner.DTsUpdate= DateTime.Now;
+                db.SaveChanges();
                 return RunnerID;
             }
             catch (Exception)

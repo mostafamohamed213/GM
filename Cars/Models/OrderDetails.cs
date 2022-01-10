@@ -56,6 +56,9 @@ namespace Cars.Models
         public int StatusID { get; set; }
         [ForeignKey("StatusID")]
         public Status Status { get; set; }
+        public int? RunnerID { get; set; }
+        [ForeignKey("RunnerID")]
+        public Runner Runner { get; set; }
 
         [NotMapped]
         public List<OrderDetails> Children { get; set; }

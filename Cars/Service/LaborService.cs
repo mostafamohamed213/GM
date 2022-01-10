@@ -21,30 +21,28 @@ namespace Cars.Service
             db = carsContext;
         }
 
-        public PagingViewModel<Order> getOrdersWithChangelength(int currentPageIndex, int length)
+        /*public PagingViewModel<Order> getOrdersWithChangelength(int currentPageIndex, int length)
         {
-            TablesMaxRows.IndexOrdersMaxRows = length;
+            TablesMaxRows.IndexLaborMaxRows = length;
             return getOrders(currentPageIndex);
-        }
+        }*/
         public PagingViewModel<OrderDetails> getOrderLinesWithChangelength(int currentPageIndex, int length)
         {
-            TablesMaxRows.IndexOrderLinesMaxRows = length;
+            TablesMaxRows.IndexLaborMaxRows = length;
             return getOrderLines(currentPageIndex);
         }
         public PagingViewModel<OrderDetails> getOrderLines(int currentPage)
         {
-            var orders = db.OrderDetails.Where(c => c.StatusID != 1 && c.Price > 0 && c.Labor_Hours == null && c.Labor_Value==null && c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexOrderLinesMaxRows).Take(TablesMaxRows.IndexOrderLinesMaxRows).ToList();
+            var orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.Price > 0 && c.WorkflowID == 3).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).ToList();
 
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
-            //var Brands = unitOfWork.Brands.
-            //   FindAll(null, (currentPage - 1) * TablesMaxRows.InventoryBrandIndex, TablesMaxRows.InventoryBrandIndex, d => d.Name, OrderBy.Ascending);
             viewModel.items = orders.ToList();
-            var itemsCount = db.OrderDetails.Where(c => c.StatusID != 1 && c.StatusID != 5 && c.Labor_Hours == null && c.Labor_Value == null && c.Price > 0 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Count();
-            double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexOrderLinesMaxRows));
+            var itemsCount = orders.Count();
+            double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexLaborMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
             viewModel.itemsCount = itemsCount;
-            viewModel.Tablelength = TablesMaxRows.IndexOrderLinesMaxRows;
+            viewModel.Tablelength = TablesMaxRows.IndexLaborMaxRows;
             return viewModel;
         }
 
@@ -74,8 +72,7 @@ namespace Cars.Service
                 }
             }
 
-           
-
+   
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             viewModel.items = orders.ToList();
             var itemsCount = orders.Count();
@@ -87,22 +84,22 @@ namespace Cars.Service
             return viewModel;
         }
 
-        public PagingViewModel<Order> getOrders(int currentPage)
+        /*public PagingViewModel<Order> getOrders(int currentPage)
         {
-            var orders = db.Orders.Include("Vehicle").Include("Customer").Include("Customer.CustomerContacts").Where(c => c.StatusID == 1).Skip((currentPage - 1) * TablesMaxRows.IndexOrdersDraftMaxRows).Take(TablesMaxRows.IndexOrdersDraftMaxRows).ToList();
+            var orders = db.Orders.Include("Vehicle").Include("Customer").Include("Customer.CustomerContacts").Where(c => c.StatusID == 2).Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).ToList();
 
             PagingViewModel<Order> viewModel = new PagingViewModel<Order>();
             //var Brands = unitOfWork.Brands.
             //   FindAll(null, (currentPage - 1) * TablesMaxRows.InventoryBrandIndex, TablesMaxRows.InventoryBrandIndex, d => d.Name, OrderBy.Ascending);
             viewModel.items = orders.ToList();
-            var itemsCount = db.Orders.Where(c => c.StatusID == 1).Count();
+            var itemsCount = db.Orders.Where(c => c.StatusID == 2).Count();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexOrdersMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
             viewModel.itemsCount = itemsCount;
             viewModel.Tablelength = TablesMaxRows.IndexOrdersMaxRows;
             return viewModel;
-        }
+        }*/
 
         public Order GetOrderByID(long orderId)
         {

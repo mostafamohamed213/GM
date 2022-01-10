@@ -3,15 +3,17 @@ using System;
 using Cars.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Cars.Migrations
 {
     [DbContext(typeof(CarsContext))]
-    partial class CarsContextModelSnapshot : ModelSnapshot
+    [Migration("20220109140154_Purchasing")]
+    partial class Purchasing
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -852,30 +854,14 @@ namespace Cars.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<DateTime>("DTsCreate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DTsUpdate")
-                        .HasColumnType("timestamp without time zone");
-
                     b.Property<string>("Description")
                         .HasColumnType("text");
-
-                    b.Property<bool>("Enable")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("NameAr")
                         .HasColumnType("text");
 
                     b.Property<string>("NameEn")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("SystemUserCreate")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("SystemUserUpdate")
                         .HasColumnType("text");
 
                     b.HasKey("VendorLocationID");

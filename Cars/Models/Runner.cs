@@ -7,21 +7,20 @@ using System.Threading.Tasks;
 
 namespace Cars.Models
 {
-    public class VendorLocation
+    public class Runner
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public int VendorLocationID { get; set; }
+        public int RunnerID { get; set; }
         [Required]
-        public string NameEn { get; set; }
-        public string NameAr { get; set; }
-        public string Description { get; set; }
+        public string Name { get; set; }
+        [Required]
+        public string Details { get; set; }
         public bool Enable { get; set; }
         [Required]
         public string SystemUserCreate { get; set; }
         public DateTime DTsCreate { get; set; }
         public string SystemUserUpdate { get; set; }
         public DateTime? DTsUpdate { get; set; }
-
     }
 }

@@ -30,7 +30,7 @@
 
                     </div>
                     <div class="col-md-6">
-                      
+
                     </div>
 
                 </div>
@@ -110,6 +110,10 @@
                     </div>
                 </div>
                 <br />
+                @if (!Model.Confirmed)
+                {
+                 <a class="btn btn-success" asp-action="ConfirmationQuotation" asp-controller="Quotation" asp-route-QuotationId="@Model.QuotationID">Confirmed</a>
+                }
                 <a class="btn btn-primary" asp-action="Index" asp-controller="Quotation">Back</a>
             </div>
         </div>

@@ -1,10 +1,20 @@
 ﻿@*@model IEnumerable<ApplicationUser>*@
 
-@model PaginatedList<Task<Users_in_Role_ViewModel>>
+@*@model PaginatedList<Task<Users_in_Role_ViewModel>>*@
+@model IEnumerable<Task<Users_in_Role_ViewModel>>
 @inject IAuthorizationService AuthorizationService
 @{
     ViewBag.Title = "All Users";
 }
+
+<link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
+<style>
+    tfoot input {
+        width: 100%;
+        padding: 3px;
+        box-sizing: border-box;
+    }
+</style>
 <div class="row mr-0">
     <div class="col-sm-6">
         <h3 class="ml-2">All Users</h3>
@@ -23,40 +33,40 @@
 
 @if (AuthorizationService.AuthorizeAsync(User, Permissions.Users.Create).Result.Succeeded)
 {
-    <a asp-action="Register" asp-controller="Accounts"
+    <a asp-action="Register" asp-controller="Account"
        class="btn btn-primary mb-3 ml-3" style="width:auto">
         Add New User
     </a>
 }
-<form asp-action="ListUsers" method="get">
-    <div class="form-actions row mr-0 ml-2">
+@*<form asp-action="ListUsers" method="get">
+        <div class="form-actions row mr-0 ml-2">
 
-        <div class="col-sm-12">
-            <div class="input-group">
-                <div class="col-sm-12 row">
-                    <div class="input-group col-md-5">
-                        <input type="search" class="form-control rounded" placeholder="Search By UserName" aria-label="Search"
-                               aria-describedby="search-addon" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <div class="col-sm-12">
+                <div class="input-group">
+                    <div class="col-sm-12 row">
+                        <div class="input-group col-md-5">
+                            <input type="search" class="form-control rounded" placeholder="Search By UserName" aria-label="Search"
+                                   aria-describedby="search-addon" name="SearchString" value="@ViewData["CurrentFilter"]" />
+                        </div>
+                        <div class="input-group col-md-5">
+                            <input type="search" class="form-control ml-2 rounded" placeholder="Search By FirstName" aria-label="Search"
+                                   aria-describedby="search-addon" name="SearchString2" value="@ViewData["CurrentFilter2"]" />
+
+
+                        </div>
+                        <button type="submit" class="btn btn-outline-primary">Search</button>
                     </div>
-                    <div class="input-group col-md-5">
-                        <input type="search" class="form-control ml-2 rounded" placeholder="Search By FirstName" aria-label="Search"
-                               aria-describedby="search-addon" name="SearchString2" value="@ViewData["CurrentFilter2"]" />
-
-
-                    </div>
-                    <button type="submit" class="btn btn-outline-primary">Search</button>
                 </div>
             </div>
+            <div class="col-sm-3">
+                <a asp-action="ListUsers">Back To All List</a>
+            </div>
         </div>
-        <div class="col-sm-3">
-            <a asp-action="ListUsers">Back To All List</a>
-        </div>
-    </div>
 
-</form>
+    </form>*@
 <hr />
-<div class="table-responsive">
-    <table class="table table-bordered table-striped mb-0">
+<div class="table-responsive bg-white">
+    <table id="example" class="display" style="width:100%">
         <thead>
             <tr>
                 <th>
@@ -106,74 +116,62 @@
                 </tr>
             }
         </tbody>
+        <tfoot>
+            <tr>
+                <th>UserName</th>
+                <th>FirstName</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th style="display:none">
+                    Edit
+                </th>
+
+            </tr>
+        </tfoot>
     </table>
 </div>
-@{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 
-}
-<div class="col-sm-8" style="overflow-x:auto">
-    <a asp-action="ListUsers"
-       asp-route-pageNumber="@(Model.PageIndex - 1)"
-       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-       asp-route-currentFilter2="@ViewData["CurrentFilter2"]"
-       class="btn btn-primary @prevDisabled">
-        Previous
-    </a>
-    @{
-        int pagenumbers = (ViewBag.currentpage + 4 <= ViewBag.pages) ? ViewBag.currentpage + 4 : ViewBag.currentpage + 3;
-        if (pagenumbers > ViewBag.pages)
-        {
-            pagenumbers = ViewBag.currentpage + 2;
-        }
 
-        if (pagenumbers > ViewBag.pages)
-        {
-            pagenumbers = ViewBag.currentpage + 1;
-        }
-        if (pagenumbers > ViewBag.pages)
-        {
-            pagenumbers = ViewBag.currentpage;
-        }
 
-        int start = (ViewBag.currentpage - 2 > 0) ? ViewBag.currentpage - 2 : ViewBag.currentpage;
-    }
-    @for (int i = start; i <= pagenumbers; i++)
-    {
-        if (i == ViewBag.currentpage)
-        {
-            <a asp-action="ListUsers"
-               asp-route-pageNumber="@i"
-               asp-route-currentFilter="@ViewData["CurrentFilter"]"
-               asp-route-currentFilter2="@ViewData["CurrentFilter2"]"
-               class="btn btn-success">
-                @i
-            </a>
-        }
-        else
-        {
-            <a asp-action="ListUsers"
-               asp-route-pageNumber="@i"
-               asp-route-currentFilter="@ViewData["CurrentFilter"]"
-               asp-route-currentFilter2="@ViewData["CurrentFilter2"]"
-               class="btn btn-primary">
-                @i
-            </a>
-        }
-    }
-    <a asp-action="ListUsers"
-       asp-route-pageNumber="@(Model.PageIndex + 1)"
-       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-       asp-route-currentFilter2="@ViewData["CurrentFilter2"]"
-       class="btn btn-primary @nextDisabled">
-        Next
-    </a>
-</div>
 
 @section Scripts {
-    <script>
-        ChangeColorSidebarItem("", "aAdministration");
-    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Setup - add a text input to each footer cell
+            $('#example tfoot th').each(function () {
+                var title = $(this).text();
+                $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+            });
+
+            // DataTable
+            var table = $('#example').DataTable({
+                initComplete: function () {
+                    var r = $('#example tfoot tr');
+                    r.find('th').each(function () {
+                        $(this).css('padding', 8);
+                    });
+                    $('#example thead').append(r);
+                    $('#search_0').css('text-align', 'center');
+                    // Apply the search
+                    this.api().columns().every(function () {
+                        var that = this;
+
+                        $('input', this.footer()).on('keyup change clear', function () {
+                            if (that.search() !== this.value) {
+                                that
+                                    .search(this.value)
+                                    .draw();
+                            }
+                        });
+                    });
+
+                }
+            });
+
+
+        });
+    </script>
 }

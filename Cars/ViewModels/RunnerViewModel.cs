@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Cars.ViewModels
+{
+    public class RunnerViewModel
+    {
+        public string Name { get; set; }
+        [Required]
+        public string Details { get; set; }
+
+        [Required]
+        public string SystemUserCreate { get; set; }
+        public DateTime DTsCreate { get; set; }
+        public string SystemUserUpdate { get; set; }
+        public DateTime? DTsUpdate { get; set; }
+    }
+}

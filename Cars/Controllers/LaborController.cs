@@ -56,6 +56,10 @@ namespace Cars.Controllers
             try
             {
                 ViewData["type"] = db.OrderDetailsType.ToList();
+               
+
+                ViewData["vendor"] = db.VendorLocations.ToList();
+               
                 return View("GetOrderLines", services.getOrderLinesWithChangelength(1, length));
             }
             catch (Exception)

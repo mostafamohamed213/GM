@@ -10,9 +10,12 @@ namespace Cars.Consts
         public static int IndexOrdersMaxRows { get; set; }
         public static int IndexOrdersDraftMaxRows { get; set; }
         public static int IndexOrderLinesMaxRows { get; set; }
-        public static int IndexOrderLinesUsedMaxRows  { get; set; }
+        public static int IndexOrderLinesUsedMaxRows { get; set; }
         public static int IndexPricingMaxRows { get; set; }
         public static int IndexQuotationMaxRows { get; set; }
+        public static int IndexLaborMaxRows { get; set; }
+        public static int IndexFinanceOrderLinesMaxRows { get; set; }
+
         public static int IndexLaborMaxRows { get; set; }
         public static int IndexPurchasingMaxRows { get; set; }
         static TablesMaxRows()
@@ -25,6 +28,7 @@ namespace Cars.Consts
             IndexLaborMaxRows = 10;
             IndexQuotationMaxRows = 10;
             IndexPurchasingMaxRows = 10;
+            IndexFinanceOrderLinesMaxRows = 10;
         }
     }
 }

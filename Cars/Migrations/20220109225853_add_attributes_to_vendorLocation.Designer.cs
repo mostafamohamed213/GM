@@ -3,15 +3,17 @@ using System;
 using Cars.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Cars.Migrations
 {
     [DbContext(typeof(CarsContext))]
-    partial class CarsContextModelSnapshot : ModelSnapshot
+    [Migration("20220109225853_add_attributes_to_vendorLocation")]
+    partial class add_attributes_to_vendorLocation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -855,9 +857,6 @@ namespace Cars.Migrations
                     b.Property<DateTime>("DTsCreate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime?>("DTsUpdate")
-                        .HasColumnType("timestamp without time zone");
-
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
@@ -873,9 +872,6 @@ namespace Cars.Migrations
 
                     b.Property<string>("SystemUserCreate")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("SystemUserUpdate")
                         .HasColumnType("text");
 
                     b.HasKey("VendorLocationID");

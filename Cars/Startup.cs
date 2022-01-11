@@ -58,10 +58,17 @@ namespace Cars
             services.AddTransient<OrderServices, OrderServices>();
             services.AddTransient<BranchService, BranchService>();
             services.AddTransient<UserBranchService, UserBranchService>();
-            services.AddScoped<LaborService, LaborService>();
+            services.AddTransient<LaborService, LaborService>();
             services.AddTransient<SystemIssuesServices, SystemIssuesServices>();
             services.AddTransient<OrderLineUsedService, OrderLineUsedService>();
             services.AddTransient<QuotationService, QuotationService>();
+            services.AddTransient<FinanceService, FinanceService>();
+            services.AddTransient<OrderDetailsService, OrderDetailsService>();
+            services.AddTransient<WorkflowOrderDetailsLogsService, WorkflowOrderDetailsLogsService>();
+
+            services.AddTransient<VendorLocationService, VendorLocationService>();
+
+            services.AddTransient<RunnerService,RunnerService>();
             services.AddTransient<PurchasingService, PurchasingService>();
 
             services.AddSession();

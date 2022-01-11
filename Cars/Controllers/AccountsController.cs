@@ -199,11 +199,7 @@ namespace Cars.Controllers
 
                 if (result.Succeeded)
                 {
-
-                    
-
-                    return RedirectToAction("index", "home");
-                  
+                    return RedirectToAction("index", "home");         
                 }
 
                 ModelState.AddModelError(string.Empty, "Invalid Login Attempt");

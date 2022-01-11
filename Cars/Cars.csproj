@@ -66,6 +66,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\Resources\Quotation\" />
+    <Folder Include="wwwroot\Resources\Status\Cancel\" />
   </ItemGroup>
 
 </Project>

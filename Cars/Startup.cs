@@ -62,6 +62,7 @@ namespace Cars
             services.AddTransient<SystemIssuesServices, SystemIssuesServices>();
             services.AddTransient<OrderLineUsedService, OrderLineUsedService>();
             services.AddTransient<QuotationService, QuotationService>();
+            services.AddTransient<PurchasingService, PurchasingService>();
 
             services.AddSession();
 

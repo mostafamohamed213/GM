@@ -7,6 +7,7 @@ using Microsoft.Extensions.Localization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -16,11 +17,12 @@ namespace Cars.Controllers
     {
         public OrderServices orderServices { get; set; }      
         private readonly IStringLocalizer<SalesController> localizer;
-
-        public SalesController(OrderServices _orderServices , IStringLocalizer<SalesController> _localizer)
+        private OrderLineUsedService usedService{ get; set; }
+        public SalesController(OrderServices _orderServices , IStringLocalizer<SalesController> _localizer, OrderLineUsedService _usedService)
         {
             orderServices = _orderServices;
             localizer = _localizer;
+            usedService = _usedService;
         }
         public IActionResult Index()
         {
@@ -31,8 +33,30 @@ namespace Cars.Controllers
         {
 
             try
-            {              
+            {               
                 return View("Index", orderServices.getOrders(currentPage));
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+        }
+        [HttpGet]
+        public IActionResult SearchOrderHeader(string search)
+        {
+
+            try
+            {
+                if (string.IsNullOrEmpty(search))
+                {
+                    return RedirectToAction("GetOrders", "Sales",new { urrentPage = 1 });
+                }
+                else
+                {
+                    ViewData["CurrentFilter"] = search;
+                    return View("Index", orderServices.SearchOrderHeader(search));
+                }
+               
             }
             catch (Exception)
             {
@@ -101,7 +125,7 @@ namespace Cars.Controllers
             //{
                 if (ModelState.IsValid)
                 {
-                    long orderId = orderServices.AddOrder(orderModel);
+                    long orderId = orderServices.AddOrder(orderModel, User.FindFirstValue(ClaimTypes.NameIdentifier));
                     if (orderId > 0)
                     {
                         //return View("ViewOrder",orderServices.GetOrderByID(orderId));
@@ -195,7 +219,7 @@ namespace Cars.Controllers
         [HttpGet]
         public IActionResult SaveOrder(long OrderId)
         {
-            int status = orderServices.SaveOrder(OrderId);
+            int status = orderServices.SaveOrder(OrderId, User.FindFirstValue(ClaimTypes.NameIdentifier));
             if (status == 1)
             {
                 
@@ -220,7 +244,7 @@ namespace Cars.Controllers
                 return Json(new { status = -1, @object = $"{localizer["CheckItemsQuantityAndType"]}" }); 
             }
 
-            int status = orderServices.AddOrderDetails(Items,Quantity,Type, Approved, orderId);
+            int status = orderServices.AddOrderDetails(Items,Quantity,Type, Approved, orderId, User.FindFirstValue(ClaimTypes.NameIdentifier));
             if (status == 1)
             {
                 try
@@ -245,7 +269,9 @@ namespace Cars.Controllers
         {
             try
             {
-                OrderDetails orderDetails = orderServices.GetOrderDetailsByOrderDetailsID(OrderDetailsID);
+                //OrderDetails orderDetails = orderServices.GetOrderDetailsByOrderDetailsID(OrderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
+                OrderDetails orderDetails =usedService.CloseOrderDetails(OrderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
+
                 if (orderDetails is null)
                 {
                    return View("UsedByUser"); 
@@ -253,7 +279,7 @@ namespace Cars.Controllers
                 if (orderDetails is not null && !orderDetails.Price.HasValue)
                 {
                     ViewBag.types = orderServices.GetSelectListOrderDetailsType();
-                    return View(orderDetails);
+                    return View("EditOrderDetails", orderDetails);
                 }
                 
                 return View("_CustomError");
@@ -288,7 +314,7 @@ namespace Cars.Controllers
             }
             else
             {
-                OrderDetails _orderDetails = orderServices.GetOrderDetailsByOrderDetailsID(orderDetails.OrderDetailsID);
+                OrderDetails _orderDetails = usedService.CloseOrderDetails(orderDetails.OrderDetailsID , User.FindFirstValue(ClaimTypes.NameIdentifier));
                 _orderDetails.Items = orderDetails.Items;
                 _orderDetails.Quantity = orderDetails.Quantity;
                 _orderDetails.IsApproved = orderDetails.IsApproved;
@@ -309,7 +335,7 @@ namespace Cars.Controllers
         {
             try
             {
-                OrderDetails orderDetails = orderServices.GetOrderDetailsByOrderDetailsID(OrderDetailsID);
+                OrderDetails orderDetails = usedService.CloseOrderDetails(OrderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
                 if (orderDetails is null)
                 {
                     return View("UsedByUser");
@@ -335,7 +361,7 @@ namespace Cars.Controllers
         {
             try
             {
-                long orderId = orderServices.DeleteOrderDetails(OrderDetailsID);
+                long orderId = orderServices.DeleteOrderDetails(OrderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
                 if (orderId > 0)
                 {
                     var orderDetails = orderServices.GetOrderDetailsByOrderId(orderId);
@@ -355,7 +381,7 @@ namespace Cars.Controllers
         {
             try
             {
-                OrderDetails orderDetails = orderServices.GetOrderDetailsByOrderDetailsID(OrderDetailsID);
+                OrderDetails orderDetails = usedService.CloseOrderDetails(OrderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
                 if (orderDetails is null)
                 {
                     return View("UsedByUser");
@@ -381,7 +407,7 @@ namespace Cars.Controllers
         {
             try
             {
-                long orderId = orderServices.CancelOrderDetails(OrderDetailsID);
+                long orderId = orderServices.CancelOrderDetails(OrderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
                 if (orderId > 0)
                 {
                     var orderDetails = orderServices.GetOrderDetailsByOrderId(orderId);
@@ -401,7 +427,7 @@ namespace Cars.Controllers
         {
             try
             {
-                OrderDetails orderDetails = orderServices.GetOrderDetailsByOrderDetailsID(OrderDetailsID);
+                OrderDetails orderDetails = orderServices.GetOrderDetailsByOrderDetailsID(OrderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
                 if (orderDetails is null)
                 {
                     return View("UsedByUser");

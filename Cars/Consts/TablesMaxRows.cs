@@ -16,7 +16,6 @@ namespace Cars.Consts
         public static int IndexLaborMaxRows { get; set; }
         public static int IndexFinanceOrderLinesMaxRows { get; set; }
 
-        public static int IndexLaborMaxRows { get; set; }
         public static int IndexPurchasingMaxRows { get; set; }
         static TablesMaxRows()
         {

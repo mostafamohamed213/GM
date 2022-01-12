@@ -82,7 +82,7 @@
                 {
                 <tr>
                     <td>@counter</td>
-                    <td>01:@item.OrderID:@item.OrderDetailsID</td>
+                    <td>@((item.UserBranch==null)?"00":item.UserBranch.BranchID):@item.OrderID:@item.OrderDetailsID</td>
                     <td>@item.Items</td>
                     <td>@item.Quantity</td>
                     <td>@item.Price</td>

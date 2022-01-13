@@ -1,21 +1,16 @@
-﻿@model Cars.ViewModels.PagingViewModel<Runner>
+﻿@model Cars.ViewModels.PagingViewModel<OrderDetails>
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer localizer
 @{
-    ViewData["Title"] = "Vendor Location";
+    ViewData["Title"] = "Order Lines";
     int counter = 1;
 }
 
-<div class="row">
-    <div class="col-md-10">Runners</div>
-    <div class="col-md-2"> <a class="btn btn-success" asp-action="AddRunner" asp-controller="Runner">Add Runner </a> </div>
-</div>
-<br />
 <div class="card shadow">
     <div class="card-body">
         <div class="toolbar">
 
-            <form class="form" id="OrderLinesTablelength" method="get" asp-action="ChangeOrderLinesTablelength" asp-controller="Runner">
+            <form class="form" id="OrderLinesTablelength" method="get" asp-action="ChangeOrderLinesTablelength" asp-controller="AllOrderLines">
                 <div class="form-row">
                     <div class="form-group col-auto mr-auto">
                         <label class="my-1 mr-2 sr-only" for="inlineFormCustomSelectPref13">@localizer["Show"]</label>
@@ -65,8 +60,11 @@
                 <tr>
                     <th>#</th>
                     <th>@localizer["ID"]</th>
-                    <th>@localizer["Name"]</th>
-                    <th>@localizer["Details"]</th>
+                    <th>@localizer["Items"]</th>
+
+
+                    <th>@localizer["Type"]</th>
+                    <th>@localizer["Approved"]</th>
                     <th>@localizer["Date"]</th>
                     <th></th>
                     <th></th>
@@ -80,27 +78,34 @@
                             @counter
                         </td>
                         <td>
-                            @item.RunnerID
+                            01:@item.OrderID:@item.OrderDetailsID
                         </td>
                         <td>
-                            @item.Name
+                            @item.Items
                         </td>
                         <td>
-                            @item.Details
+                            @item.OrderDetailsType.NameEn
+                        </td>
+                        <td>
+                            @if (item.IsApproved.HasValue)
+                            {
+                                if (item.IsApproved.Value)
+                                {
+                                    <span class="fe fe-24 fe-check"></span>
+                                }
+                                else
+                                {
+                                    <span class="fe fe-24 fe-x"></span>
+                                }
+                            }
                         </td>
                         <td>
                             @item.DTsCreate
                         </td>
-
-
-
-                        <td>
-                            <a title="@localizer["Edit"]" asp-action="EditRunner" asp-controller="Runner" asp-route-RunnerID="@item.RunnerID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-success"></span></span></a>
-                        </td>
-
-                        <td>
-                            <a title="@localizer["Delete"]" asp-action="DeleteRunner" asp-controller="Runner" asp-route-RunnerID="@item.RunnerID"> <span class="small text-muted"><span class=" fe fe-24 fe-x-circle text-danger"></span></span></a>
-                        </td>
+                                <td>
+                                    <a title="@localizer["Details"]" asp-action="orderdetails" asp-controller="AllOrderLines" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-clipboard text-success"></span></span></a>
+                                </td>
+            
 
                     </tr>
                     counter++;
@@ -111,15 +116,18 @@
         <nav aria-label="Table Paging" class="mb-0 text-muted">
             <ul class="pagination justify-content-center mb-0">
                 <li class='page-item @(Model.CurrentPageIndex == 1 ? "disabled":"")' id="dataTable_previous">
-                    <a asp-action="GetAllRunners" asp-controller="Runner" asp-route-currentPage="@(Model.CurrentPageIndex-1)" class="page-link">@localizer["Previous"]</a>
+                    <a asp-action="GetOrderLines" asp-controller="AllOrderLines" asp-route-currentPage="@(Model.CurrentPageIndex-1)" class="page-link">@localizer["Previous"]</a>
                 </li>
-               
+                @*
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>*@
                 @for (int i = 1; i <= Model.PageCount; i++)
                 {
                     @if (i != Model.CurrentPageIndex)
                     {
                         <li class="page-item">
-                            <a asp-action="GetAllRunners" asp-controller="Runner" asp-route-currentPage="@i" class="page-link">@i</a>
+                            <a asp-action="GetOrderLines" asp-controller="AllOrderLines" asp-route-currentPage="@i" class="page-link">@i</a>
                         </li>
                     }
                     else
@@ -131,7 +139,7 @@
 
                 }
                 <li class='page-item @(Model.PageCount == Model.CurrentPageIndex ? "disabled":"")' id="dataTable_next">
-                    <a asp-action="GetAllRunners" asp-controller="Runner" asp-route-currentPage="@(Model.CurrentPageIndex+1)" class="page-link">@localizer["Next"]</a>
+                    <a asp-action="GetOrderLines" asp-controller="AllOrderLines" asp-route-currentPage="@(Model.CurrentPageIndex+1)" class="page-link">@localizer["Next"]</a>
                 </li>
             </ul>
         </nav>

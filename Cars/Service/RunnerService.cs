@@ -16,6 +16,11 @@ namespace Cars.Service
             db = carsContext;
         }
 
+        public PagingViewModel<Runner> getOrderLinesWithChangelength(int currentPageIndex, int length)
+        {
+            TablesMaxRows.IndexRunnerMaxRows = length;
+            return getAllRunners(currentPageIndex);
+        }
         public PagingViewModel<Runner> getAllRunners(int currentPage)
         {
             List<Runner> allRunners = db.Runners.Skip((currentPage - 1) * TablesMaxRows.IndexRunnerMaxRows).Take(TablesMaxRows.IndexRunnerMaxRows).ToList();
@@ -33,16 +38,17 @@ namespace Cars.Service
             }
         }
 
+     
         private PagingViewModel<Runner> paginate(List<Runner> runners, int currentPage)
         {
             PagingViewModel<Runner> viewModel = new PagingViewModel<Runner>();
             viewModel.items = runners.ToList();
             var itemsCount = runners.Count();
-            double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexVendorMaxRows));
+            double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexRunnerMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
             viewModel.itemsCount = itemsCount;
-            viewModel.Tablelength = TablesMaxRows.IndexLaborMaxRows;
+            viewModel.Tablelength = TablesMaxRows.IndexRunnerMaxRows;
 
             return viewModel;
         }

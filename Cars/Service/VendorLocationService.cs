@@ -49,7 +49,7 @@ namespace Cars.Service
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
             viewModel.itemsCount = itemsCount;
-            viewModel.Tablelength = TablesMaxRows.IndexLaborMaxRows;
+            viewModel.Tablelength = TablesMaxRows.IndexVendorMaxRows;
 
             return viewModel;
         }

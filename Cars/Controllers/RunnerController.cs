@@ -39,7 +39,17 @@ namespace Cars.Controllers
                 return View("_CustomError");
             }
         }
-
+        public IActionResult ChangeOrderLinesTablelength(int length)
+        {
+            try
+            {
+                return View("GetAllRunners", services.getOrderLinesWithChangelength(1, length));
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+        }
         [HttpGet]
         public IActionResult GetRunnerByID(long RunnerID)
         {

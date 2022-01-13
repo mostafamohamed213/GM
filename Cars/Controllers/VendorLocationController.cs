@@ -26,15 +26,27 @@ namespace Cars.Controllers
 
 
         [HttpGet]
-        public IActionResult GetAllVendorsLocation()
+        public IActionResult GetAllVendorsLocation(int currentPage)
         {
            try
             {
-                var allvendors = services.getAllVendors();
-                if(allvendors!=null)
+                var allvendors = services.getAllVendors(currentPage);
                 return View(allvendors);
 
+               
+            }
+            catch (Exception)
+            {
                 return View("_CustomError");
+            }
+        }
+
+        public IActionResult ChangeOrderLinesTablelength(int length)
+        {
+            try
+            {
+
+                return View("GetAllVendorsLocation", services.getOrderLinesWithChangelength(1, length));
             }
             catch (Exception)
             {
@@ -59,8 +71,21 @@ namespace Cars.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult AddVendorLocation()
+        {
+            try
+            {
+                return View();
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+        }
+
         [HttpPost]
-        public IActionResult AddVendorLocation([FromBody]VendorLocationViewModel model)
+        public IActionResult AddVendorLocation([FromForm]VendorLocationViewModel model)
         {
             try
             {
@@ -68,7 +93,9 @@ namespace Cars.Controllers
                 long addVendor = services.AddVendorLocation(model);
                 if(addVendor>0)
                 {
-                    return View(addVendor);
+                    var allvendors = services.getAllVendors(1);
+
+                    return View("GetAllVendorsLocation", allvendors);
                 }
                 return View("_CustomError");
                
@@ -78,7 +105,7 @@ namespace Cars.Controllers
                 return View("_CustomError");
             }
         }
-        [HttpDelete]
+
         public IActionResult DeleteVendorLocation(long VendorID)
         {
             try
@@ -86,7 +113,10 @@ namespace Cars.Controllers
                 long deleteVendor = services.DeleteVendorLocation(VendorID);
                 if (deleteVendor > 0)
                 {
-                    return View(deleteVendor);
+                    var allvendors = services.getAllVendors(1);
+
+                    return View("GetAllVendorsLocation", allvendors);
+                    
                 }
                 return View("_CustomError");
 
@@ -97,17 +127,37 @@ namespace Cars.Controllers
             }
         }
 
-        [HttpPut]
-        public IActionResult EditVendorLocation([FromQuery]long VendorID,[FromBody] VendorLocationViewModel model)
+        [HttpGet]
+        public IActionResult EditVendorLocation(long VendorID)
+        {
+            try
+            {
+                var vendor = services.GetVendorLocationByID(VendorID);
+                if(vendor!=null)
+                return View(vendor);
+
+                return View("_CustomError");
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+        }
+
+    [HttpPost]
+        public IActionResult EditVendorLocation([FromForm] VendorLocation model)
         {
             try
             {
                 model.SystemUserUpdate= User.FindFirstValue(ClaimTypes.NameIdentifier);
-                long editVendor = services.EditVendorLocation(VendorID, model);
+                long editVendor = services.EditVendorLocation(model.VendorLocationID, model);
                 if (editVendor > 0)
                 {
-                    return View(editVendor);
+                    var allvendors = services.getAllVendors(1);
+
+                    return View("GetAllVendorsLocation", allvendors);
                 }
+
                 return View("_CustomError");
 
             }

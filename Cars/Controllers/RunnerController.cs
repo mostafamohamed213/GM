@@ -27,15 +27,12 @@ namespace Cars.Controllers
        
        
         [HttpGet]
-        public IActionResult GetAllRunners()
+        public IActionResult GetAllRunners(int currentPage)
         {
             try
             {
-                var allRunners = services.getAllRunners();
-                if (allRunners != null)
-                    return View(allRunners);
-
-                return View("_CustomError");
+                var allRunners = services.getAllRunners(currentPage);
+                return View(allRunners);
             }
             catch (Exception)
             {
@@ -59,9 +56,19 @@ namespace Cars.Controllers
                 return View("_CustomError");
             }
         }
-
+        public IActionResult AddRunner()
+        {
+            try
+            {
+                return View();
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+        }
         [HttpPost]
-        public IActionResult AddRunner([FromBody]RunnerViewModel model)
+        public IActionResult AddRunner([FromForm]RunnerViewModel model)
         {
             try
             {
@@ -69,7 +76,8 @@ namespace Cars.Controllers
                 long addRunner = services.AddRunner(model);
                 if (addRunner > 0)
                 {
-                    return View(addRunner);
+                    var allvrunners = services.getAllRunners(1);
+                    return View("GetAllRunners", allvrunners);
                 }
                 return View("_CustomError");
 
@@ -79,7 +87,7 @@ namespace Cars.Controllers
                 return View("_CustomError");
             }
         }
-        [HttpDelete]
+        
         public IActionResult DeleteRunner(long RunnerID)
         {
             try
@@ -87,7 +95,8 @@ namespace Cars.Controllers
                 long deleteRunner = services.DeleteRunner(RunnerID);
                 if (deleteRunner > 0)
                 {
-                    return View(deleteRunner);
+                    var allvrunners = services.getAllRunners(1);
+                    return View("GetAllRunners", allvrunners);
                 }
                 return View("_CustomError");
 
@@ -98,16 +107,34 @@ namespace Cars.Controllers
             }
         }
 
-        [HttpPut]
-        public IActionResult EditRunner(long RunnerID,[FromBody] RunnerViewModel model)
+
+        public IActionResult EditRunner(long RunnerID)
+        {
+            try
+            {
+                var Runner = services.GetRunnernByID(RunnerID);
+                if (Runner != null)
+                    return View(Runner);
+
+                return View("_CustomError");
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditRunner([FromForm] Runner model)
         {
             try
             {
                 model.SystemUserUpdate= User.FindFirstValue(ClaimTypes.NameIdentifier);
-                long editRunner = services.EditRunner(RunnerID, model);
+                long editRunner = services.EditRunner(model.RunnerID, model);
                 if (editRunner > 0)
                 {
-                    return View(editRunner);
+                    var allvrunners = services.getAllRunners(1);
+                    return View("GetAllRunners", allvrunners);
                 }
                 return View("_CustomError");
 

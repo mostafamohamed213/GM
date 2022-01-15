@@ -13,8 +13,7 @@ namespace Cars.Models
         [Key]
         public long OrderID { get; set; }
         public bool? WithMaintenance { get; set; }
-        public string Prefix { get; set; }
-
+      
         public long CustomerID { get; set; }
         [ForeignKey("CustomerID")]
         public Customer Customer { get; set; }
@@ -23,7 +22,9 @@ namespace Cars.Models
         [ForeignKey("VehicleID")]
         public Vehicle Vehicle { get; set; }
         public virtual List<OrderDetails> OrderDetails { get; set; }
-        public long EmployeeBranchID { get; set; }       
+        public int? UserBranchID { get; set; }
+        [ForeignKey("UserBranchID")]
+        public UserBranchModel UserBranch { get; set; }
         public int StatusID { get; set; }
         [ForeignKey("StatusID")]
         public Status Status { get; set; }

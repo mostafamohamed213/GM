@@ -356,12 +356,6 @@ namespace Cars.Migrations
                     b.Property<DateTime?>("DTsUpdate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<long>("EmployeeBranchID")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Prefix")
-                        .HasColumnType("text");
-
                     b.Property<int>("StatusID")
                         .HasColumnType("integer");
 
@@ -371,6 +365,9 @@ namespace Cars.Migrations
 
                     b.Property<string>("SystemUserUpdate")
                         .HasColumnType("text");
+
+                    b.Property<int?>("UserBranchID")
+                        .HasColumnType("integer");
 
                     b.Property<long>("VehicleID")
                         .HasColumnType("bigint");
@@ -384,6 +381,8 @@ namespace Cars.Migrations
 
                     b.HasIndex("StatusID");
 
+                    b.HasIndex("UserBranchID");
+
                     b.HasIndex("VehicleID");
 
                     b.ToTable("Orders");
@@ -395,9 +394,6 @@ namespace Cars.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int>("BranchID")
-                        .HasColumnType("integer");
 
                     b.Property<string>("Comments")
                         .HasColumnType("text");
@@ -445,6 +441,9 @@ namespace Cars.Migrations
                     b.Property<long?>("QuotationID")
                         .HasColumnType("bigint");
 
+                    b.Property<int?>("RunnerID")
+                        .HasColumnType("integer");
+
                     b.Property<int>("StatusID")
                         .HasColumnType("integer");
 
@@ -456,6 +455,9 @@ namespace Cars.Migrations
 
                     b.Property<DateTime?>("UsedDateTime")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("UserBranchID")
+                        .HasColumnType("integer");
 
                     b.Property<int?>("VendorLocationID")
                         .HasColumnType("integer");
@@ -473,7 +475,11 @@ namespace Cars.Migrations
 
                     b.HasIndex("QuotationID");
 
+                    b.HasIndex("RunnerID");
+
                     b.HasIndex("StatusID");
+
+                    b.HasIndex("UserBranchID");
 
                     b.HasIndex("VendorLocationID");
 
@@ -498,6 +504,9 @@ namespace Cars.Migrations
                     b.Property<long>("OrderDetailsID")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("Reason")
+                        .HasColumnType("text");
+
                     b.Property<int>("StatusID")
                         .HasColumnType("integer");
 
@@ -505,11 +514,16 @@ namespace Cars.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("WorkflowID")
+                        .HasColumnType("integer");
+
                     b.HasKey("OrderDetailsStatusLogID");
 
                     b.HasIndex("OrderDetailsID");
 
                     b.HasIndex("StatusID");
+
+                    b.HasIndex("WorkflowID");
 
                     b.ToTable("OrderDetailsStatusLogs");
                 });
@@ -644,6 +658,42 @@ namespace Cars.Migrations
                     b.ToTable("QuotationStatusLogs");
                 });
 
+            modelBuilder.Entity("Cars.Models.Runner", b =>
+                {
+                    b.Property<int>("RunnerID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime>("DTsCreate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("DTsUpdate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Details")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Enable")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SystemUserCreate")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SystemUserUpdate")
+                        .HasColumnType("text");
+
+                    b.HasKey("RunnerID");
+
+                    b.ToTable("Runners");
+                });
+
             modelBuilder.Entity("Cars.Models.Status", b =>
                 {
                     b.Property<int>("StatusID")
@@ -661,6 +711,37 @@ namespace Cars.Migrations
                     b.HasKey("StatusID");
 
                     b.ToTable("Status");
+                });
+
+            modelBuilder.Entity("Cars.Models.StatusLogDocument", b =>
+                {
+                    b.Property<long>("StatusLogDocumentID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime>("DTsCreate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Details")
+                        .HasColumnType("text");
+
+                    b.Property<long>("OrderDetailsStatusLogID")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SystemUserID")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("StatusLogDocumentID");
+
+                    b.HasIndex("OrderDetailsStatusLogID");
+
+                    b.ToTable("StatusLogDocuments");
                 });
 
             modelBuilder.Entity("Cars.Models.UserBranchModel", b =>
@@ -772,14 +853,30 @@ namespace Cars.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<DateTime>("DTsCreate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("DTsUpdate")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
+
+                    b.Property<bool>("Enable")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("NameAr")
                         .HasColumnType("text");
 
                     b.Property<string>("NameEn")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SystemUserCreate")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SystemUserUpdate")
                         .HasColumnType("text");
 
                     b.HasKey("VendorLocationID");
@@ -1024,6 +1121,10 @@ namespace Cars.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Cars.Models.UserBranchModel", "UserBranch")
+                        .WithMany()
+                        .HasForeignKey("UserBranchID");
+
                     b.HasOne("Cars.Models.Vehicle", "Vehicle")
                         .WithMany("Orders")
                         .HasForeignKey("VehicleID")
@@ -1033,6 +1134,8 @@ namespace Cars.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Status");
+
+                    b.Navigation("UserBranch");
 
                     b.Navigation("Vehicle");
                 });
@@ -1059,11 +1162,19 @@ namespace Cars.Migrations
                         .WithMany("OrderDetails")
                         .HasForeignKey("QuotationID");
 
+                    b.HasOne("Cars.Models.Runner", "Runner")
+                        .WithMany()
+                        .HasForeignKey("RunnerID");
+
                     b.HasOne("Cars.Models.Status", "Status")
                         .WithMany("OrderDetails")
                         .HasForeignKey("StatusID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Cars.Models.UserBranchModel", "UserBranch")
+                        .WithMany()
+                        .HasForeignKey("UserBranchID");
 
                     b.HasOne("Cars.Models.VendorLocation", "VendorLocation")
                         .WithMany()
@@ -1083,7 +1194,11 @@ namespace Cars.Migrations
 
                     b.Navigation("Quotation");
 
+                    b.Navigation("Runner");
+
                     b.Navigation("Status");
+
+                    b.Navigation("UserBranch");
 
                     b.Navigation("VendorLocation");
 
@@ -1104,9 +1219,15 @@ namespace Cars.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Cars.Models.Workflow", "Workflow")
+                        .WithMany()
+                        .HasForeignKey("WorkflowID");
+
                     b.Navigation("OrderDetails");
 
                     b.Navigation("Status");
+
+                    b.Navigation("Workflow");
                 });
 
             modelBuilder.Entity("Cars.Models.Quotation", b =>
@@ -1148,6 +1269,17 @@ namespace Cars.Migrations
                     b.Navigation("Quotation");
 
                     b.Navigation("Status");
+                });
+
+            modelBuilder.Entity("Cars.Models.StatusLogDocument", b =>
+                {
+                    b.HasOne("Cars.Models.OrderDetailsStatusLog", "OrderDetailsStatusLog")
+                        .WithMany("StatusLogDocuments")
+                        .HasForeignKey("OrderDetailsStatusLogID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrderDetailsStatusLog");
                 });
 
             modelBuilder.Entity("Cars.Models.UserBranchModel", b =>
@@ -1275,6 +1407,11 @@ namespace Cars.Migrations
             modelBuilder.Entity("Cars.Models.Order", b =>
                 {
                     b.Navigation("OrderDetails");
+                });
+
+            modelBuilder.Entity("Cars.Models.OrderDetailsStatusLog", b =>
+                {
+                    b.Navigation("StatusLogDocuments");
                 });
 
             modelBuilder.Entity("Cars.Models.OrderDetailsType", b =>

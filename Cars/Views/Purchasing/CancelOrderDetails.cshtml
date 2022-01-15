@@ -1,0 +1,115 @@
+﻿
+@model Cars.ViewModels.CancelOrderDetailsViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer localizer
+@{
+    ViewData["Title"] = "Order Line";
+  
+}
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="card-header">
+           
+            <h2 class="text-center text-danger">are you sure ?</h2>
+            <h3 class="text-center text-danger">You want to cancel this order ?</h3>
+        </div>
+        <form class="needs-validation" enctype="multipart/form-data" asp-action="CancelOrderDetails" asp-controller="Purchasing" method="post">
+            <input asp-for="OrderDetailsID" style="display:none" />
+            <br />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-4">
+                        <label for="simpleinput">@localizer["Reason"]</label>
+                        <input asp-for="Reason" class="form-control" required />
+                        <span asp-validation-for="Reason" class="text-danger"></span>
+                    </div>                   
+                </div>
+                <div class="col-md-6">                    
+
+                    <div class="form-group mb-4">
+                        <label for="simpleinput">@localizer["Upload"]</label>
+                        <input type="file" asp-for="FormFiles" class="form-control" id="FormFiles" multiple required/>
+                        <span asp-validation-for="FormFiles" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>         
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group mb-3">
+                        <label class="col-sm-3" for="exampleFormControlTextarea1">@localizer["Detatils"]</label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" id="Detatils" name="Detatils" style="width:99%" rows="2"></textarea>
+                        </div>
+                        <span asp-validation-for="Detatils" class="text-danger"></span>
+
+                    </div>
+                </div>
+            </div>
+            <a class="btn btn-primary" asp-controller="Purchasing" asp-action="OpenOrderDetails" asp-route-OrderDetailsID="@Model.OrderDetailsID" style=" width: 100px;"> @localizer["Back"]</a>
+
+            <a class="btn btn-danger" style="width: 100px;color:white" asp-controller="Purchasing" asp-action="CancelOrderDetails" asp-route-OrderDetailsID="@Model.OrderDetailsID">Cancel</a>
+            <input class="btn btn-success" style=" width: 100px; color: white" type="submit" value="@localizer["Save"]" />
+        </form>
+    </div>
+  
+    <br />
+    <div class="col-12 mb-4">
+
+        <div class="card shadow">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <strong class="card-title h4">Order Line</strong>
+                    </div>
+
+                    <div cclass="col-md-2">
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-body">
+                <div class="row h5">
+                    <div class="col-md-3">
+                        @localizer["ID"] :   01:@Model.OrderDetails.OrderID:@Model.OrderDetailsID
+                    </div>
+                    <div class="col-md-3 border-left border-right">
+                        @localizer["Item"] : @Model.OrderDetails.Items
+                    </div>
+                    <div class="col-md-3 border-left border-right">
+                        @localizer["Quantity"] : @Model.OrderDetails.Quantity
+                    </div>
+                    <div class="col-md-3">
+                        @localizer["Type"] : @Model.OrderDetails.OrderDetailsType.NameEn
+                    </div>
+                </div>
+                <div class="row h5">
+                    <div class="col-md-3">
+                        @localizer["Price"] :   @Model.OrderDetails.Price
+                    </div>
+                    <div class="col-md-3 border-left border-right">
+                        @localizer["Vendor Location"] : @Model.OrderDetails.VendorLocation.NameEn
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>  
+</div>
+
+
+
+
+
+
+
+
+@section Scripts {
+    <script>
+        ChangeColorSidebarItem("anavbarPurchasing", "aPurchasing");
+
+
+    </script>
+}
+

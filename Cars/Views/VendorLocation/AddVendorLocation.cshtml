@@ -1,0 +1,59 @@
+﻿
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer localizer
+@{
+    ViewData["Title"] = "Add Vendor";
+
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header">
+        <strong class="card-title">@localizer["Add Vendor"]</strong>
+    </div>
+    <br /><br />
+  
+    <div class="card-body">
+      
+        <form class="needs-validation" asp-action="AddVendorLocation" asp-controller="VendorLocation" method="post">
+            <div class="row">
+                
+
+                <div class="col-md-6">
+                    <div class="form-group mb-4">
+                        <label for="simpleinput">@localizer["Vendor Name"]</label>
+                        <input type="text" name="NameEn"  class="form-control" required />
+                    </div>
+                    <div class="form-group mb-4">
+                        <label for="simpleinput">@localizer["Description"]</label>
+                        <input type="text" name="Description" class="form-control" required />
+                    </div>
+
+                
+
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <a class="btn btn-danger" onclick="OpenOrderDetails('')" style=" width: 100px;" href="~/"> @localizer["Cancel"]</a>
+                                <input class="btn btn-success" style=" width: 100px;" type="submit" value="@localizer["Save"]" />
+
+                            </div>
+                            <div class="col-md-5"></div>
+
+                            <div class="col-md-2">
+
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div> 
+
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts {
+ 
+}
+

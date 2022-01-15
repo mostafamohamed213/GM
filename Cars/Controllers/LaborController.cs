@@ -49,13 +49,17 @@ namespace Cars.Controllers
             }
 
         }
-
+       
         [HttpGet]
         public IActionResult ChangeOrderLinesTablelength(int length)
         {
             try
             {
                 ViewData["type"] = db.OrderDetailsType.ToList();
+               
+
+                ViewData["vendor"] = db.VendorLocations.ToList();
+               
                 return View("GetOrderLines", services.getOrderLinesWithChangelength(1, length));
             }
             catch (Exception)

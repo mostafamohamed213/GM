@@ -16,6 +16,12 @@ namespace Cars.Models
         public string NameEn { get; set; }
         public string NameAr { get; set; }
         public string Description { get; set; }
+        public bool Enable { get; set; }
+        [Required]
+        public string SystemUserCreate { get; set; }
+        public DateTime DTsCreate { get; set; }
+        public string SystemUserUpdate { get; set; }
+        public DateTime? DTsUpdate { get; set; }
 
     }
 }

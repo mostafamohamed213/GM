@@ -50,6 +50,22 @@ namespace Cars.Service
             viewModel.Tablelength = TablesMaxRows.IndexOrdersMaxRows;
             return viewModel;
         }
+
+        internal PagingViewModel<Order> SearchOrderHeader(string search)
+        {
+            var orders = db.Orders.Where(c => c.StatusID != 1 && c.StatusID != 5 && (c.Vehicle.Name.Trim().ToLower().Contains(search.Trim().ToLower())|| c.Vehicle.Chases.Trim().ToLower().Contains(search.Trim().ToLower()))).
+               Include("Vehicle").Include("Customer").Include("Customer.CustomerContacts").Take(100).ToList();
+            PagingViewModel<Order> viewModel = new PagingViewModel<Order>();           
+            viewModel.items = orders.ToList();
+            var itemsCount = orders.Count;
+            double pageCount = 1;
+            viewModel.PageCount = (int)Math.Ceiling(pageCount);
+            viewModel.CurrentPageIndex = 1;
+            viewModel.itemsCount = itemsCount;
+            viewModel.Tablelength = 100;
+            return viewModel;
+        }
+
         public PagingViewModel<OrderDetails> getOrderLines(int currentPage)
         {
             var orders = db.OrderDetails.Where(c=> c.StatusID != 1 && c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexOrderLinesMaxRows).Take(TablesMaxRows.IndexOrderLinesMaxRows).ToList();
@@ -82,22 +98,10 @@ namespace Cars.Service
             viewModel.Tablelength = TablesMaxRows.IndexOrdersDraftMaxRows;
             return viewModel;
         }
-
-        internal OrderDetails GetOrderDetailsByOrderDetailsID(long orderDetailsID)
+        object b = new object();
+        internal OrderDetails GetOrderDetailsByOrderDetailsID(long orderDetailsID ,string user)
         {
-            var orderDetails = db.OrderDetails.Where(c => c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2 ) && c.OrderDetailsID == orderDetailsID).Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault();
-            if (string.IsNullOrEmpty(orderDetails.UsedByUser))
-            {
-                orderDetails.UsedByUser = "1";
-                orderDetails.UsedDateTime = DateTime.Now;
-                db.SaveChanges();
-                return orderDetails;
-            }
-            if (orderDetails.UsedByUser == "1")
-            {
-                return orderDetails;
-            }
-            return null;
+            return db.OrderDetails.Where(c => c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2) && c.OrderDetailsID == orderDetailsID).Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault();
         }
 
         public Order GetOrderByID(long orderId)
@@ -170,7 +174,7 @@ namespace Cars.Service
             return 0;
         }
 
-        internal int SaveOrder(long orderId)
+        internal int SaveOrder(long orderId,string user)
         {
             Order order = db.Orders.Include("OrderDetails").FirstOrDefault(c => c.OrderID == orderId);
             Workflow _Workflow = db.Workflows.FirstOrDefault(c => c.WorkflowID == 2);
@@ -189,7 +193,7 @@ namespace Cars.Service
                         {
                             DTsCreate = DateTime.Now,
                             OrderDetailsID = item.OrderDetailsID,
-                            SystemUserID = "1",
+                            SystemUserID = user,
                             WorkflowID = 1,
                             Active =true,                            
                         };
@@ -198,7 +202,7 @@ namespace Cars.Service
                         {
                             DTsCreate = DateTime.Now,
                             OrderDetailsID = item.OrderDetailsID,
-                            SystemUserID = "1",
+                            SystemUserID = user,
                             StatusID = 2,                           
                         };
                         db.Add(statusLog);
@@ -215,7 +219,7 @@ namespace Cars.Service
             return db.DraftOrders.FirstOrDefault(C => C.DraftOrderID == orderDraftId && C.Enable);
         }
 
-        public long AddOrder(OrderViewModel model)
+        public long AddOrder(OrderViewModel model,string user)
         {
             try
             {
@@ -225,7 +229,7 @@ namespace Cars.Service
                     Vehicle vehicle = new Vehicle()
                     {
                         DTsCreate = now,
-                        SystemUserCreate = "-1",
+                        SystemUserCreate = user,
                         Chases = model.Chases.Trim(),
                         Name = model.VehicleName.Trim(),
                         Year = model.Year?.Trim(),
@@ -235,24 +239,25 @@ namespace Cars.Service
                     Customer customer = new Customer()
                     {
                         DTsCreate = now,
-                        SystemUserCreate = "-1"
+                        SystemUserCreate = user
                     };
                     CustomerContact contact = new CustomerContact()
                     {
                         DTsCreate = now,
-                        SystemUserCreate = "-1",
+                        SystemUserCreate = user,
                         CustomerID = customer.CustomerID,
                         Customer =customer,
                         Phone = model.CustomerPhone,
                         HasTelegram = false,
                         HasWhatsapp = false
                     };
+                    var UserBranch = db.UserBranches.FirstOrDefault(c => c.IsActive && c.UserID == user);
                     Order order = new Order()
                     {
                         DTsCreate = now,
-                        SystemUserCreate = "-1",
+                        SystemUserCreate = user,
                         Customer = customer,
-                        EmployeeBranchID = 10,
+                        UserBranchID = UserBranch != null ? UserBranch.UserBranchID : -1,
                         Vehicle = vehicle,
                         WithMaintenance = model.WithMaintenance,
                         StatusID =1
@@ -280,22 +285,22 @@ namespace Cars.Service
            
         }
 
-        internal long DeleteOrderDetails(long orderDetailsID)
+        internal long DeleteOrderDetails(long orderDetailsID,string User)
         {
             try
             {
-                OrderDetails orderDetails = GetOrderDetailsByOrderDetailsID(orderDetailsID);
+                OrderDetails orderDetails = GetOrderDetailsByOrderDetailsID(orderDetailsID, User);
                 orderDetails.StatusID = 5;
                 OrderDetailsStatusLog statusLog = new OrderDetailsStatusLog()
                 {
                     DTsCreate = DateTime.Now,
                     OrderDetailsID = orderDetails.OrderDetailsID,
-                    SystemUserID = "1",
+                    SystemUserID = User,
                     StatusID = 5,                    
                 };
                 db.Add(statusLog);
-
                 db.SaveChanges();
+                OpenOrderDetails(orderDetails.OrderDetailsID);
                 return orderDetails.OrderID;
             }
             catch (Exception)
@@ -305,21 +310,22 @@ namespace Cars.Service
             }
           
         }
-        internal long CancelOrderDetails(long orderDetailsID)
+        internal long CancelOrderDetails(long orderDetailsID ,string user)
         {
             try
             {
-                OrderDetails orderDetails = GetOrderDetailsByOrderDetailsID(orderDetailsID);
+                OrderDetails orderDetails = GetOrderDetailsByOrderDetailsID(orderDetailsID, user);
                 orderDetails.StatusID = 4;
                 OrderDetailsStatusLog statusLog = new OrderDetailsStatusLog()
                 {
                     DTsCreate = DateTime.Now,
                     OrderDetailsID = orderDetails.OrderDetailsID,
-                    SystemUserID = "1",
+                    SystemUserID = user,
                     StatusID = 4,
                 };
                 db.Add(statusLog);
                 db.SaveChanges();
+                OpenOrderDetails(orderDetails.OrderDetailsID);
                 return orderDetails.OrderID;
             }
             catch (Exception)
@@ -379,7 +385,7 @@ namespace Cars.Service
                 foreach (var item in List)
                 {
                     //model.Add(new OrderDetailsViewModel() { Enabled = item.Enabled.HasValue ? item.Enabled.Value : false, OrderID = item.OrderID, IsApproved = item.IsApproved, Items = item.Items, OrderDetailsID = item.OrderDetailsID, Quantity = item.Quantity, type = item.OrderDetailsType.NameEn, Price = item.Price, PartNumber = item.PartNumber, BranchID = item.BranchID, Comments = item.Comments, CanceledByUserID = item.c });
-                    model.Add(new OrderDetailsViewModel() {OrderID = item.OrderID, IsApproved = item.IsApproved, Items = item.Items, OrderDetailsID = item.OrderDetailsID, Quantity = item.Quantity, type = item.OrderDetailsType.NameEn, Price = item.Price, PartNumber = item.PartNumber, BranchID = item.BranchID, Comments = item.Comments});
+                    model.Add(new OrderDetailsViewModel() {OrderID = item.OrderID, IsApproved = item.IsApproved, Items = item.Items, OrderDetailsID = item.OrderDetailsID, Quantity = item.Quantity, type = item.OrderDetailsType.NameEn, Price = item.Price, PartNumber = item.PartNumber, Comments = item.Comments});
 
                 }
                 return model;
@@ -387,22 +393,23 @@ namespace Cars.Service
             return null;
         }
 
-        internal int AddOrderDetails(string items, int quantity, int type, bool approved,long orderID)
+        internal int AddOrderDetails(string items, int quantity, int type, bool approved,long orderID,string user)
         {
           
             try
             {
                 var order = db.Orders.FirstOrDefault(c => c.OrderID == orderID);
+                var UserBranch = db.UserBranches.FirstOrDefault(c => c.IsActive && c.UserID == user);
                 OrderDetails orderDetails = new OrderDetails()
                 {
                     DTsCreate = DateTime.Now,
-                    SystemUserCreate = "-1",
+                    SystemUserCreate = user,
                     Items = items,
                     Quantity = quantity,
                     OrderDetailsTypeID = type,
                     IsApproved = approved ? approved : null,
                     OrderID = orderID,
-                    BranchID = -1,
+                    UserBranchID = UserBranch != null ? UserBranch.UserBranchID : -1,
                     StatusID = order.StatusID,
                     WorkflowID = order.StatusID == 2 ? 2 : 1
                 };
@@ -414,7 +421,7 @@ namespace Cars.Service
                     {
                         DTsCreate = DateTime.Now,
                         OrderDetailsID = orderDetails.OrderDetailsID,
-                        SystemUserID = "1",
+                        SystemUserID = user,
                         WorkflowID = 1,
                         Active = true,
                     };
@@ -423,7 +430,7 @@ namespace Cars.Service
                     {
                         DTsCreate = DateTime.Now,
                         OrderDetailsID = orderDetails.OrderDetailsID,
-                        SystemUserID = "1",
+                        SystemUserID = user,
                         StatusID = 2,                       
                     };
                     db.Add(statusLog);

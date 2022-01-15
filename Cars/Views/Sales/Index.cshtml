@@ -5,55 +5,73 @@
     ViewData["Title"] = "Orders";
     int counter = 1;
 }
-
+<h2 class="h5 page-title">Order Header</h2>
 <div class="card shadow">
     <div class="card-body">
         <div class="toolbar">
-            <form class="form" id="OrderTablelength" method="get" asp-action="ChangeOrderTablelength" asp-controller="Sales">
-                <div class="form-row">
-                    <div class="form-group col-auto mr-auto">
-                        <label class="my-1 mr-2 sr-only" for="inlineFormCustomSelectPref1">@localizer["Show"]</label>
-                        <select name="length" class="custom-select mr-sm-2" onchange="document.getElementById('OrderTablelength').submit();" id="inlineFormCustomSelectPref1">
-                            @if (Model.Tablelength == 10)
-                            {
-                                <option value="10" selected>10</option>
-                            }
-                            else
-                            {
-                                <option value="10">10</option>
-                            }
-                            @if (Model.Tablelength == 25)
-                            {
-                                <option value="25" selected>25</option>
-                            }
-                            else
-                            {
-                                <option value="25">25</option>
-                            }
-                            @if (Model.Tablelength == 50)
-                            {
-                                <option value="50" selected>50</option>
-                            }
-                            else
-                            {
-                                <option value="50">50</option>
-                            }
-                            @if (Model.Tablelength == 100)
-                            {
-                                <option value="100" selected>100</option>
-                            }
-                            else
-                            {
-                                <option value="100">100</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="form-group col-auto">
-                        <label for="search" class="sr-only">Search</label>
-                        <input type="text" class="form-control" id="search1" value="" placeholder="Search">
-                    </div>
+
+            <div class="row">
+                <div class="col-md-1">
+                    <form class="form" id="OrderTablelength" method="get" asp-action="ChangeOrderTablelength" asp-controller="Sales">
+                        <div class="form-row">
+                            <div class="form-group col-auto mr-auto">
+                                <label class="my-1 mr-2 sr-only" for="inlineFormCustomSelectPref1">@localizer["Show"]</label>
+                                <select name="length" class="custom-select mr-sm-2" onchange="document.getElementById('OrderTablelength').submit();" id="inlineFormCustomSelectPref1">
+                                    @if (Model.Tablelength == 10)
+                                    {
+                                        <option value="10" selected>10</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="10">10</option>
+                                    }
+                                    @if (Model.Tablelength == 25)
+                                    {
+                                        <option value="25" selected>25</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="25">25</option>
+                                    }
+                                    @if (Model.Tablelength == 50)
+                                    {
+                                        <option value="50" selected>50</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="50">50</option>
+                                    }
+                                    @if (Model.Tablelength == 100)
+                                    {
+                                        <option value="100" selected>100</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="100">100</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group col-auto">
+                                @*<label for="search" class="sr-only">Search</label>
+                        <input type="text" class="form-control" id="search1" value="" placeholder="Search">*@
+
+
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </form>
+                <div class="col-md-8"></div>
+                
+                
+                <div class="col-md-3">
+                    <form class="form" id="searchforms" method="get" asp-action="SearchOrderHeader" asp-controller="Sales" asp-route-currentPage="1">
+                        <div class="form-group col-auto">
+                            <label for="search" class="sr-only">Search</label>
+                            <input type="text" class="form-control" id="searchs" placeholder="Chases,Name" name="search" value="@ViewData["CurrentFilter"]">
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
         <!-- table -->
         <table class="table table-borderless table-hover">
@@ -61,11 +79,9 @@
                 <tr>
                     <th>#</th>
                     <th>@localizer["ID"]</th>
+                    <th>@localizer["Chases"]</th>
                     <th>@localizer["Name"]</th>
-                    <th>@localizer["Phone"]</th>
-                    @*<th>@localizer["Brand"]</th>
-                    <th>@localizer["Model"]</th>
-                    <th>@localizer["Year"]</th>*@
+                    <th>@localizer["Phone"]</th>                 
                     <th>@localizer["Date"]</th>
                     <th></th>
                 </tr>
@@ -81,20 +97,23 @@
                         01:@item.OrderID
                     </td>
                     <td>
+                        @item.Vehicle.Chases
+                    </td>
+                    <td>
                         @item.Vehicle.Name
                     </td>
                     <td>
                         @item.Customer.CustomerContacts.FirstOrDefault().Phone
                     </td>
                     @*<td>
-                        @item.Vehicle.Brand
-                    </td>
-                    <td>
-                        @item.Vehicle.Model
-                    </td>
-                    <td>
-                        @item.Vehicle.Year
-                    </td>*@
+            @item.Vehicle.Brand
+        </td>
+        <td>
+            @item.Vehicle.Model
+        </td>
+        <td>
+            @item.Vehicle.Year
+        </td>*@
                     <td>
                         @item.DTsCreate
                     </td>
@@ -102,7 +121,7 @@
                         <a asp-action="ViewOrder" asp-controller="Sales" asp-route-OrderId="@item.OrderID" class="btn btn-primary btn-sm">View</a>
                     </td>
 
-                    
+
                 </tr>
                     counter++;
                 }

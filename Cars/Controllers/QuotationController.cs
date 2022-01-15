@@ -102,18 +102,20 @@ namespace Cars.Controllers
         {
             try
             {
-                string path = $"wwwroot/Resources/Quotation/{QuotationId}";
-                if (!(Directory.Exists(path)))
+                if (FormFiles.Length > 0)
                 {
-                    Directory.CreateDirectory(path);
-
-                }
-                foreach (IFormFile file in FormFiles)
-                {
-                    var path1 = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot/Resources/Quotation/{QuotationId}", file.FileName);
-                    var stream = new FileStream(path1, FileMode.Create);
-                    file.CopyTo(stream);
-                    services.CreateFilePath($"/Resources/Quotation/{QuotationId}/{file.FileName}", QuotationId,file.FileName);
+                    string path = $"wwwroot/Resources/Quotation/{QuotationId}";
+                    if (!(Directory.Exists(path)))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+                    foreach (IFormFile file in FormFiles)
+                    {
+                        var path1 = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot/Resources/Quotation/{QuotationId}", file.FileName);
+                        var stream = new FileStream(path1, FileMode.Create);
+                        file.CopyTo(stream);
+                        services.CreateFilePath($"/Resources/Quotation/{QuotationId}/{file.FileName}", QuotationId, file.FileName);
+                    }                   
                 }
                 return View("Confirmation", QuotationId);
             }
@@ -124,8 +126,26 @@ namespace Cars.Controllers
             }   
 
         }
+        //[HttpPost]
+        public IActionResult ConfirmationQuotation(long QuotationId)
+        {
+            try
+            {
+                if (QuotationId >0)
+                {
+                    return View("Confirmation", QuotationId);
+                }
+                return View("_CustomError");
+            }
+            catch (Exception)
+            {
 
-        [HttpPost]
+                return View("_CustomError");
+            }
+
+        }
+
+        //[HttpPost]
         public IActionResult Confirmation(long QuotationId)
         {
             try
@@ -133,7 +153,7 @@ namespace Cars.Controllers
                int status= services.Confirmation(QuotationId);
                 if (status == 1)
                 {
-                    return RedirectToAction("Index", "Quotation");
+                    return RedirectToAction("Display", "Quotation",new { quotationID = QuotationId });
                 }
                 return View("_CustomError");
             }

@@ -158,7 +158,7 @@
                 {
                     @if (ViewBag.WantDelete == null)
                     {
-                        <a class="btn btn-primary" title="@localizer["Edit"]" asp-action="EditOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Edit</a>
+                        @*<a class="btn btn-primary" title="@localizer["Edit"]" asp-action="EditOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Edit</a>*@
 
                         <a class="btn btn-warning" title="@localizer["Cancel"]" asp-action="CancelOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Cancel</a>
 

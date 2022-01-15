@@ -12,13 +12,19 @@ namespace Cars.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public long OrderDetailsStatusLogID { get; set; }
+        public string Reason { get; set; }
         public string Detatils { get; set; }      
         public int StatusID { get; set; }
         [ForeignKey("StatusID")]
         public Status Status { get; set; }
+        public int? WorkflowID { get; set; }
+        [ForeignKey("WorkflowID")]
+        public Workflow Workflow { get; set; }
         public long OrderDetailsID { get; set; }
         [ForeignKey("OrderDetailsID")]
         public OrderDetails OrderDetails { get; set; }
+        public virtual List<StatusLogDocument> StatusLogDocuments { get; set; }
+
         [Required]
         public string SystemUserID { get; set; }
         public DateTime DTsCreate { get; set; }

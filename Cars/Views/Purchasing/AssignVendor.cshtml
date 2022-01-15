@@ -1,0 +1,95 @@
+﻿@model Cars.Models.OrderDetails
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer localizer
+@{
+    ViewData["Title"] = "Order Line";
+    int counter = 1;
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header">
+        <strong class="card-title">Order Line</strong>
+    </div>
+    <br />
+    <div class="col-12 mb-4">
+       
+        <div class="card shadow">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <strong class="card-title h4">Details</strong>
+                    </div>
+
+                    <div cclass="col-md-2">
+                     
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-body">
+                <div class="row h5">
+                    <div class="col-md-3">
+                        @localizer["ID"] :   01:@Model.OrderID:@Model.OrderDetailsID
+                    </div>
+                    <div class="col-md-3 border-left border-right">
+                        @localizer["Item"] : @Model.Items
+                    </div>
+                    <div class="col-md-3 border-left border-right">
+                        @localizer["Quantity"] : @Model.Quantity
+                    </div>
+                    <div class="col-md-3">
+                        @localizer["Type"] : @Model.OrderDetailsType.NameEn
+                    </div>
+                </div>
+                <div class="row h5">
+                    <div class="col-md-3">
+                        @localizer["Price"] :   @Model.Price
+                    </div>
+                    <div class="col-md-3 border-left border-right">
+                        @localizer["Vendor Location"] : @Model.VendorLocation.NameEn
+                    </div>
+
+                </div>
+            </div>
+          
+        </div>
+
+    </div>
+    <div class="card-body">
+
+        <form class="needs-validation" asp-action="AssignVendor" asp-controller="Purchasing" method="post">
+            <div class="row">
+                <input asp-for="OrderDetailsID" style="display:none" />
+                <div class="col-md-6">
+                    <div class="form-group mb-4">
+                        <label for="example-email">@localizer["Runner"]</label>
+                        <select asp-for="RunnerID" asp-items="@ViewBag.Runners" class="form-control select2" required>
+                            <option>-select-</option>
+                        </select>
+                        <span asp-validation-for="RunnerID" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <a class="btn btn-primary" asp-controller="Purchasing" asp-action="OpenOrderDetails" asp-route-OrderDetailsID="@Model.OrderDetailsID" style=" width: 100px;"> @localizer["Back"]</a>
+
+            <a class="btn btn-danger" style="width: 100px;color:white" asp-controller="Purchasing" asp-action="CancelOrderDetails" asp-route-OrderDetailsID="@Model.OrderDetailsID">Cancel</a>
+            <input class="btn btn-success" style=" width: 100px; color: white" type="submit" value="@localizer["Save"]" />
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+@section Scripts {
+    <script>
+        ChangeColorSidebarItem("anavbarPurchasing", "aPurchasing");
+       
+
+    </script>
+}
+

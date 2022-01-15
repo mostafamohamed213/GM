@@ -16,8 +16,7 @@ namespace Cars.Models
         public string Items { get; set; }
         public int Quantity { get; set; }
         public bool? IsApproved { get; set; }
-        public string Prefix { get; set; }
-        public int BranchID { get; set; }
+        public string Prefix { get; set; }       
         public string PartNumber { get; set; }
         public decimal? Price { get; set; }
         public string Comments { get; set; }
@@ -35,7 +34,6 @@ namespace Cars.Models
         public int? VendorLocationID { get; set; }
         [ForeignKey("VendorLocationID")]
         public VendorLocation VendorLocation { get; set; }
-
         public int WorkflowID { get; set; }
         [ForeignKey("WorkflowID")]
         public Workflow Workflow { get; set; }
@@ -45,7 +43,9 @@ namespace Cars.Models
         public long? FinanceID { get; set; }
         [ForeignKey("FinanceID")]
         public Finance Finance { get; set; }
-
+        public int? UserBranchID { get; set; }
+        [ForeignKey("UserBranchID")]
+        public UserBranchModel UserBranch { get; set; }
         public string SystemUserCreate { get; set; }
         public DateTime DTsCreate { get; set; }     
 
@@ -56,6 +56,9 @@ namespace Cars.Models
         public int StatusID { get; set; }
         [ForeignKey("StatusID")]
         public Status Status { get; set; }
+        public int? RunnerID { get; set; }
+        [ForeignKey("RunnerID")]
+        public Runner Runner { get; set; }
 
         [NotMapped]
         public List<OrderDetails> Children { get; set; }

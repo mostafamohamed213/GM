@@ -151,7 +151,7 @@ namespace Cars.Service
                     DTsCreate = DateTime.Now,
                     SystemUserCreate = "1",
                     StatusID = 2,
-                    BranchID = 1,
+                   
                 };
                 if (parent.Order.WithMaintenance.HasValue && parent.Order.WithMaintenance.Value)
                 {

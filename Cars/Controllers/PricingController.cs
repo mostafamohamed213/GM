@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Cars.Controllers
@@ -47,7 +48,7 @@ namespace Cars.Controllers
         {
             try
             {
-                var orderDetails = usedService.CloseOrderDetails(orderDetailsID);
+                var orderDetails = usedService.CloseOrderDetails(orderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
                 if (orderDetails is not null)
                 {
                     ViewBag.vendorLocations = services.GetSelectListVendorLocations();
@@ -74,7 +75,7 @@ namespace Cars.Controllers
                 if (string.IsNullOrEmpty(PartNumber) || Price <= 0 || VendorLocationID <= 0)
                 {
                     ViewBag.vendorLocations = services.GetSelectListVendorLocations();
-                    var orderDetails = usedService.CloseOrderDetails(orderDetailsID);
+                    var orderDetails = usedService.CloseOrderDetails(orderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
                     if (string.IsNullOrEmpty(PartNumber))
                     {
                         ModelState.AddModelError("PartNumber", "This field required");

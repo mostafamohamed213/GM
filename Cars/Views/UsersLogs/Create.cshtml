@@ -1,0 +1,53 @@
+﻿@model Cars.Models.UsersLogs
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_AuthenticatedLayout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>UsersLogs</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="UserIP" class="control-label"></label>
+                <input asp-for="UserIP" class="form-control" />
+                <span asp-validation-for="UserIP" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserCity" class="control-label"></label>
+                <input asp-for="UserCity" class="form-control" />
+                <span asp-validation-for="UserCity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserRegion" class="control-label"></label>
+                <input asp-for="UserRegion" class="form-control" />
+                <span asp-validation-for="UserRegion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreateDts" class="control-label"></label>
+                <input asp-for="CreateDts" class="form-control" />
+                <span asp-validation-for="CreateDts" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserID" class="control-label"></label>
+                <select asp-for="UserID" class ="form-control" asp-items="ViewBag.UserID"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

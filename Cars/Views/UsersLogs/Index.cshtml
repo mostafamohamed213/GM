@@ -5,11 +5,11 @@
     Layout = "~/Views/Shared/_AuthenticatedLayout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Users Logs</h1>
 
-<p>
+@*<p>
     <a asp-action="Create">Create New</a>
-</p>
+</p>*@
 
 <form asp-action="Index" method="get">
     <div class="form-actions row">
@@ -39,6 +39,9 @@
     <thead>
         <tr>
             <th>
+                UserName
+            </th>
+            <th>
                 IP
             </th>
             <th>
@@ -50,33 +53,32 @@
             <th>
                 Date
             </th>
-            <th>
-                UserName
-            </th>
-     
+
+
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserIP)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserCity)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserRegion)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CreateDts)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.User.UserName)
-                </td>
-             
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserIP)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserCity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserRegion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreateDts)
+            </td>
+
+
+        </tr>
         }
     </tbody>
 </table>

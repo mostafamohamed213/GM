@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer localizer
 @{
-    ViewData["Title"] = "Vendor Location";
+    ViewData["Title"] = "Runners";
     int counter = 1;
 }
 
@@ -85,6 +85,8 @@
             <tbody>
                 @foreach (var item in Model.items)
                 {
+                    @if (item.Enable)
+                    {
                     <tr>
                         <td>
                             @counter
@@ -113,8 +115,9 @@
                         </td>
 
                     </tr>
-                    counter++;
-                }
+                            counter++;
+                        }
+                    }
 
             </tbody>
         </table>

@@ -87,6 +87,8 @@
             <tbody>
                 @foreach (var item in Model.items)
                 {
+                    if (item.Enable)
+                    {
                     <tr>
                         <td>
                             @counter
@@ -115,7 +117,8 @@
                         </td>
 
                     </tr>
-                    counter++;
+                        counter++;
+                    }
                 }
 
             </tbody>

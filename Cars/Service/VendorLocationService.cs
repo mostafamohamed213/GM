@@ -20,7 +20,7 @@ namespace Cars.Service
         {
            
           
-            List<VendorLocation> allVendors = db.VendorLocations.Skip((currentPage - 1) * TablesMaxRows.IndexVendorMaxRows).Take(TablesMaxRows.IndexVendorMaxRows).ToList();
+            List<VendorLocation> allVendors = db.VendorLocations.Where(v => v.Enable).Skip((currentPage - 1) * TablesMaxRows.IndexVendorMaxRows).Take(TablesMaxRows.IndexVendorMaxRows).ToList();
             try
             {
                 if (allVendors is not null)
@@ -44,7 +44,7 @@ namespace Cars.Service
         {
             PagingViewModel<VendorLocation> viewModel = new PagingViewModel<VendorLocation>();
             viewModel.items = vendors.ToList();
-            var itemsCount = vendors.Count();
+            var itemsCount = db.VendorLocations.Where(v=>v.Enable).Count();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexVendorMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
@@ -84,7 +84,7 @@ namespace Cars.Service
         {
             try
             {
-                VendorLocation vedorLocation = db.VendorLocations.FirstOrDefault(v=>v.VendorLocationID== vendorLocationID);
+                VendorLocation vedorLocation = db.VendorLocations.FirstOrDefault(v=>v.VendorLocationID== vendorLocationID && v.Enable);
                 if(vedorLocation!=null)
                 {
                     var orderlines = db.OrderDetails.Where(or => or.VendorLocationID == vedorLocation.VendorLocationID).FirstOrDefault();
@@ -92,7 +92,7 @@ namespace Cars.Service
                     {
                         return -1;
                     }
-                    db.VendorLocations.Remove(vedorLocation);
+                    vedorLocation.Enable = false;
                     db.SaveChanges();
                     return vedorLocation.VendorLocationID;
                 }
@@ -111,7 +111,7 @@ namespace Cars.Service
         {
             try
             {
-                VendorLocation EditVendorLocation = db.VendorLocations.FirstOrDefault(c => c.VendorLocationID == VendorLocationID);
+                VendorLocation EditVendorLocation = db.VendorLocations.FirstOrDefault(c => c.VendorLocationID == VendorLocationID && c.Enable);
                 if (EditVendorLocation is null)
                 {
                     return 0;
@@ -133,7 +133,7 @@ namespace Cars.Service
         {
             try
             {
-                VendorLocation vednor = db.VendorLocations.Where(v => v.VendorLocationID == VendorId).FirstOrDefault();
+                VendorLocation vednor = db.VendorLocations.Where(v => v.VendorLocationID == VendorId && v.Enable).FirstOrDefault();
                 if (vednor is not null)
                 {
                     return vednor;

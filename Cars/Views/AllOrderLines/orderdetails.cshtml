@@ -155,7 +155,8 @@
 </div>
 @section Scripts {
     <script>
-        //window.onbeforeunload = OpenOrderDetails("@Model.OrderDetailsID");
+               ChangeColorSidebarItem("", "aAllOrderLines");
+
         window.addEventListener('beforeunload', function (e) {
            OpenOrderDetails("@Model.OrderDetailsID");
         });

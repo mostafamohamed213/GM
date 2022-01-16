@@ -5,7 +5,66 @@
     ViewData["Title"] = "Labor";
     int counter = 1;
 }
-
+<form class="form" id="typefilter" method="get" asp-action="GetOrderLines" asp-controller="Labor" asp-route-currentPage="1">
+    <div class="form-group col-auto">
+        <div class="row">
+            <div class="col-md-2">
+                <input type="hidden" value="1" name="currentPage" />
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Type</span>
+                    <select name="type" id="typefilter" class="custom-select">
+                        <option value="all">all </option>
+                        @foreach (OrderDetailsType typ in ViewData["type"] as IList<OrderDetailsType>)
+                        {
+                            if (TempData["lastype"] != null && TempData["lastype"].ToString() == @typ.NameEn)
+                            {
+                                <option value="@typ.NameEn" selected>@typ.NameEn </option>
+                            }
+                            else
+                            {
+                                <option value="@typ.NameEn">@typ.NameEn </option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Vendor</span>
+                    <select name="vendor" id="vendorfilter" class="custom-select">
+                        <option value="all">all </option>
+                        @foreach (VendorLocation vendor in ViewData["vendor"] as IList<VendorLocation>)
+                        {
+                            if (TempData["lastvendor"] != null && TempData["lastvendor"].ToString() == @vendor.NameEn)
+                            {
+                                <option value="@vendor.VendorLocationID" selected>@vendor.NameEn </option>
+                            }
+                            else
+                            {
+                                <option value="@vendor.VendorLocationID">@vendor.NameEn </option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Price From</span>
+                    <input type="number" name="from" class="form-control" aria-label="Amount" />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Price To</span>
+                    <input type="number" name="to" class="form-control" aria-label="Amount" />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <input class="btn btn-primary " style="" type="submit" value="Search" />
+            </div>
+        </div>
+    </div>
+</form>
 <div class="card shadow">
     <div class="card-body">
         <div class="toolbar">
@@ -52,74 +111,7 @@
 
                 </div>
             </form>
-            <form class="form" id="typefilter" method="get" asp-action="GetOrderLines" asp-controller="Labor" asp-route-currentPage="1">
-                <div class="form-group col-auto">
-                    <div class="input-group col-12">
-                        <input type="hidden" value="1" name="currentPage" />
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Type</span>
-                        </div>
-                       
-                        <select name="type" id="typefilter" class="custom-select col-4">
-                            <option value="all">all </option>
-                            @foreach (OrderDetailsType typ in ViewData["type"] as IList<OrderDetailsType>)
-                            {
-                                if (TempData["lastype"] != null && TempData["lastype"].ToString() == @typ.NameEn)
-                                {
-                                    <option value="@typ.NameEn" selected>@typ.NameEn </option>
-                                }
-                                else
-                                {
-                                    <option value="@typ.NameEn">@typ.NameEn </option>
-                                }
-                            }
-                        </select>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Vendor Location:</span>
-                        </div>
 
-                        <select name="vendor" id="vendorfilter" class="custom-select col-4">
-                            <option value="all">all </option>
-                            @foreach (VendorLocation vendor in ViewData["vendor"] as IList<VendorLocation>)
-                            {
-                                if (TempData["lastvendor"] != null && TempData["lastvendor"].ToString() == @vendor.NameEn)
-                                {
-                                    <option value="@vendor.VendorLocationID" selected>@vendor.NameEn </option>
-                                }
-                                else
-                                {
-                                    <option value="@vendor.VendorLocationID">@vendor.NameEn </option>
-                                }
-                            }
-                        </select>
-                    </div>
-                    <br /> <br />
-                        <div class="input-group col-12">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">Price From</span>
-                            </div>
-                            <input type="number" name="from" class="form-control" aria-label="Amount" />
-                            <div class="input-group-append">
-                                <span class="input-group-text">EG</span>
-                            </div>
-                            &nbsp; &nbsp; &nbsp; &nbsp;
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">Price To</span>
-                            </div>
-                            <input type="number" name="to" class="form-control" aria-label="Amount" />
-                            <div class="input-group-append">
-                                <span class="input-group-text">EG</span>
-                            </div>
-                        </div>
-
-
-                        <br /><br />
-                        <div class="text-center">
-                        <input class="btn btn-primary " style="" type="submit" value="Search" />
-                            </div>
-                    </div>
-</form>
 
         </div>
         <!-- table -->
@@ -129,14 +121,13 @@
                     <th>#</th>
                     <th>@localizer["ID"]</th>
                     <th>@localizer["Items"]</th>
-
-
+                    <th>@localizer["Price"]</th>
                     <th>@localizer["Type"]</th>
-                    <th>@localizer["Approved"]</th>
+                    <th>@localizer["Vendor"]</th>
                     @*
-                        <th>@localizer["Brand"]</th>
-                        <th>@localizer["Model"]</th>
-                        <th>@localizer["Year"]</th>*@
+        <th>@localizer["Brand"]</th>
+        <th>@localizer["Model"]</th>
+        <th>@localizer["Year"]</th>*@
                     <th>@localizer["Date"]</th>
                     <th></th>
                     <th></th>
@@ -145,48 +136,41 @@
             <tbody>
                 @foreach (var item in Model.items)
                 {
-                    <tr>
-                        <td>
-                            @counter
-                        </td>
-                        <td>
-                            @(item.UserBranch is not null ? item.UserBranch.Branch.BranchIP : "00"):@item.OrderID:@item.OrderDetailsID
-                        </td>
-                        <td>
-                            @item.Items
-                        </td>
-                        <td>
-                            @item.OrderDetailsType.NameEn
-                        </td>
-                        <td>
-                            @if (item.IsApproved.HasValue)
-                            {
-                                if (item.IsApproved.Value)
-                                {
-                                    <span class="fe fe-24 fe-check"></span>
-                                }
-                                else
-                                {
-                                    <span class="fe fe-24 fe-x"></span>
-                                }
-                            }
-                        </td>
-                        <td>
-                            @item.DTsCreate
-                        </td>
-                        @if (string.IsNullOrEmpty(item.Labor_Hours.ToString()) && string.IsNullOrEmpty(item.Labor_Value.ToString()))
+                <tr>
+                    <td>
+                        @counter
+                    </td>
+                    <td>
+                        @(item.UserBranch is not null ? item.UserBranch.Branch.BranchIP : "00"):@item.OrderID:@item.OrderDetailsID
+                    </td>
+                    <td>
+                        @item.Items
+                    </td>
+                    <td>
+                        @item.Price
+                    </td>
+                    <td>
+                        @item.OrderDetailsType.NameEn
+                    </td>
+                    <td>
+                        @item.VendorLocation.NameEn
+                    </td>
+                    <td>
+                        @item.DTsCreate
+                    </td>
+                    @if (string.IsNullOrEmpty(item.Labor_Hours.ToString()) && string.IsNullOrEmpty(item.Labor_Value.ToString()))
+                    {
+
+                        @if (item.StatusID != 4)
                         {
 
-                            @if (item.StatusID != 4)
-                            {
-
-                                <td>
-                                    <a title="@localizer["Edit"]" asp-action="AddLaborvalues" asp-controller="Labor" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-success"></span></span></a>
-                                </td>
-                            }
+                            <td>
+                                <a title="@localizer["Edit"]" asp-action="AddLaborvalues" asp-controller="Labor" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-success"></span></span></a>
+                            </td>
                         }
+                    }
 
-                    </tr>
+                </tr>
                     counter++;
                 }
 
@@ -226,7 +210,7 @@
 </div>
 @section Scripts {
     <script>
-        ChangeColorSidebarItem("anavbarOrders", "aOrderLines");
+        ChangeColorSidebarItem("", "addLabor");
 
     </script>
 

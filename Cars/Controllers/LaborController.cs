@@ -123,8 +123,7 @@ namespace Cars.Controllers
                             Active = true,
                         };
                         db.Add(workflowOrder);
-                        db.SaveChanges();
-                    
+                        db.SaveChanges();                    
                         long orderDetailsId = services.OpenOrderDetails(orderDetails.OrderDetailsID);
                     if (orderDetailsId > 0)
                     {

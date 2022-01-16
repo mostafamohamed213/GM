@@ -82,7 +82,7 @@
                 {
                 <tr>
                     <td>@counter</td>
-                    <td>@((item.UserBranch==null)?"00":item.UserBranch.BranchID):@item.OrderID:@item.OrderDetailsID</td>
+                    <td>ID : @((item.UserBranch==null||item.UserBranch.Branch==null||string.IsNullOrEmpty(item.UserBranch.Branch.BranchIP))?"00":item.UserBranch.Branch.BranchIP):@item.OrderID:@item.OrderDetailsID</td>
                     <td>@item.Items</td>
                     <td>@item.Quantity</td>
                     <td>@item.Price</td>

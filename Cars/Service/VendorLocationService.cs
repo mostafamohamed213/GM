@@ -87,7 +87,7 @@ namespace Cars.Service
                 VendorLocation vedorLocation = db.VendorLocations.FirstOrDefault(v=>v.VendorLocationID== vendorLocationID);
                 if(vedorLocation!=null)
                 {
-                    var orderlines = db.OrderDetails.Where(or => or.VendorLocationID == vedorLocation.VendorLocationID);
+                    var orderlines = db.OrderDetails.Where(or => or.VendorLocationID == vedorLocation.VendorLocationID).FirstOrDefault();
                     if(orderlines!=null)
                     {
                         return -1;

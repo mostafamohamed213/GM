@@ -60,6 +60,16 @@
 
         </div>
         <!-- table -->
+        @if (TempData["ErrorMessage"].ToString() != "")
+        {
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Sorry!</strong> @TempData["ErrorMessage"].ToString();
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+        }
         <table class="table table-borderless table-hover">
             <thead>
                 <tr>
@@ -108,16 +118,7 @@
 
             </tbody>
         </table>
-        @if (TempData["ErrorMessage"].ToString() != "")
-        {
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>Sorry!</strong> @TempData["ErrorMessage"].ToString();
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
 
-        }
         <nav aria-label="Table Paging" class="mb-0 text-muted">
             <ul class="pagination justify-content-center mb-0">
                 <li class='page-item @(Model.CurrentPageIndex == 1 ? "disabled":"")' id="dataTable_previous">

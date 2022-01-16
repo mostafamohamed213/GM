@@ -85,7 +85,7 @@ namespace Cars.Service
                 Runner runner = db.Runners.FirstOrDefault(r => r.RunnerID == RunnerID);
                 if (runner != null)
                 {
-                    var orderlines = db.OrderDetails.Where(or => or.RunnerID == runner.RunnerID);
+                    var orderlines = db.OrderDetails.Where(or => or.RunnerID == runner.RunnerID).FirstOrDefault();
                     if (orderlines != null)
                     {
                         return -1;

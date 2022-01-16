@@ -66,7 +66,7 @@
                     <div class="col-md-4">
                         @if (Model.StatusID != 1)
                         {
-                            <h3>ID : 01:@Model.OrderID</h3>
+                        <h3>ID : @(Model.UserBranch is not null ? Model.UserBranch.Branch.BranchIP : "00"):@Model.OrderID</h3>
                         }
 
                     </div>
@@ -81,7 +81,7 @@
     <div class="card-body">
         @if (Model.StatusID != 1)
         {
-            <h3> ID :01:@Model.OrderID:@Model.OrderDetailsID</h3>
+        <h3> ID : @(Model.UserBranch is not null ? Model.UserBranch.Branch.BranchIP : "00"):@Model.OrderID:@Model.OrderDetailsID</h3>
         }
         <form class="needs-validation" asp-action="AddLaborvalues" asp-controller="Labor" method="post">
             <div class="row">

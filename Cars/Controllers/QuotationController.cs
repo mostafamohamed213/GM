@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -44,6 +45,30 @@ namespace Cars.Controllers
             }
         }
         [HttpGet]
+        public IActionResult SearchQuotations(string search)
+        {
+
+            try
+            {
+                long searchId;
+                if (string.IsNullOrEmpty(search) && long.TryParse(search,out searchId))
+                {
+                    return RedirectToAction("Index", "Quotation", new { currentPage = 1 });
+                }
+                else
+                {
+                    ViewData["CurrentFilter"] = search;
+                    ViewBag.countOrderLines = services.getCountOrderLines();
+                    return View("Index", services.SearchQuotations(search));
+                }
+
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+        }
+        [HttpGet]
         public IActionResult CreateQuotation()
         {
             try
@@ -63,7 +88,7 @@ namespace Cars.Controllers
                 List<long> ids = JsonSerializer.Deserialize<List<long>>(orderLinesIdList);
                 if (ids.Count > 0)
                 {
-                    CreateQuotationViewModel model = services.CreateQuotation(ids);
+                    CreateQuotationViewModel model = services.CreateQuotation(ids, User.FindFirstValue(ClaimTypes.NameIdentifier));
                     if (model.status == -2)
                     {
                         string val = "Order Lines -> ";
@@ -114,7 +139,7 @@ namespace Cars.Controllers
                         var path1 = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot/Resources/Quotation/{QuotationId}", file.FileName);
                         var stream = new FileStream(path1, FileMode.Create);
                         file.CopyTo(stream);
-                        services.CreateFilePath($"/Resources/Quotation/{QuotationId}/{file.FileName}", QuotationId, file.FileName);
+                        services.CreateFilePath($"/Resources/Quotation/{QuotationId}/{file.FileName}", QuotationId, file.FileName, User.FindFirstValue(ClaimTypes.NameIdentifier));
                     }                   
                 }
                 return View("Confirmation", QuotationId);
@@ -150,7 +175,7 @@ namespace Cars.Controllers
         {
             try
             {
-               int status= services.Confirmation(QuotationId);
+               int status= services.Confirmation(QuotationId, User.FindFirstValue(ClaimTypes.NameIdentifier));
                 if (status == 1)
                 {
                     return RedirectToAction("Display", "Quotation",new { quotationID = QuotationId });

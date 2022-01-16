@@ -19,7 +19,7 @@ namespace Cars.Service
 
         public PagingViewModel<OrderDetails> GetOrderLinesUsed(int currentPage)
         {
-            var orders = db.OrderDetails.Where(c => c.StatusID != 1 && c.StatusID != 5 && !string.IsNullOrEmpty(c.UsedByUser)).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexOrderLinesUsedMaxRows).Take(TablesMaxRows.IndexOrderLinesUsedMaxRows).ToList();
+            var orders = db.OrderDetails.Where(c => c.StatusID != 1 && c.StatusID != 5 && !string.IsNullOrEmpty(c.UsedByUser)).Include(c=>c.UserBranch.Branch).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexOrderLinesUsedMaxRows).Take(TablesMaxRows.IndexOrderLinesUsedMaxRows).ToList();
 
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             //var Brands = unitOfWork.Brands.
@@ -31,6 +31,21 @@ namespace Cars.Service
             viewModel.CurrentPageIndex = currentPage;
             viewModel.itemsCount = itemsCount;
             viewModel.Tablelength = TablesMaxRows.IndexOrderLinesUsedMaxRows;
+            return viewModel;
+        }
+
+        internal PagingViewModel<OrderDetails> SearchOrderLines(string search)
+        {
+            var orders = db.OrderDetails.Where(c => c.StatusID != 1 && c.StatusID != 5 && !string.IsNullOrEmpty(c.UsedByUser) && c.Items.Trim().ToLower().Contains(search.Trim().ToLower())).
+               Include("OrderDetailsType").Include(c => c.UserBranch.Branch).Take(100).ToList();
+            PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
+            viewModel.items = orders.ToList();
+            var itemsCount = orders.Count;
+            double pageCount = 1;
+            viewModel.PageCount = (int)Math.Ceiling(pageCount);
+            viewModel.CurrentPageIndex = 1;
+            viewModel.itemsCount = itemsCount;
+            viewModel.Tablelength = 100;
             return viewModel;
         }
         public PagingViewModel<OrderDetails> getOrderLinesUsedWithChangelength(int currentPageIndex, int length)
@@ -57,10 +72,12 @@ namespace Cars.Service
         }
         internal OrderDetails GetOrderDetailsByOrderDetailsID(long orderDetailsID)
         {
-            var orderDetails = db.OrderDetails.Where(c => c.StatusID != 5).Include("OrderDetailsType").Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
+            var orderDetails = db.OrderDetails.Where(c => c.StatusID != 5).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Include("Order").Include(c=>c.Order.UserBranch.Branch).Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
            
           
             return orderDetails;
         }
+
+
     }
 }

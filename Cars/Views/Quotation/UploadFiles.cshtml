@@ -4,17 +4,17 @@
 }
 
 @*<form enctype="multipart/form-data" method="post" asp-controller="Quotation" asp-action="UploadFiles">
-    <dl>
-        <dt>
-            <label>Upload</label>
-        </dt>
-        <dd>
-            <input type="file" name="FormFiles" id="FormFiles" multiple />
-            <input type="hidden" asp-for="QuotationId" />
-        </dd>
-    </dl>
-    <input class="btn btn-success" type="submit" value="Upload and continue" />
-</form>*@
+        <dl>
+            <dt>
+                <label>Upload</label>
+            </dt>
+            <dd>
+                <input type="file" name="FormFiles" id="FormFiles" multiple />
+                <input type="hidden" asp-for="QuotationId" />
+            </dd>
+        </dl>
+        <input class="btn btn-success" type="submit" value="Upload and continue" />
+    </form>*@
 
 
 
@@ -24,7 +24,7 @@
             <div class="card-header">
                 <strong class="card-title">Upload Files</strong>
             </div>
-            <div class="card-body">              
+            <div class="card-body">
                 <form enctype="multipart/form-data" method="post" asp-controller="Quotation" asp-action="UploadFiles">
                     <dl>
                         <dt>
@@ -41,5 +41,13 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        ChangeColorSidebarItem("anavbarQuotation", "aAddQuotations");
+
+    </script>
+
+}
 
 

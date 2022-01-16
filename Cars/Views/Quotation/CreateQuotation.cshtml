@@ -67,7 +67,7 @@
                                         @foreach (var order in Model)
                                         {
                                             <tr>
-                                                <td>01:@order.OrderID:@order.OrderDetailsID</td>
+                                                <td>@(order.UserBranch is not null ? order.UserBranch.Branch.BranchIP : "00"):@order.OrderID:@order.OrderDetailsID</td>
                                                 <td>@order.Items</td>
                                                 <td>@order.Quantity</td>
                                                 <td>@order.Price</td>
@@ -126,7 +126,7 @@
             });
     </script>
     <script>
-        ChangeColorSidebarItem("anavbarQuotation", "aQuotations");
+        ChangeColorSidebarItem("anavbarQuotation", "aAddQuotations");
         let orderLinesIds = [];
         function addOrRemoveOrderLinesId(element, orderLineid) {
             if (element.checked) {

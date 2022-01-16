@@ -28,8 +28,21 @@ namespace Cars.Service
             viewModel.itemsCount = itemsCount;
             viewModel.Tablelength = TablesMaxRows.IndexQuotationMaxRows;
             return viewModel;
-        }
 
+        }
+        internal PagingViewModel<Quotation> SearchQuotations(string search)
+        {
+            var quotations = db.Quotations.Where(c => c.StatusID == 2 && c.QuotationID == long.Parse(search)).Include("Status").Take(100).ToList();
+            PagingViewModel<Quotation> viewModel = new PagingViewModel<Quotation>();
+            viewModel.items = quotations.ToList();
+            var itemsCount = quotations.Count;
+            double pageCount = 1;
+            viewModel.PageCount = (int)Math.Ceiling(pageCount);
+            viewModel.CurrentPageIndex = 1;
+            viewModel.itemsCount = itemsCount;
+            viewModel.Tablelength = 100;
+            return viewModel;
+        }
         internal long getCountOrderLines()
         {
           return db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 4 && !c.QuotationID.HasValue).Count();
@@ -37,7 +50,7 @@ namespace Cars.Service
 
         internal List<OrderDetails> getOrderLines()
         {
-           return db.OrderDetails.Include(c=>c.Order).Include(c => c.Order.Customer).Include(c => c.Order.Customer.CustomerContacts).Where(c => c.StatusID == 2 && c.WorkflowID == 4 && !c.QuotationID.HasValue).ToList();
+           return db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 4 && !c.QuotationID.HasValue).Include(c=>c.UserBranch.Branch).Include(c=>c.Order).Include(c => c.Order.Customer).Include(c => c.Order.Customer.CustomerContacts).ToList();
 
         }
 
@@ -48,7 +61,7 @@ namespace Cars.Service
         }
 
         readonly object _object = new object();
-        internal CreateQuotationViewModel CreateQuotation(List<long> ids)
+        internal CreateQuotationViewModel CreateQuotation(List<long> ids ,string User)
         {
             try
             {
@@ -70,7 +83,7 @@ namespace Cars.Service
                         OrderDetails = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 4 && !c.QuotationID.HasValue && ids.Contains(c.OrderDetailsID)).ToList(),
                         StatusID = 2,
                         DTsCreate = DateTime.Now,
-                        SystemUserCreate = "1",
+                        SystemUserCreate = User,
                     };
                     db.Quotations.Add(quotation);
                     db.SaveChanges();
@@ -78,7 +91,7 @@ namespace Cars.Service
                     {
                         StatusID = 2,
                         QuotationID = quotation.QuotationID,
-                        SystemUserID = "1",
+                        SystemUserID = User,
                         DTsCreate = DateTime.Now,
                     };
                     db.QuotationStatusLogs.Add(log);
@@ -106,13 +119,13 @@ namespace Cars.Service
            
         }
 
-        internal int Confirmation(long quotationId)
+        internal int Confirmation(long quotationId,string user)
         {
             Quotation quotation = db.Quotations.Include(c=>c.OrderDetails).FirstOrDefault(c => c.QuotationID == quotationId);
             if (quotation is not null)
             {
                 quotation.Confirmed = true;
-                quotation.SystemUserUpdate = "1";
+                quotation.SystemUserUpdate = user;
                 quotation.DTsUpdate = DateTime.Now;
                 foreach (var orderDetails in quotation.OrderDetails)
                 {
@@ -121,7 +134,7 @@ namespace Cars.Service
                         DTsCreate =DateTime.Now,
                         Active=true,
                         OrderDetailsID=orderDetails.OrderDetailsID,
-                        SystemUserID="1",
+                        SystemUserID=user,
                         WorkflowID=  4,                        
                     });
                 }
@@ -133,12 +146,12 @@ namespace Cars.Service
 
         internal Quotation getQuotationByQuotationID(long quotationID)
         {
-          return db.Quotations.Include(c=>c.QuotationDocument).Include(c=>c.OrderDetails).FirstOrDefault(c => c.QuotationID == quotationID);
+          return db.Quotations.Include(c=>c.QuotationDocument).Include(c=>c.OrderDetails).Include("OrderDetails.UserBranch.Branch").FirstOrDefault(c => c.QuotationID == quotationID);
         }
 
-        internal void CreateFilePath(string path ,long quotationID,string filename)
+        internal void CreateFilePath(string path ,long quotationID,string filename,string User)
         {
-            db.QuotationDocuments.Add(new QuotationDocument() { DTsCreate=DateTime.Now, Path = path ,QuotationID = quotationID ,SystemUserID = "1",Comment=filename});
+            db.QuotationDocuments.Add(new QuotationDocument() { DTsCreate=DateTime.Now, Path = path ,QuotationID = quotationID ,SystemUserID = User,Comment=filename});
             db.SaveChanges();
         }
     }

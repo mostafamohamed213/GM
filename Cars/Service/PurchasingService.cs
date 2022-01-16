@@ -22,7 +22,7 @@ namespace Cars.Service
         }
         public PagingViewModel<OrderDetails> getOrderDetails(int currentPage)
         {
-            var orderDetails = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 6).Include(c=>c.OrderDetailsType).Include(c=>c.VendorLocation).Skip((currentPage - 1) * TablesMaxRows.IndexPurchasingMaxRows).Take(TablesMaxRows.IndexPurchasingMaxRows).ToList();
+            var orderDetails = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 6).Include(c => c.UserBranch.Branch).Include(c=>c.OrderDetailsType).Include(c=>c.VendorLocation).Skip((currentPage - 1) * TablesMaxRows.IndexPurchasingMaxRows).Take(TablesMaxRows.IndexPurchasingMaxRows).ToList();
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             viewModel.items = orderDetails.ToList();
             var itemsCount = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 6).Where(c => c.StatusID == 2).Count();
@@ -31,6 +31,20 @@ namespace Cars.Service
             viewModel.CurrentPageIndex = currentPage;
             viewModel.itemsCount = itemsCount;
             viewModel.Tablelength = TablesMaxRows.IndexPurchasingMaxRows;
+            return viewModel;
+        }
+        internal PagingViewModel<OrderDetails> SearchOrderLines(string search)
+        {
+            var orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 6 && c.Items.Trim().ToLower().Contains(search.Trim().ToLower())).
+              Include(c => c.OrderDetailsType).Include(c => c.VendorLocation).Include(c => c.UserBranch.Branch).Take(100).ToList();
+            PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
+            viewModel.items = orders.ToList();
+            var itemsCount = orders.Count;
+            double pageCount = 1;
+            viewModel.PageCount = (int)Math.Ceiling(pageCount);
+            viewModel.CurrentPageIndex = 1;
+            viewModel.itemsCount = itemsCount;
+            viewModel.Tablelength = 100;
             return viewModel;
         }
 
@@ -46,7 +60,7 @@ namespace Cars.Service
 
         internal OrderDetails getOrderDetailsByID(long orderDetailsID)
         {
-          return db.OrderDetails.Include(c => c.OrderDetailsType).Include(c => c.VendorLocation).FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
+          return db.OrderDetails.Include(c => c.UserBranch.Branch).Include(c => c.OrderDetailsType).Include(c => c.VendorLocation).FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
         }
 
         public PagingViewModel<OrderDetails> getOrdersWithChangelength(int currentPageIndex, int length)
@@ -55,7 +69,7 @@ namespace Cars.Service
             return getOrderDetails(currentPageIndex);
         }
 
-        internal int AssignVendor(long orderDetailsID, int runnerID)
+        internal int AssignVendor(long orderDetailsID, int runnerID,string user)
         {
             OrderDetails orderDetails = db.OrderDetails.FirstOrDefault(c=>c.OrderDetailsID == orderDetailsID);
             if (orderDetails is not null)
@@ -67,7 +81,7 @@ namespace Cars.Service
                     DTsCreate = DateTime.Now,
                     Active = true,
                     OrderDetailsID = orderDetails.OrderDetailsID,
-                    SystemUserID = "1",
+                    SystemUserID = user,
                     WorkflowID = 6,
                 });
                 db.SaveChanges();
@@ -77,7 +91,7 @@ namespace Cars.Service
         }
 
         readonly object _object = new object();
-        internal OrderDetails CloseOrderDetails(long orderDetailsID)
+        internal OrderDetails CloseOrderDetails(long orderDetailsID,string user)
         {
             try
             {
@@ -86,16 +100,16 @@ namespace Cars.Service
                     var orderDetails = getOrderDetailsByID(orderDetailsID);
                     if (orderDetails is not null && string.IsNullOrEmpty(orderDetails.UsedByUser))
                     {
-                        orderDetails.UsedByUser = "1";
+                        orderDetails.UsedByUser = user;
                         orderDetails.UsedDateTime = DateTime.Now;
                         db.SaveChanges();
                         return orderDetails;
                     }
-                    else if (orderDetails is not null && !string.IsNullOrEmpty(orderDetails.UsedByUser) && orderDetails.UsedByUser == "1") //equals current user
+                    else if (orderDetails is not null && !string.IsNullOrEmpty(orderDetails.UsedByUser) && orderDetails.UsedByUser == user) //equals current user
                     {
                         return orderDetails;
                     }
-                    else if (orderDetails is not null && !string.IsNullOrEmpty(orderDetails.UsedByUser) && orderDetails.UsedByUser != "1")// not equals current user
+                    else if (orderDetails is not null && !string.IsNullOrEmpty(orderDetails.UsedByUser) && orderDetails.UsedByUser != user)// not equals current user
                     {
                         return null;
                     }
@@ -114,7 +128,7 @@ namespace Cars.Service
             }
         }
 
-        internal int CancelOrderDetails(CancelOrderDetailsViewModel model)
+        internal int CancelOrderDetails(CancelOrderDetailsViewModel model,string user)
         {
             
             OrderDetails orderDetails = db.OrderDetails.FirstOrDefault(c=>c.OrderDetailsID == model.OrderDetailsID);
@@ -122,7 +136,7 @@ namespace Cars.Service
             OrderDetailsStatusLog log = new OrderDetailsStatusLog
             {
                 DTsCreate = DateTime.Now,
-                SystemUserID = "1",
+                SystemUserID = user,
                 OrderDetailsID=orderDetails.OrderDetailsID,
                 WorkflowID =orderDetails.WorkflowID,
                 Reason=model.Reason,
@@ -143,7 +157,7 @@ namespace Cars.Service
                     var path1 = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot/Resources/Status/Cancel/{orderDetails.OrderDetailsID}", file.FileName);
                     var stream = new FileStream(path1, FileMode.Create);
                     file.CopyTo(stream);
-                    db.StatusLogDocuments.Add(new StatusLogDocument() { DTsCreate = DateTime.Now, Path = $"/Resources/Status/Cancel/{orderDetails.OrderDetailsID}/{file.FileName}", SystemUserID = "1", Details = file.FileName,OrderDetailsStatusLogID = log.OrderDetailsStatusLogID });
+                    db.StatusLogDocuments.Add(new StatusLogDocument() { DTsCreate = DateTime.Now, Path = $"/Resources/Status/Cancel/{orderDetails.OrderDetailsID}/{file.FileName}", SystemUserID = user, Details = file.FileName,OrderDetailsStatusLogID = log.OrderDetailsStatusLogID });
                 }
             }
             db.SaveChanges();

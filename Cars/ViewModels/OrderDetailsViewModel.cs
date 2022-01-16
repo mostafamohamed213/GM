@@ -13,9 +13,10 @@ namespace Cars.ViewModels
         public int Quantity { get; set; }
         public bool? IsApproved { get; set; }
         public string type { get; set; }
-        public int BranchID { get; set; }
+        public string BranchIP { get; set; }
         public string PartNumber { get; set; }
         public decimal? Price { get; set; }
         public string Comments { get; set; }
+        public int workflowID { get; set; }
     }
 }

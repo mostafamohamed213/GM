@@ -29,7 +29,7 @@
             <div class="card-body">
                 <div class="row h5">
                     <div class="col-md-3">
-                        @localizer["ID"] :   01:@Model.OrderID:@Model.OrderDetailsID
+                        @localizer["ID"] : @(Model.UserBranch is not null ? Model.UserBranch.Branch.BranchIP : "00"):@Model.OrderID:@Model.OrderDetailsID
                     </div>
                     <div class="col-md-3 border-left border-right">
                         @localizer["Item"] : @Model.Items
@@ -77,19 +77,9 @@
         </form>
     </div>
 </div>
-
-
-
-
-
-
-
-
-@section Scripts {
+@section Scripts{
     <script>
         ChangeColorSidebarItem("anavbarPurchasing", "aPurchasing");
-       
-
     </script>
 }
 

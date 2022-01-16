@@ -57,7 +57,7 @@
                                             @foreach (var order in Model.OrderDetails)
                                             {
                                                 <tr>
-                                                    <td>01:@order.OrderID:@order.OrderDetailsID</td>
+                                                    <td>@(order.UserBranch is not null ? order.UserBranch.Branch.BranchIP : "00"):@order.OrderID:@order.OrderDetailsID</td>
                                                     <td>@order.Items</td>
                                                     <td>@order.Quantity</td>
                                                     <td>@order.Price</td>
@@ -112,7 +112,7 @@
                 <br />
                 @if (!Model.Confirmed)
                 {
-                 <a class="btn btn-success" asp-action="ConfirmationQuotation" asp-controller="Quotation" asp-route-QuotationId="@Model.QuotationID">Confirmed</a>
+                    <a class="btn btn-success" asp-action="ConfirmationQuotation" asp-controller="Quotation" asp-route-QuotationId="@Model.QuotationID">Confirmed</a>
                 }
                 <a class="btn btn-primary" asp-action="Index" asp-controller="Quotation">Back</a>
             </div>
@@ -122,25 +122,29 @@
 </div>
 
 @section Scripts {
+    <script>
+        ChangeColorSidebarItem("anavbarQuotation", "aQuotations");
+
+    </script>
     @*<script>
-        function downloadFiles(quotationDocumentID) {
-            $.ajax({
-                type: "Get",
-                url: "/Quotation/DownloadFile",
-                data: { "quotationDocumentID": quotationDocumentID},
-                success: function (response) {
+            function downloadFiles(quotationDocumentID) {
+                $.ajax({
+                    type: "Get",
+                    url: "/Quotation/DownloadFile",
+                    data: { "quotationDocumentID": quotationDocumentID},
+                    success: function (response) {
 
-                },
-                failure: function (response) {
-                    alert("Error");
-                },
-                error: function (response) {
-                    alert("Error");
-                }
-            });
-        }
-      
+                    },
+                    failure: function (response) {
+                        alert("Error");
+                    },
+                    error: function (response) {
+                        alert("Error");
+                    }
+                });
+            }
 
-    </script>*@
+
+        </script>*@
 
 }

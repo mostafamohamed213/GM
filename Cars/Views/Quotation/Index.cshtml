@@ -7,60 +7,75 @@
     int counter = 1;
 }
 <div class="row">
-    <div class="col-md-10">Quotations</div>
+    <div class="col-md-10">
+        
+        <h2 class="h5 page-title">Quotations</h2>
+    </div>
     <div class="col-md-2"> <a class="btn btn-success" asp-action="CreateQuotation" asp-controller="Quotation">Add Quotation <span class="text-light">(@ViewBag.countOrderLines)</span> </a> </div>
 </div>
 <br />
 <div class="card shadow">
     <div class="card-body">
         <div class="toolbar">
-            <form class="form" id="OrderLinesTablelengthq" method="get" asp-action="ChangeQuotationTablelength" asp-controller="Quotation">
-                <div class="form-row">
-                    <div class="form-group col-auto mr-auto">
-                        <label class="my-1 mr-2 sr-only" for="inlineFormCustomSelectPref13">@localizer["Show"]</label>
-                        <select name="length" class="custom-select mr-sm-2" onchange="document.getElementById('OrderLinesTablelengthq').submit();" id="inlineFormCustomSelectPrefq">
-                            @if (Model.Tablelength == 10)
-                            {
-                                <option value="10" selected>10</option>
-                            }
-                            else
-                            {
-                                <option value="10">10</option>
-                            }
-                            @if (Model.Tablelength == 25)
-                            {
-                                <option value="25" selected>25</option>
-                            }
-                            else
-                            {
-                                <option value="25">25</option>
-                            }
-                            @if (Model.Tablelength == 50)
-                            {
-                                <option value="50" selected>50</option>
-                            }
-                            else
-                            {
-                                <option value="50">50</option>
-                            }
-                            @if (Model.Tablelength == 100)
-                            {
-                                <option value="100" selected>100</option>
-                            }
-                            else
-                            {
-                                <option value="100">100</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="form-group col-auto">
-                        <label for="search" class="sr-only">Search</label>
-                        <input type="text" class="form-control" id="search1" value="" placeholder="Search">
-                    </div>
+            <div class="row">
+                <div class="col-md-1">
+                    <form class="form" id="OrderLinesTablelengthq" method="get" asp-action="ChangeQuotationTablelength" asp-controller="Quotation">
+                        <div class="form-row">
+                            <div class="form-group col-auto mr-auto">
+                                <label class="my-1 mr-2 sr-only" for="inlineFormCustomSelectPref13">@localizer["Show"]</label>
+                                <select name="length" class="custom-select mr-sm-2" onchange="document.getElementById('OrderLinesTablelengthq').submit();" id="inlineFormCustomSelectPrefq">
+                                    @if (Model.Tablelength == 10)
+                                    {
+                                        <option value="10" selected>10</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="10">10</option>
+                                    }
+                                    @if (Model.Tablelength == 25)
+                                    {
+                                        <option value="25" selected>25</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="25">25</option>
+                                    }
+                                    @if (Model.Tablelength == 50)
+                                    {
+                                        <option value="50" selected>50</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="50">50</option>
+                                    }
+                                    @if (Model.Tablelength == 100)
+                                    {
+                                        <option value="100" selected>100</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="100">100</option>
+                                    }
+                                </select>
+                            </div>
+                           
+                        </div>
+                    </form>
                 </div>
-            </form>
+                <div class="col-md-8"></div>
+
+
+                <div class="col-md-3">
+                    <form class="form" id="searchforms" method="get" asp-action="SearchQuotations" asp-controller="Quotation" asp-route-currentPage="1">
+                        <div class="form-group col-auto">
+                            <label for="search" class="sr-only">Search</label>
+                            <input type="text" class="form-control" id="searchs" placeholder="Quotation ID" name="search" value="@ViewData["CurrentFilter"]">
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <!-- table -->
+      
         <table class="table table-borderless table-hover">
             <thead>
                 <tr>
@@ -75,29 +90,29 @@
             <tbody>
                 @foreach (var item in Model.items)
                 {
-                <tr>
-                    <td>
-                        @counter
-                    </td>
-                    <td>
-                        @item.QuotationID
-                    </td>
-                    <td>
-                        @if (item.Confirmed)
-                        {
-                            <span class="fe fe-24 fe-check"></span>
-                        }
-                    </td>
-                    <td>
-                        @item.DTsCreate
-                    </td>
-                    <td>
-                        <a title="@localizer["View"]" asp-action="Display" asp-controller="Quotation" asp-route-quotationID="@item.QuotationID"> <span class="small text-muted"><span class="fe fe-24 fe-clipboard text-success"></span></span></a>
+                    <tr>
+                        <td>
+                            @counter
+                        </td>
+                        <td>
+                            @item.QuotationID
+                        </td>
+                        <td>
+                            @if (item.Confirmed)
+                            {
+                                <span class="fe fe-24 fe-check"></span>
+                            }
+                        </td>
+                        <td>
+                            @item.DTsCreate
+                        </td>
+                        <td>
+                            <a title="@localizer["View"]" asp-action="Display" asp-controller="Quotation" asp-route-quotationID="@item.QuotationID"> <span class="small text-muted"><span class="fe fe-24 fe-clipboard text-success"></span></span></a>
 
-                    </td>
+                        </td>
 
 
-                </tr>
+                    </tr>
                     counter++;
                 }
 

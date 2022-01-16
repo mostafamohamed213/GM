@@ -32,6 +32,28 @@ namespace Cars.Controllers
             }
         }
         [HttpGet]
+        public IActionResult SearchOrderLines(string search)
+        {
+
+            try
+            {
+                if (string.IsNullOrEmpty(search))
+                {
+                    return RedirectToAction("Index", "Pricing", new { currentPage = 1 });
+                }
+                else
+                {
+                    ViewData["CurrentFilter"] = search;
+                    return View("Index", services.SearchOrderLines(search));
+                }
+
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+        }
+        [HttpGet]
         public IActionResult ChangeOrderDetailsTablelength(int length)
         {
             try
@@ -103,7 +125,7 @@ namespace Cars.Controllers
                     return View(orderDetails);
                 }
                
-                int status = services.AddPricingField(orderDetailsID,PartNumber,Price,VendorLocationID,Comments);
+                int status = services.AddPricingField(orderDetailsID,PartNumber,Price,VendorLocationID,Comments, User.FindFirstValue(ClaimTypes.NameIdentifier));
                 if (status > 0 )
                 {
                     usedService.OpenOrderDetails(orderDetailsID);
@@ -149,7 +171,7 @@ namespace Cars.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    OrderDetails parent = services.AddOrderLine(model);
+                    OrderDetails parent = services.AddOrderLine(model, User.FindFirstValue(ClaimTypes.NameIdentifier));
                     if (parent is not null)
                     {
                         return RedirectToAction("EditOrderDetails",new { orderDetailsID  = parent.OrderDetailsID});

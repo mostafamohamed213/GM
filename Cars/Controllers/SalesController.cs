@@ -49,7 +49,7 @@ namespace Cars.Controllers
             {
                 if (string.IsNullOrEmpty(search))
                 {
-                    return RedirectToAction("GetOrders", "Sales",new { urrentPage = 1 });
+                    return RedirectToAction("GetOrders", "Sales",new { currentPage = 1 });
                 }
                 else
                 {
@@ -63,6 +63,30 @@ namespace Cars.Controllers
                 return View("_CustomError");
             }
         }
+        [HttpGet]
+        public IActionResult SearchOrderLines(string search)
+        {
+
+            try
+            {
+                if (string.IsNullOrEmpty(search))
+                {
+                    return RedirectToAction("GetOrderLines", "Sales", new { currentPage = 1 });
+                }
+                else
+                {
+                    ViewData["CurrentFilter"] = search;
+                    return View("OrderLines", orderServices.SearchOrderLines(search));
+                }
+
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+        }
+
+
         [HttpGet]
         public IActionResult ChangeOrderTablelength(int length)
         {
@@ -164,6 +188,29 @@ namespace Cars.Controllers
             try
             {
                 return View("Draft", orderServices.getOrdersDraft(currentPage));
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+        }
+
+        [HttpGet]
+        public IActionResult SearchOrderDraft(string search)
+        {
+
+            try
+            {
+                if (string.IsNullOrEmpty(search))
+                {
+                    return RedirectToAction("Draft", "Sales", new { currentPage = 1 });
+                }
+                else
+                {
+                    ViewData["CurrentFilter"] = search;
+                    return View("Draft", orderServices.SearOrdersDraft(search));
+                }
+
             }
             catch (Exception)
             {

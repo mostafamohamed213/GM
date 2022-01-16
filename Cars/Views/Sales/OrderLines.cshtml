@@ -5,55 +5,70 @@
     ViewData["Title"] = "Order Lines";
     int counter = 1;
 }
+<h2 class="h5 page-title">Order Lines</h2>
 
 <div class="card shadow">
     <div class="card-body">
         <div class="toolbar">
-            <form class="form" id="OrderLinesTablelength" method="get" asp-action="ChangeOrderLinesTablelength" asp-controller="Sales">
-                <div class="form-row">
-                    <div class="form-group col-auto mr-auto">
-                        <label class="my-1 mr-2 sr-only" for="inlineFormCustomSelectPref13">@localizer["Show"]</label>
-                        <select name="length" class="custom-select mr-sm-2" onchange="document.getElementById('OrderLinesTablelength').submit();" id="inlineFormCustomSelectPref13">
-                            @if (Model.Tablelength == 10)
-                            {
-                                <option value="10" selected>10</option>
-                            }
-                            else
-                            {
-                                <option value="10">10</option>
-                            }
-                            @if (Model.Tablelength == 25)
-                            {
-                                <option value="25" selected>25</option>
-                            }
-                            else
-                            {
-                                <option value="25">25</option>
-                            }
-                            @if (Model.Tablelength == 50)
-                            {
-                                <option value="50" selected>50</option>
-                            }
-                            else
-                            {
-                                <option value="50">50</option>
-                            }
-                            @if (Model.Tablelength == 100)
-                            {
-                                <option value="100" selected>100</option>
-                            }
-                            else
-                            {
-                                <option value="100">100</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="form-group col-auto">
-                        <label for="search" class="sr-only">Search</label>
-                        <input type="text" class="form-control" id="search1" value="" placeholder="Search">
-                    </div>
+
+
+            <div class="row">
+                <div class="col-md-1">
+                    <form class="form" id="OrderLinesTablelength" method="get" asp-action="ChangeOrderLinesTablelength" asp-controller="Sales">
+                        <div class="form-row">
+                            <div class="form-group col-auto mr-auto">
+                                <label class="my-1 mr-2 sr-only" for="inlineFormCustomSelectPref13">@localizer["Show"]</label>
+                                <select name="length" class="custom-select mr-sm-2" onchange="document.getElementById('OrderLinesTablelength').submit();" id="inlineFormCustomSelectPref13">
+                                    @if (Model.Tablelength == 10)
+                                    {
+                                        <option value="10" selected>10</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="10">10</option>
+                                    }
+                                    @if (Model.Tablelength == 25)
+                                    {
+                                        <option value="25" selected>25</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="25">25</option>
+                                    }
+                                    @if (Model.Tablelength == 50)
+                                    {
+                                        <option value="50" selected>50</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="50">50</option>
+                                    }
+                                    @if (Model.Tablelength == 100)
+                                    {
+                                        <option value="100" selected>100</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="100">100</option>
+                                    }
+                                </select>
+                            </div>                          
+                        </div>
+                    </form>
+
                 </div>
-            </form>
+                <div class="col-md-8"></div>
+
+
+                <div class="col-md-3">
+                    <form class="form" id="searchforms" method="get" asp-action="SearchOrderLines" asp-controller="Sales" asp-route-currentPage="1">
+                        <div class="form-group col-auto">
+                            <label for="search" class="sr-only">Search</label>
+                            <input type="text" class="form-control" id="searchs" placeholder="Item" name="search" value="@ViewData["CurrentFilter"]">
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
         <!-- table -->
         <table class="table table-borderless table-hover">
@@ -61,14 +76,14 @@
                 <tr>
                     <th>#</th>
                     <th>@localizer["ID"]</th>
-                    <th>@localizer["Items"]</th>
-                    
+                    <th>@localizer["Item"]</th>
+
 
                     <th>@localizer["Type"]</th>
                     <th>@localizer["Approved"]</th>
                     @*<th>@localizer["Brand"]</th>
-        <th>@localizer["Model"]</th>
-        <th>@localizer["Year"]</th>*@
+                        <th>@localizer["Model"]</th>
+                        <th>@localizer["Year"]</th>*@
                     <th>@localizer["Date"]</th>
                     <th></th>
                     <th></th>
@@ -77,66 +92,66 @@
             <tbody>
                 @foreach (var item in Model.items)
                 {
-                <tr>
-                    <td>
-                        @counter
-                    </td>
-                    <td>
-                       01:@item.OrderID:@item.OrderDetailsID
-                    </td>
-                    <td>
-                        @item.Items
-                    </td>
-                    <td>
-                        @item.OrderDetailsType.NameEn
-                    </td>
-                    <td>
-                        @if (item.IsApproved.HasValue)
-                        {
-                            if (item.IsApproved.Value)
+                    <tr>
+                        <td>
+                            @counter
+                        </td>
+                        <td>
+                            @(item.UserBranch is not null ? item.UserBranch.Branch.BranchIP : "00"):@item.OrderID:@item.OrderDetailsID
+                        </td>
+                        <td>
+                            @item.Items
+                        </td>
+                        <td>
+                            @item.OrderDetailsType.NameEn
+                        </td>
+                        <td>
+                            @if (item.IsApproved.HasValue)
                             {
-                                <span class="fe fe-24 fe-check"></span>
+                                if (item.IsApproved.Value)
+                                {
+                                    <span class="fe fe-24 fe-check"></span>
+                                }
+                                else
+                                {
+                                    <span class="fe fe-24 fe-x"></span>
+                                }
+                            }
+                        </td>
+                        <td>
+                            @item.DTsCreate
+                        </td>
+                        @if ((!item.Price.HasValue || item.Price.Value <= 0))
+                        {
+
+                            @if (item.StatusID != 4)
+                            {
+
+                                <td>
+                                    <a title="@localizer["Display"]" asp-action="DisplayOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-file-text  text-primary"></span></span></a>
+                                    <a title="@localizer["Edit"]" asp-action="EditOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-success"></span></span></a>
+                                    <a title="@localizer["Cancel"]" asp-action="CancelOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-x text-warning"></span></span></a>
+                                </td>
                             }
                             else
                             {
-                                <span class="fe fe-24 fe-x"></span>
+                                <td>
+                                    <span class="text-warning">Canceled</span>
+                                </td>
                             }
-                        }
-                    </td>
-                    <td>
-                        @item.DTsCreate
-                    </td>
-                    @if ((!item.Price.HasValue || item.Price.Value <= 0))
-                    {
-
-                        @if (item.StatusID != 4)
-                        {
-
                             <td>
-                                <a title="@localizer["Display"]" asp-action="DisplayOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-file-text  text-primary"></span></span></a>
-                                <a title="@localizer["Edit"]" asp-action="EditOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-success"></span></span></a>
-                                <a title="@localizer["Cancel"]" asp-action="CancelOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-x text-warning"></span></span></a>
+                                <a title="@localizer["Delete"]" asp-action="DeleteOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class=" fe fe-24 fe-x-circle text-danger"></span></span></a>
                             </td>
                         }
                         else
                         {
                             <td>
-                                <span class="text-warning">Canceled</span>
+                                <a title="@localizer["Display"]" asp-action="DisplayOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-file-text  text-primary"></span></span></a>
                             </td>
                         }
-                        <td>
-                            <a title="@localizer["Delete"]" asp-action="DeleteOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class=" fe fe-24 fe-x-circle text-danger"></span></span></a>
-                        </td>
-                    }
-                    else
-                    {
-                        <td>
-                            <a title="@localizer["Display"]" asp-action="DisplayOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-file-text  text-primary"></span></span></a>
-                        </td>
-                    }
 
 
-                </tr>
+                    </tr>
                     counter++;
                 }
 

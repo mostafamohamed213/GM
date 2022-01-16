@@ -150,7 +150,7 @@
                             @counter
                         </td>
                         <td>
-                            01:@item.OrderID:@item.OrderDetailsID
+                            @(item.UserBranch is not null ? item.UserBranch.Branch.BranchIP : "00"):@item.OrderID:@item.OrderDetailsID
                         </td>
                         <td>
                             @item.Items

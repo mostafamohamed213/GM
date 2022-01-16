@@ -33,7 +33,7 @@ namespace Cars.Service
         }
         public PagingViewModel<OrderDetails> getOrderLines(int currentPage)
         {
-            var orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.Price > 0 && c.WorkflowID == 3).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).ToList();
+            var orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.Price > 0 && c.WorkflowID == 3).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).ToList();
 
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             viewModel.items = orders.ToList();
@@ -48,7 +48,7 @@ namespace Cars.Service
 
         public PagingViewModel<OrderDetails> getByType(int currentPage,string? type, decimal? from ,decimal? to,int? vendor)
         {
-            var orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.Price > 0  && c.WorkflowID == 3).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).ToList();
+            var orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.Price > 0  && c.WorkflowID == 3).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).ToList();
 
             
             if (type != "all" && type!=null)
@@ -121,7 +121,7 @@ namespace Cars.Service
         }
         internal OrderDetails GetOrderDetailsByOrderDetailsID(long orderDetailsID)
         {
-            var orderDetails = db.OrderDetails.Where(c => c.StatusID ==2 && c.WorkflowID == 3).Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
+            var orderDetails = db.OrderDetails.Where(c => c.StatusID ==2 && c.WorkflowID == 3).Include(c=>c.UserBranch.Branch).Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
                 return orderDetails;
         }
         internal SelectList GetSelectListOrderDetailsType()

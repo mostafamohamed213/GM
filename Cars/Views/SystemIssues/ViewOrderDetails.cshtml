@@ -66,7 +66,7 @@
                 </div>
                 <div class="row h5">
                     <div class="col-md-4">
-                        ID : 01:@Model.OrderID
+                        ID :   @(Model.Order.UserBranch is not null ? Model.Order.UserBranch.Branch.BranchIP : "00"):@Model.OrderID
                     </div>
                     <div class="col-md-4">
                     </div>
@@ -77,7 +77,7 @@
         </div>
     </div>
     <div class="card-body">
-        <h3> ID :01:@Model.OrderID:@Model.OrderDetailsID</h3>
+        <h3> ID : @(Model.UserBranch is not null ? Model.UserBranch.Branch.BranchIP : "00"):@Model.OrderID:@Model.OrderDetailsID</h3>
         <div class="row">
             <input asp-for="OrderDetailsID" style="display:none" />
             <input asp-for="OrderID" style="display:none" />

@@ -83,7 +83,7 @@
                     <div class="col-md-4">
                         @if (Model.StatusID != 1)
                         {
-                            <span> ID: 01:@Model.OrderID</span>
+                        <span> ID: @(Model.Order.UserBranch is not null ? Model.Order.UserBranch.BranchID : "00"):@Model.OrderID</span>
                         }
 
                     </div>
@@ -98,7 +98,7 @@
     <div class="card-body">
         @if (Model.StatusID != 1)
         {
-            <h3> ID :01:@Model.OrderID:@Model.OrderDetailsID</h3>
+        <h3> ID : @(Model.UserBranch is not null ? Model.UserBranch.Branch.BranchIP : "00"):@Model.OrderID:@Model.OrderDetailsID</h3>
         }
 
         <div class="row">
@@ -160,9 +160,9 @@
                     {
                         @*<a class="btn btn-primary" title="@localizer["Edit"]" asp-action="EditOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Edit</a>*@
 
-                        <a class="btn btn-warning" title="@localizer["Cancel"]" asp-action="CancelOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Cancel</a>
+                        @*<a class="btn btn-warning" title="@localizer["Cancel"]" asp-action="CancelOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Cancel</a>
 
-                        <a class="btn btn-danger" title="@localizer["Delete"]" asp-action="DeleteOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Delete</a>
+                        <a class="btn btn-danger" title="@localizer["Delete"]" asp-action="DeleteOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@Model.OrderDetailsID">Delete</a>*@
 
                     }
                     else
@@ -191,7 +191,7 @@
 </div>
 @section Scripts {
     <script>
-        //window.onbeforeunload = OpenOrderDetails("@Model.OrderDetailsID");
+        ChangeColorSidebarItem("anavbarOrders", "aOrderLines");
         window.addEventListener('beforeunload', function (e) {
            OpenOrderDetails("@Model.OrderDetailsID");
         });

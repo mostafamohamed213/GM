@@ -21,7 +21,7 @@ namespace Cars.Service
             {                
                 lock (_object)
                 {
-                    var orderDetails = db.OrderDetails.Where(c=>c.StatusID == 2 && c.OrderDetailsID == orderDetailsID).Include("OrderDetailsType").Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault();
+                    var orderDetails = db.OrderDetails.Where(c=>c.StatusID != 5 && c.OrderDetailsID == orderDetailsID).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Include("Order").Include(c=>c.Order.UserBranch.Branch).Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault();
                     if (orderDetails is not null && string.IsNullOrEmpty(orderDetails.UsedByUser))
                     {
                         orderDetails.UsedByUser = user;

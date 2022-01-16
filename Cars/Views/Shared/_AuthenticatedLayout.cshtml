@@ -197,7 +197,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link pl-3" asp-action="CreateQuotation" asp-controller="Quotation" asp-route-currentPage="1" id="aQuotations">
+                                <a class="nav-link pl-3" asp-action="CreateQuotation" asp-controller="Quotation" asp-route-currentPage="1" id="aAddQuotations">
                                     <span class="ml-1 item-text">Add Quotation</span>
                                 </a>
                             </li>
@@ -705,7 +705,7 @@
                 $("#" + ParentID).click();
 
             }
-            let ItemIds = ['aOrderHeaders', 'aAddOrderHeader', 'aDraftOrderHeader', 'aOrderLines', 'aAdministration', 'aOrderLinesUsed', 'aOrderLinesForPricing', 'aQuotations','aPurchasing'];
+            let ItemIds = ['aOrderHeaders', 'aAddOrderHeader', 'aDraftOrderHeader', 'aOrderLines', 'aAdministration', 'aOrderLinesUsed', 'aOrderLinesForPricing', 'aQuotations','aAddQuotations','aPurchasing'];
             ItemIds.forEach(function (i) {
              
                 if (i == ItemID) {

@@ -65,7 +65,7 @@
             <div class="row h5">
                 <div class="col-md-6">                    
                     @if(Model.StatusID != 1){
-                         <span> ID : 01:@Model.OrderID</span>
+                    <span> ID : @(Model.UserBranch is not null ? Model.UserBranch.Branch.BranchIP : "00"):@Model.OrderID</span>
                     }
                 </div>
                 <div class="col-md-2">
@@ -130,14 +130,15 @@
                     {
                     <tr>
                         <td>@counter</td>
-                        @*@if (item.Enabled.HasValue && item.Enabled.Value)
+                        @if (item.WorkflowID > 1)
                         {
-                            <td>01:@Model.OrderID:@item.OrderDetailsID</td>
+
+                            <td>@(item.UserBranch is not null ? item.UserBranch.Branch.BranchIP : "00"):@Model.OrderID:@item.OrderDetailsID</td>
                         }
                         else
                         {
                             <td></td>
-                        }*@
+                        }
 
                         <td>@item.Items</td>
                         <td>@item.Quantity</td>
@@ -233,7 +234,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <label for="example-readonly">@localizer["Items"]</label>
+                <label for="example-readonly">@localizer["Item"]</label>
                 <input type="text" name="OrderDetailsItems" id="OrderDetailsItems" class="form-control" />
                 <label for="example-readonly">@localizer["Quantity"]</label>
                 <input type="number" name="OrderDetailsQuantity" id="OrderDetailsQuantity" class="form-control" />
@@ -276,9 +277,16 @@
                                 var row_data_0 = document.createElement('td');
                                 row_data_0.innerHTML = counter;
                                 var row_data_1 = document.createElement('td');
-                                if (value.statusID != 1 && value.statusID != 5)
-                                    {
-                                        row_data_1.innerHTML = "01:" + value.orderID +":"+ value.orderDetailsID;
+                                if (value.workflowID > 1  )
+                                {                                    
+                                    if (value.branchIP != "0" ) {
+                                       
+                                        row_data_1.innerHTML = value.branchIP + ":" + value.orderID + ":" + value.orderDetailsID;
+
+                                        } else {
+                                        row_data_1.innerHTML = "00:" + value.orderID + ":" + value.orderDetailsID;
+
+                                        }
                                     }
                                     else
                                     {

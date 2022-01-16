@@ -45,6 +45,29 @@ namespace Cars.Controllers
             }
         }
         [HttpGet]
+        public IActionResult SearchOrderLines(string search)
+        {
+
+            try
+            {
+                if (string.IsNullOrEmpty(search))
+                {
+                    return RedirectToAction("GetOrderLinesUsed", "SystemIssues", new { currentPage = 1 });
+                }
+                else
+                {
+                    ViewData["CurrentFilter"] = search;
+                    return View("OrderLinesUsed", services.SearchOrderLines(search));
+                }
+
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+        }
+
+        [HttpGet]
         public IActionResult ViewOrderDetails(long OrderDetailsID)
         {
             try

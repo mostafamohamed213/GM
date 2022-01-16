@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Cars.Controllers
@@ -40,11 +41,34 @@ namespace Cars.Controllers
             }
         }
         [HttpGet]
+        public IActionResult SearchOrderLines(string search)
+        {
+
+            try
+            {
+                if (string.IsNullOrEmpty(search))
+                {
+                    return RedirectToAction("Index", "Purchasing", new { currentPage = 1 });
+                }
+                else
+                {
+                    ViewData["CurrentFilter"] = search;
+                    return View("Index", service.SearchOrderLines(search));
+                }
+
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+        }
+
+        [HttpGet]
         public IActionResult AssignVendor(long orderDetailsID)
         {
             try
             {
-                var model = service.CloseOrderDetails(orderDetailsID);
+                var model = service.CloseOrderDetails(orderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
                 if (model is not null)
                 {
                     ViewBag.Runners = service.getRunners();
@@ -71,7 +95,7 @@ namespace Cars.Controllers
                        return View("AssignVendor", service.getOrderDetailsByID(OrderDetailsID));                      
                     }
                  
-                    int status = service.AssignVendor( OrderDetailsID,RunnerID);
+                    int status = service.AssignVendor( OrderDetailsID,RunnerID, User.FindFirstValue(ClaimTypes.NameIdentifier));
                     if (status == 1)
                     {
                         service.OpenOrderDetails(OrderDetailsID);
@@ -105,7 +129,7 @@ namespace Cars.Controllers
         {
             try
             {
-                var orderDetails = service.CloseOrderDetails(OrderDetailsID);
+                var orderDetails = service.CloseOrderDetails(OrderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
                 if (orderDetails is not null)
                 {
                     CancelOrderDetailsViewModel model = new CancelOrderDetailsViewModel()
@@ -129,7 +153,7 @@ namespace Cars.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                   int status = service.CancelOrderDetails(model);
+                   int status = service.CancelOrderDetails(model, User.FindFirstValue(ClaimTypes.NameIdentifier));
                     if (status ==1)
                     {
                         return RedirectToAction("Index", "Purchasing", new { currentPage = 1 });

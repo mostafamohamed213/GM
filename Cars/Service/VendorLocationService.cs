@@ -90,7 +90,7 @@ namespace Cars.Service
                     var orderlines = db.OrderDetails.Where(or => or.VendorLocationID == vedorLocation.VendorLocationID);
                     if(orderlines!=null)
                     {
-                        return 0;
+                        return -1;
                     }
                     db.VendorLocations.Remove(vedorLocation);
                     db.SaveChanges();

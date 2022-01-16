@@ -18,6 +18,7 @@ namespace Cars.Controllers
         {
             services = _services;
             db = carsContext;
+            
         }
         public IActionResult Index()
         {
@@ -30,11 +31,10 @@ namespace Cars.Controllers
         {
            try
             {
-                TempData["ErrorMessage"] = "";
+                
                 var allvendors = services.getAllVendors(currentPage);
-                return View(allvendors);
-
-               
+                TempData["ErrorMessage"] = "";
+                return View(allvendors);               
             }
             catch (Exception)
             {
@@ -46,7 +46,7 @@ namespace Cars.Controllers
         {
             try
             {
-
+                TempData["ErrorMessage"] = "";
                 return View("GetAllVendorsLocation", services.getOrderLinesWithChangelength(1, length));
             }
             catch (Exception)
@@ -95,7 +95,7 @@ namespace Cars.Controllers
                 if(addVendor>0)
                 {
                     var allvendors = services.getAllVendors(1);
-
+                    TempData["ErrorMessage"] = "";
                     return View("GetAllVendorsLocation", allvendors);
                 }
                 return View("_CustomError");
@@ -164,7 +164,7 @@ namespace Cars.Controllers
                 if (editVendor > 0)
                 {
                     var allvendors = services.getAllVendors(1);
-
+                    TempData["ErrorMessage"] = "";
                     return View("GetAllVendorsLocation", allvendors);
                 }
 

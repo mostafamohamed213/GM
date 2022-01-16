@@ -32,6 +32,7 @@ namespace Cars.Controllers
             try
             {
                 var allRunners = services.getAllRunners(currentPage);
+                TempData["ErrorMessage"] = "";
                 return View(allRunners);
             }
             catch (Exception)
@@ -43,6 +44,8 @@ namespace Cars.Controllers
         {
             try
             {
+                TempData["ErrorMessage"] = "";
+
                 return View("GetAllRunners", services.getOrderLinesWithChangelength(1, length));
             }
             catch (Exception)
@@ -87,6 +90,7 @@ namespace Cars.Controllers
                 if (addRunner > 0)
                 {
                     var allvrunners = services.getAllRunners(1);
+                    TempData["ErrorMessage"] = "";
                     return View("GetAllRunners", allvrunners);
                 }
                 return View("_CustomError");
@@ -105,8 +109,16 @@ namespace Cars.Controllers
                 long deleteRunner = services.DeleteRunner(RunnerID);
                 if (deleteRunner > 0)
                 {
-                    var allvrunners = services.getAllRunners(1);
-                    return View("GetAllRunners", allvrunners);
+                    var allrunners = services.getAllRunners(1);
+                    TempData["ErrorMessage"] = "";
+                    return View("GetAllRunners", allrunners);
+                }
+
+                if (deleteRunner == -1)
+                {
+                    var allrunners = services.getAllRunners(1);
+                    TempData["ErrorMessage"] = "Vendor Cannot deleted remove its orders first";
+                    return View("GetAllRunners", allrunners);
                 }
                 return View("_CustomError");
 
@@ -144,6 +156,7 @@ namespace Cars.Controllers
                 if (editRunner > 0)
                 {
                     var allvrunners = services.getAllRunners(1);
+                    TempData["ErrorMessage"] = "";
                     return View("GetAllRunners", allvrunners);
                 }
                 return View("_CustomError");

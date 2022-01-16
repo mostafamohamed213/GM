@@ -33,7 +33,7 @@ namespace Cars.Service
         }
         public PagingViewModel<OrderDetails> getOrderLines(int currentPage)
         {
-            var orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.Price > 0 && c.WorkflowID == 3).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).ToList();
+            var orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.Price > 0 && c.WorkflowID == 3).Include(c => c.VendorLocation).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).ToList();
 
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             viewModel.items = orders.ToList();

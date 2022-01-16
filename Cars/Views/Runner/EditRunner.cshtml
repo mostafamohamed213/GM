@@ -1,0 +1,64 @@
+﻿@model Runner
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer localizer
+@{
+    ViewData["Title"] = "Edit Runner";
+
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header">
+        <strong class="card-title">@localizer["Edit Runner"]</strong>
+    </div>
+    <br /><br />
+
+    <div class="card-body">
+
+        <form class="needs-validation" asp-action="EditRunner" asp-controller="Runner" method="post">
+            <div class="row">
+
+
+                <div class="col-md-6">
+                    <input type="hidden" asp-for="RunnerID" name="RunnerID" />
+                    <div class="form-group mb-4">
+                        <label for="simpleinput">@localizer["Runner Name"]</label>
+                        <input type="text" asp-for="Name" name="Name" class="form-control" required />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+
+                    </div>
+                    <div class="form-group mb-4">
+                        <label for="simpleinput">@localizer["Details"]</label>
+                        <input type="text" asp-for="Details" name="Details" class="form-control" required />
+                        <span asp-validation-for="Details" class="text-danger"></span>
+
+                    </div>
+
+
+
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <a class="btn btn-danger" onclick="OpenOrderDetails('')" style=" width: 100px;" href="~/"> @localizer["Cancel"]</a>
+                                <input class="btn btn-success" style=" width: 100px;" type="submit" value="@localizer["Save"]" />
+
+                            </div>
+                            <div class="col-md-5"></div>
+
+                            <div class="col-md-2">
+
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts {
+
+}
+

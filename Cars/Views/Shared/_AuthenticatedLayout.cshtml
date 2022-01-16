@@ -81,6 +81,17 @@
                         <a class="dropdown-item" href="#">Profile</a>
                         <a class="dropdown-item" href="#">Settings</a>
                         <a class="dropdown-item" href="#">Activities</a>
+                    
+
+                            <form method="post" asp-controller="Accounts" asp-action="logout">
+                                <button type="submit" style="width:auto"
+                                        class="nav-link btn btn-link py-0">
+                                    Logout <i class="fas fa-sign-out-alt"></i>
+                                </button>
+                            </form>
+
+
+                        
                     </div>
                 </li>
             </ul>
@@ -275,6 +286,14 @@
                         </a>
                     </li>
 
+                    <li class="nav-item w-100">
+
+                        <a class="nav-link" asp-controller="UsersLogs" asp-action="Index" id="">
+                            <i class="fe fe-user fe-16"></i>
+                            <span class="ml-3 item-text ">Users Logs</span>
+                        </a>
+                    </li>
+
                     <li class="nav-item dropdown">
                         <a href="#branches" data-toggle="collapse" aria-expanded="false" id="linkbranches" class="dropdown-toggle nav-link">
                             <i class="fe fe-map-pin fe-16"></i>
@@ -296,11 +315,11 @@
 
                     @*<li class="nav-item w-100">
 
-                <a class="nav-link" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
-                    <i class="fe fe-box fe-16"></i>
-                    <span class="ml-3 item-text">Order lines used</span>
-                </a>
-            </li>*@
+            <a class="nav-link" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
+                <i class="fe fe-box fe-16"></i>
+                <span class="ml-3 item-text">Order lines used</span>
+            </a>
+        </li>*@
 
                 </ul>
                 <p class="text-muted nav-heading mt-4 mb-1">
@@ -319,7 +338,54 @@
 
                 </ul>
 
-               
+                <p class="text-muted nav-heading mt-4 mb-1">
+                    <span>Vendor Location </span>
+                </p>
+                <ul class="navbar-nav flex-fill w-100 mb-2">
+
+                    <li class="nav-item w-100">
+
+                        <a class="nav-link" asp-controller="VendorLocation" asp-action="GetAllVendorsLocation" asp-route-currentPage="1" id="addLabor">
+                            <i class="fe fe-24 fe-globe"></i>
+                            <span class="ml-3 item-text ">Vendor Location</span>
+                        </a>
+                    </li>
+
+
+                </ul>
+
+                <p class="text-muted nav-heading mt-4 mb-1">
+                    <span>Runners </span>
+                </p>
+                <ul class="navbar-nav flex-fill w-100 mb-2">
+
+                    <li class="nav-item w-100">
+
+                        <a class="nav-link" asp-controller="Runner" asp-action="GetAllRunners" asp-route-currentPage="1" id="addLabor">
+                            <i class="fe fe-24 fe-truck"></i>
+                            <span class="ml-3 item-text ">Runners</span>
+                        </a>
+                    </li>
+
+
+                </ul>
+
+                <p class="text-muted nav-heading mt-4 mb-1">
+                    <span>All Order Lines  </span>
+                </p>
+                <ul class="navbar-nav flex-fill w-100 mb-2">
+
+                    <li class="nav-item w-100">
+
+                        <a class="nav-link" asp-controller="AllOrderLines" asp-action="GetOrderLines" asp-route-currentPage="1" id="addLabor">
+                            <i class="fe fe-24 fe-airplay"></i>
+                            <span class="ml-3 item-text ">All Order Lines</span>
+                        </a>
+                    </li>
+
+
+                </ul>
+
             </nav>
         </aside>
         <main role="main" class="main-content">

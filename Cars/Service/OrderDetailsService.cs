@@ -21,14 +21,14 @@ namespace Cars.Service
             int itemsCount = 0;
             if (string.IsNullOrEmpty(search))
             {
-                orderDetails = await _context.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 5).Skip((currentPage - 1) * maxRows).Take(maxRows).ToListAsync();
+                orderDetails = await _context.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 5).Include(x => x.UserBranch).Skip((currentPage - 1) * maxRows).Take(maxRows).ToListAsync();
                 itemsCount = _context.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 5).Count();
             }
             else
             {
                 orderDetails = await _context.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 5
                         && (c.Items.ToLower().Trim().Contains(search.ToLower().Trim()) || c.Quantity.ToString().Contains(search.ToLower().Trim()) || ("01:" + c.OrderID + ':' + c.OrderDetailsID).Contains(search.ToLower().Trim())))
-                        .Skip((currentPage - 1) * maxRows).Take(maxRows).ToListAsync();
+                        .Skip((currentPage - 1) * maxRows).Take(maxRows).Include(x => x.UserBranch).ToListAsync();
                 itemsCount = _context.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 5
                         && (c.Items.ToLower().Trim().Contains(search.ToLower().Trim()) || c.Quantity.ToString().Contains(search.ToLower().Trim()) || ("01:" + c.OrderID + ':' + c.OrderDetailsID).Contains(search.ToLower().Trim()))).Count();
             }

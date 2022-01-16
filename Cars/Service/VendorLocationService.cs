@@ -1,4 +1,5 @@
-﻿using Cars.Models;
+﻿using Cars.Consts;
+using Cars.Models;
 using Cars.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -15,21 +16,42 @@ namespace Cars.Service
             db = carsContext;
         }
 
-        public List<VendorLocation> getAllVendors()
+        public PagingViewModel<VendorLocation> getAllVendors(int currentPage)
         {
-            List<VendorLocation> allVendors = db.VendorLocations.ToList();
+           
+          
+            List<VendorLocation> allVendors = db.VendorLocations.Skip((currentPage - 1) * TablesMaxRows.IndexVendorMaxRows).Take(TablesMaxRows.IndexVendorMaxRows).ToList();
             try
             {
                 if (allVendors is not null)
                 {
-                    return allVendors;
+                    return paginate(allVendors, currentPage);
                 }
-                return null;
+                return paginate(null, currentPage);
             }
             catch (Exception)
             {
-                return null;
+                return paginate(null, currentPage);
             }
+        }
+
+        public PagingViewModel<VendorLocation> getOrderLinesWithChangelength(int currentPageIndex, int length)
+        {
+            TablesMaxRows.IndexVendorMaxRows = length;
+            return getAllVendors(currentPageIndex);
+        }
+        private PagingViewModel<VendorLocation> paginate(List<VendorLocation> vendors, int currentPage)
+        {
+            PagingViewModel<VendorLocation> viewModel = new PagingViewModel<VendorLocation>();
+            viewModel.items = vendors.ToList();
+            var itemsCount = vendors.Count();
+            double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexVendorMaxRows));
+            viewModel.PageCount = (int)Math.Ceiling(pageCount);
+            viewModel.CurrentPageIndex = currentPage;
+            viewModel.itemsCount = itemsCount;
+            viewModel.Tablelength = TablesMaxRows.IndexVendorMaxRows;
+
+            return viewModel;
         }
         public long AddVendorLocation(VendorLocationViewModel model)
         {
@@ -65,6 +87,11 @@ namespace Cars.Service
                 VendorLocation vedorLocation = db.VendorLocations.FirstOrDefault(v=>v.VendorLocationID== vendorLocationID);
                 if(vedorLocation!=null)
                 {
+                    var orderlines = db.OrderDetails.Where(or => or.VendorLocationID == vedorLocation.VendorLocationID);
+                    if(orderlines!=null)
+                    {
+                        return 0;
+                    }
                     db.VendorLocations.Remove(vedorLocation);
                     db.SaveChanges();
                     return vedorLocation.VendorLocationID;
@@ -80,7 +107,7 @@ namespace Cars.Service
 
         }
 
-        internal long EditVendorLocation(long VendorLocationID,VendorLocationViewModel model)
+        internal long EditVendorLocation(long VendorLocationID,VendorLocation model)
         {
             try
             {

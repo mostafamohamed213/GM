@@ -1,4 +1,5 @@
-﻿using Cars.Models;
+﻿using Cars.Consts;
+using Cars.Models;
 using Cars.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -15,21 +16,41 @@ namespace Cars.Service
             db = carsContext;
         }
 
-        public List<Runner> getAllRunners()
+        public PagingViewModel<Runner> getOrderLinesWithChangelength(int currentPageIndex, int length)
         {
-            List<Runner> allRunners = db.Runners.ToList();
+            TablesMaxRows.IndexRunnerMaxRows = length;
+            return getAllRunners(currentPageIndex);
+        }
+        public PagingViewModel<Runner> getAllRunners(int currentPage)
+        {
+            List<Runner> allRunners = db.Runners.Skip((currentPage - 1) * TablesMaxRows.IndexRunnerMaxRows).Take(TablesMaxRows.IndexRunnerMaxRows).ToList();
             try
             {
                 if (allRunners is not null)
                 {
-                    return allRunners;
+                    return paginate(allRunners, currentPage);
                 }
-                return null;
+                return paginate(null, currentPage);
             }
             catch (Exception)
             {
-                return null;
+                return paginate(null, currentPage);
             }
+        }
+
+     
+        private PagingViewModel<Runner> paginate(List<Runner> runners, int currentPage)
+        {
+            PagingViewModel<Runner> viewModel = new PagingViewModel<Runner>();
+            viewModel.items = runners.ToList();
+            var itemsCount = runners.Count();
+            double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexRunnerMaxRows));
+            viewModel.PageCount = (int)Math.Ceiling(pageCount);
+            viewModel.CurrentPageIndex = currentPage;
+            viewModel.itemsCount = itemsCount;
+            viewModel.Tablelength = TablesMaxRows.IndexRunnerMaxRows;
+
+            return viewModel;
         }
         public long AddRunner(RunnerViewModel model)
         {
@@ -80,7 +101,7 @@ namespace Cars.Service
         }
 
 
-        internal long EditRunner(long RunnerID, RunnerViewModel model)
+        internal long EditRunner(long RunnerID, Runner model)
         {
             try
             {

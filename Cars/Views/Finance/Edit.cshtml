@@ -14,7 +14,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3">
-                        <h5>ID : 01:@Model.OrderID:@Model.OrderDetailsID</h5>
+                        <h5>ID : @((Model.UserBranch==null)?"00":Model.UserBranch.BranchID):@Model.OrderID:@Model.OrderDetailsID</h5>
                     </div>
                     <div class="col-md-6">
                     </div>

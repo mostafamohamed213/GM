@@ -30,6 +30,7 @@ namespace Cars.Controllers
         {
            try
             {
+                TempData["ErrorMessage"] = "";
                 var allvendors = services.getAllVendors(currentPage);
                 return View(allvendors);
 
@@ -108,16 +109,25 @@ namespace Cars.Controllers
 
         public IActionResult DeleteVendorLocation(long VendorID)
         {
+           
             try
             {
+               
                 long deleteVendor = services.DeleteVendorLocation(VendorID);
                 if (deleteVendor > 0)
                 {
                     var allvendors = services.getAllVendors(1);
-
+                    TempData["ErrorMessage"] = "";
                     return View("GetAllVendorsLocation", allvendors);
                     
                 }
+                if(deleteVendor==-1)
+                {
+                    var allvendors = services.getAllVendors(1);
+                    TempData["ErrorMessage"] = "Vendor Cannot deleted remove its orders first";
+                    return View("GetAllVendorsLocation", allvendors);
+                }
+
                 return View("_CustomError");
 
             }

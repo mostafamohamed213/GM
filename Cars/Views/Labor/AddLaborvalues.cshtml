@@ -177,7 +177,7 @@
 </div>
 @section Scripts {
     <script>
-        //window.onbeforeunload = OpenOrderDetails("@Model.OrderDetailsID");
+         ChangeColorSidebarItem("", "addLabor");
         window.addEventListener('beforeunload', function (e) {
            OpenOrderDetails("@Model.OrderDetailsID");
         });

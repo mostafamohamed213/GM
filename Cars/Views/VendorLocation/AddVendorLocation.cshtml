@@ -11,24 +11,24 @@
         <strong class="card-title">@localizer["Add Vendor"]</strong>
     </div>
     <br /><br />
-  
+
     <div class="card-body">
-      
+
         <form class="needs-validation" asp-action="AddVendorLocation" asp-controller="VendorLocation" method="post">
             <div class="row">
-                
+
 
                 <div class="col-md-6">
                     <div class="form-group mb-4">
                         <label for="simpleinput">@localizer["Vendor Name"]</label>
-                        <input type="text" name="NameEn"  class="form-control" required />
+                        <input type="text" name="NameEn" class="form-control" required />
                     </div>
                     <div class="form-group mb-4">
                         <label for="simpleinput">@localizer["Description"]</label>
                         <input type="text" name="Description" class="form-control" required />
                     </div>
 
-                
+
 
                     <div class="form-group mb-3">
                         <div class="row">
@@ -47,13 +47,16 @@
 
 
                     </div>
-                </div> 
+                </div>
 
             </div>
         </form>
     </div>
 </div>
 @section Scripts {
- 
+   
+    <script>
+        ChangeColorSidebarItem("", "aVendorLocation");
+    </script>
 }
 

@@ -85,13 +85,13 @@ namespace Cars.Service
                 Runner runner = db.Runners.FirstOrDefault(r => r.RunnerID == RunnerID && r.Enable);
                 if (runner != null)
                 {
-                    var orderlines = db.OrderDetails.Where(or => or.RunnerID == runner.RunnerID).FirstOrDefault();
-                    if (orderlines != null)
-                    {
-                        return -1;
-                    }
-                    runner.Enable = false;
-                    db.SaveChanges();
+                    //var orderlines = db.OrderDetails.Where(or => or.RunnerID == runner.RunnerID).FirstOrDefault();
+                    //if (orderlines != null)
+                    //{
+                    //    return -1;
+                    //}
+                    //runner.Enable = false;
+                    //db.SaveChanges();
                     return runner.RunnerID;
                 }
 

@@ -55,10 +55,10 @@ namespace Cars.Models
 
         public int StatusID { get; set; }
         [ForeignKey("StatusID")]
-        public Status Status { get; set; }
-        public int? RunnerID { get; set; }
+        public Status Status { get; set; }     
+        public string RunnerID { get; set; }
         [ForeignKey("RunnerID")]
-        public Runner Runner { get; set; }
+        public virtual ApplicationUser User { get; set; }
 
         [NotMapped]
         public List<OrderDetails> Children { get; set; }

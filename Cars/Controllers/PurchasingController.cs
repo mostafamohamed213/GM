@@ -95,7 +95,7 @@ namespace Cars.Controllers
                        return View("AssignVendor", service.getOrderDetailsByID(OrderDetailsID));                      
                     }
                  
-                    int status = service.AssignVendor( OrderDetailsID,RunnerID, User.FindFirstValue(ClaimTypes.NameIdentifier));
+                   int status = service.AssignVendor( OrderDetailsID, "RunnerID", User.FindFirstValue(ClaimTypes.NameIdentifier));
                     if (status == 1)
                     {
                         service.OpenOrderDetails(OrderDetailsID);

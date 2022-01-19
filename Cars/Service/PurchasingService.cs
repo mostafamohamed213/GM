@@ -69,7 +69,7 @@ namespace Cars.Service
             return getOrderDetails(currentPageIndex);
         }
 
-        internal int AssignVendor(long orderDetailsID, int runnerID,string user)
+        internal int AssignVendor(long orderDetailsID, string runnerID,string user)
         {
             OrderDetails orderDetails = db.OrderDetails.FirstOrDefault(c=>c.OrderDetailsID == orderDetailsID);
             if (orderDetails is not null)

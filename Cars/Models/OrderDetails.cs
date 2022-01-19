@@ -33,7 +33,7 @@ namespace Cars.Models
 
         public int? VendorLocationID { get; set; }
         [ForeignKey("VendorLocationID")]
-        public VendorLocation VendorLocation { get; set; }
+        public BranchModel VendorLocation { get; set; }
         public int WorkflowID { get; set; }
         [ForeignKey("WorkflowID")]
         public Workflow Workflow { get; set; }

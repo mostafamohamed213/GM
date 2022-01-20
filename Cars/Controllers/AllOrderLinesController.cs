@@ -24,11 +24,16 @@ namespace Cars.Controllers
             return View();
         }
 
-        public IActionResult GetOrderLines(int currentPage)
+        public IActionResult GetOrderLines(int currentPage,string? search)
         {
             try
             {
-                var model = services.getOrderLines(currentPage);
+                if (search != null)
+                    TempData["lastsearch"] = search;
+                else
+                    TempData["lastsearch"] = "";
+
+                var model = services.getOrderLines(currentPage, search);
                 return View(model);
             }
             catch (Exception)
@@ -62,7 +67,9 @@ namespace Cars.Controllers
                     {
                         ViewBag.types = services.GetSelectListOrderDetailsType();
                         var workflow = db.Workflows.Where(w => w.WorkflowID == orderDetails.WorkflowID).FirstOrDefault();
+                        var status=db.Status.Where(s=>s.StatusID== orderDetails.StatusID).FirstOrDefault();
                         TempData["workflow"] = workflow.Name;
+                        TempData["status"] = status.Name;
                         return View(orderDetails);
                     }
 

@@ -27,11 +27,18 @@ namespace Cars.Controllers
        
        
         [HttpGet]
-        public IActionResult GetAllRunners(int currentPage)
+        public IActionResult GetAllRunners(int currentPage,string? search)
         {
             try
             {
-                var allRunners = services.getAllRunners(currentPage);
+                var allRunners = services.getAllRunners(currentPage, search);
+
+                if (search != null)
+                    TempData["lastsearch"] = search;
+                else
+                    TempData["lastsearch"] = "";
+
+
                 TempData["ErrorMessage"] = "";
                 return View(allRunners);
             }
@@ -89,7 +96,7 @@ namespace Cars.Controllers
                 long addRunner = services.AddRunner(model);
                 if (addRunner > 0)
                 {
-                    var allvrunners = services.getAllRunners(1);
+                    var allvrunners = services.getAllRunners(1,null);
                     TempData["ErrorMessage"] = "";
                     return View("GetAllRunners", allvrunners);
                 }
@@ -109,14 +116,14 @@ namespace Cars.Controllers
                 long deleteRunner = services.DeleteRunner(RunnerID);
                 if (deleteRunner > 0)
                 {
-                    var allrunners = services.getAllRunners(1);
+                    var allrunners = services.getAllRunners(1,null);
                     TempData["ErrorMessage"] = "";
                     return View("GetAllRunners", allrunners);
                 }
 
                 if (deleteRunner == -1)
                 {
-                    var allrunners = services.getAllRunners(1);
+                    var allrunners = services.getAllRunners(1, null);
                     TempData["ErrorMessage"] = "Vendor Cannot deleted remove its orders first";
                     return View("GetAllRunners", allrunners);
                 }
@@ -155,7 +162,7 @@ namespace Cars.Controllers
                 long editRunner = services.EditRunner(model.RunnerID, model);
                 if (editRunner > 0)
                 {
-                    var allvrunners = services.getAllRunners(1);
+                    var allvrunners = services.getAllRunners(1,null);
                     TempData["ErrorMessage"] = "";
                     return View("GetAllRunners", allvrunners);
                 }

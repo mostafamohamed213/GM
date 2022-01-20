@@ -21,12 +21,15 @@ namespace Cars.Service
         public PagingViewModel<OrderDetails> getOrderLinesWithChangelength(int currentPageIndex, int length)
         {
             TablesMaxRows.IndexAllOrderLinesRows = length;
-            return getOrderLines(currentPageIndex);
+            return getOrderLines(currentPageIndex,null);
         }
 
         internal SelectList GetSelectListOrderDetailsType()
         {
             var OrderDetailsTypes = db.OrderDetailsType.ToList();
+
+
+
             if (OrderDetailsTypes.Count() > 0)
             {
                 return new SelectList(OrderDetailsTypes, "OrderDetailsTypeID", "NameEn");
@@ -38,13 +41,22 @@ namespace Cars.Service
             var orderDetails = db.OrderDetails.Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
             return orderDetails;
         }
-        public PagingViewModel<OrderDetails> getOrderLines(int currentPage)
+        public PagingViewModel<OrderDetails> getOrderLines(int currentPage,string? search)
         {
             var orders = db.OrderDetails.Where( c=>c.WorkflowID >= 1).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexAllOrderLinesRows).Take(TablesMaxRows.IndexAllOrderLinesRows).ToList();
 
+            
+
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
+           
+            var itemsCount = db.OrderDetails.Count();
+
+            if (search != null)
+            {
+                orders = db.OrderDetails.Where(c => c.WorkflowID >= 1 && c.Items.Contains(search)).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexAllOrderLinesRows).Take(TablesMaxRows.IndexAllOrderLinesRows).ToList();
+                itemsCount = db.OrderDetails.Where(c => c.WorkflowID >= 1 && c.Items.Contains(search)).Include("OrderDetailsType").Count();
+            }
             viewModel.items = orders.ToList();
-            var itemsCount = orders.Count();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexAllOrderLinesRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;

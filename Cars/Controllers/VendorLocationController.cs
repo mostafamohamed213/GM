@@ -27,12 +27,19 @@ namespace Cars.Controllers
 
 
         [HttpGet]
-        public IActionResult GetAllVendorsLocation(int currentPage)
+        public IActionResult GetAllVendorsLocation(int currentPage,string? search)
         {
            try
             {
                 
-                var allvendors = services.getAllVendors(currentPage);
+                var allvendors = services.getAllVendors(currentPage,search);
+
+                if (search != null)
+                    TempData["lastsearch"] = search;
+                else
+                    TempData["lastsearch"] = "";
+
+
                 TempData["ErrorMessage"] = "";
                 return View(allvendors);               
             }
@@ -94,7 +101,7 @@ namespace Cars.Controllers
                 long addVendor = services.AddVendorLocation(model);
                 if(addVendor>0)
                 {
-                    var allvendors = services.getAllVendors(1);
+                    var allvendors = services.getAllVendors(1,null);
                     TempData["ErrorMessage"] = "";
                     return View("GetAllVendorsLocation", allvendors);
                 }
@@ -116,14 +123,14 @@ namespace Cars.Controllers
                 long deleteVendor = services.DeleteVendorLocation(VendorID);
                 if (deleteVendor > 0)
                 {
-                    var allvendors = services.getAllVendors(1);
+                    var allvendors = services.getAllVendors(1,null);
                     TempData["ErrorMessage"] = "";
                     return View("GetAllVendorsLocation", allvendors);
                     
                 }
                 if(deleteVendor==-1)
                 {
-                    var allvendors = services.getAllVendors(1);
+                    var allvendors = services.getAllVendors(1,null);
                     TempData["ErrorMessage"] = "Vendor Cannot deleted remove its orders first";
                     return View("GetAllVendorsLocation", allvendors);
                 }
@@ -163,7 +170,7 @@ namespace Cars.Controllers
                 long editVendor = services.EditVendorLocation(model.VendorLocationID, model);
                 if (editVendor > 0)
                 {
-                    var allvendors = services.getAllVendors(1);
+                    var allvendors = services.getAllVendors(1,null);
                     TempData["ErrorMessage"] = "";
                     return View("GetAllVendorsLocation", allvendors);
                 }

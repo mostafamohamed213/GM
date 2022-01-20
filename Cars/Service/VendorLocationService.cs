@@ -16,15 +16,27 @@ namespace Cars.Service
             db = carsContext;
         }
 
-        public PagingViewModel<VendorLocation> getAllVendors(int currentPage)
+        public PagingViewModel<VendorLocation> getAllVendors(int currentPage,string? search)
         {
            
           
             List<VendorLocation> allVendors = db.VendorLocations.Where(v => v.Enable).Skip((currentPage - 1) * TablesMaxRows.IndexVendorMaxRows).Take(TablesMaxRows.IndexVendorMaxRows).ToList();
+            if (search != null)
+            {
+                allVendors = db.VendorLocations.Where(r => r.Enable && r.NameEn.Contains(search)).Skip((currentPage - 1) * TablesMaxRows.IndexRunnerMaxRows).Take(TablesMaxRows.IndexRunnerMaxRows).ToList();
+            }
+
             try
             {
                 if (allVendors is not null)
                 {
+                    if (search != null)
+                    {
+                        var result = paginate(allVendors, currentPage);
+                        result.itemsCount = db.VendorLocations.Where(r => r.Enable && r.NameEn.Contains(search)).Skip((currentPage - 1) * TablesMaxRows.IndexRunnerMaxRows).Take(TablesMaxRows.IndexRunnerMaxRows).Count();
+                        return result;
+                    }
+
                     return paginate(allVendors, currentPage);
                 }
                 return paginate(null, currentPage);
@@ -38,7 +50,7 @@ namespace Cars.Service
         public PagingViewModel<VendorLocation> getOrderLinesWithChangelength(int currentPageIndex, int length)
         {
             TablesMaxRows.IndexVendorMaxRows = length;
-            return getAllVendors(currentPageIndex);
+            return getAllVendors(currentPageIndex,null);
         }
         private PagingViewModel<VendorLocation> paginate(List<VendorLocation> vendors, int currentPage)
         {

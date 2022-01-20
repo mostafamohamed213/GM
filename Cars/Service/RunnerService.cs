@@ -19,16 +19,31 @@ namespace Cars.Service
         public PagingViewModel<Runner> getOrderLinesWithChangelength(int currentPageIndex, int length)
         {
             TablesMaxRows.IndexRunnerMaxRows = length;
-            return getAllRunners(currentPageIndex);
+            return getAllRunners(currentPageIndex,null);
         }
-        public PagingViewModel<Runner> getAllRunners(int currentPage)
+        public PagingViewModel<Runner> getAllRunners(int currentPage,string? search)
         {
             List<Runner> allRunners = db.Runners.Where(r=>r.Enable).Skip((currentPage - 1) * TablesMaxRows.IndexRunnerMaxRows).Take(TablesMaxRows.IndexRunnerMaxRows).ToList();
+
+            if(search!=null)
+            {
+                allRunners= db.Runners.Where(r => r.Enable && r.Name.Contains(search)).Skip((currentPage - 1) * TablesMaxRows.IndexRunnerMaxRows).Take(TablesMaxRows.IndexRunnerMaxRows).ToList();
+            }
             try
             {
                 if (allRunners is not null)
                 {
-                    return paginate(allRunners, currentPage);
+                    if (search != null)
+                    {
+                        var result = paginate(allRunners, currentPage);
+                        result.itemsCount= db.Runners.Where(r => r.Enable && r.Name.Contains(search)).Skip((currentPage - 1) * TablesMaxRows.IndexRunnerMaxRows).Take(TablesMaxRows.IndexRunnerMaxRows).Count();
+                        double pageCount = (double)(result.itemsCount / Convert.ToDecimal(TablesMaxRows.IndexRunnerMaxRows));
+                        result.PageCount = (int)Math.Ceiling(pageCount);
+                        result.CurrentPageIndex = currentPage;
+                        result.itemsCount = result.itemsCount;
+                        return result;
+                    }
+                 return paginate(allRunners, currentPage);
                 }
                 return paginate(null, currentPage);
             }

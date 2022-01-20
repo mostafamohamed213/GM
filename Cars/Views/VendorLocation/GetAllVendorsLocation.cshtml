@@ -16,145 +16,155 @@
 <div class="card shadow">
     <div class="card-body">
         <div class="toolbar">
+            <div class="row">
+                <form class="form" id="OrderLinesTablelength" method="get" asp-action="ChangeOrderLinesTablelength" asp-controller="VendorLocation">
+                    <div class="form-row">
+                        <div class="form-group col-auto mr-auto">
+                            <label class="my-1 mr-2 sr-only" for="inlineFormCustomSelectPref13">@localizer["Show"]</label>
+                            <select name="length" class="custom-select mr-sm-2" onchange="document.getElementById('OrderLinesTablelength').submit();" id="inlineFormCustomSelectPref13">
+                                @if (Model.Tablelength == 10)
+                                {
+                                    <option value="10" selected>10</option>
+                                }
+                                else
+                                {
+                                    <option value="10">10</option>
+                                }
+                                @if (Model.Tablelength == 25)
+                                {
+                                    <option value="25" selected>25</option>
+                                }
+                                else
+                                {
+                                    <option value="25">25</option>
+                                }
+                                @if (Model.Tablelength == 50)
+                                {
+                                    <option value="50" selected>50</option>
+                                }
+                                else
+                                {
+                                    <option value="50">50</option>
+                                }
+                                @if (Model.Tablelength == 100)
+                                {
+                                    <option value="100" selected>100</option>
+                                }
+                                else
+                                {
+                                    <option value="100">100</option>
+                                }
+                            </select>
+                        </div>
 
-            <form class="form" id="OrderLinesTablelength" method="get" asp-action="ChangeOrderLinesTablelength" asp-controller="VendorLocation">
-                <div class="form-row">
-                    <div class="form-group col-auto mr-auto">
-                        <label class="my-1 mr-2 sr-only" for="inlineFormCustomSelectPref13">@localizer["Show"]</label>
-                        <select name="length" class="custom-select mr-sm-2" onchange="document.getElementById('OrderLinesTablelength').submit();" id="inlineFormCustomSelectPref13">
-                            @if (Model.Tablelength == 10)
-                            {
-                                <option value="10" selected>10</option>
-                            }
-                            else
-                            {
-                                <option value="10">10</option>
-                            }
-                            @if (Model.Tablelength == 25)
-                            {
-                                <option value="25" selected>25</option>
-                            }
-                            else
-                            {
-                                <option value="25">25</option>
-                            }
-                            @if (Model.Tablelength == 50)
-                            {
-                                <option value="50" selected>50</option>
-                            }
-                            else
-                            {
-                                <option value="50">50</option>
-                            }
-                            @if (Model.Tablelength == 100)
-                            {
-                                <option value="100" selected>100</option>
-                            }
-                            else
-                            {
-                                <option value="100">100</option>
-                            }
-                        </select>
                     </div>
-
+                </form>
+                <div class="col-md-8"></div>
+                <div class="col-md-3">
+                    <form class="form" id="searchform" method="get" asp-action="GetAllVendorsLocation" asp-controller="VendorLocation" asp-route-currentPage="1">
+                        <div class="form-group col-auto">
+                            <input type="hidden" value="1" name="currentPage" />
+                            <label for="search" class="sr-only">Search</label>
+                            <input type="text" class="form-control" id="search" placeholder="Vendor Name" name="search" value="@TempData["lastsearch"]">
+                        </div>
+                    </form>
                 </div>
-            </form>
-
-        </div>
-        <!-- table -->
-        @if (TempData["ErrorMessage"].ToString() != "")
-        {
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>Sorry!</strong> @TempData["ErrorMessage"].ToString();
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                </div>
             </div>
+            <!-- table -->
+            @if (TempData["ErrorMessage"].ToString() != "")
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>Sorry!</strong> @TempData["ErrorMessage"].ToString();
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
 
-        }
-        <table class="table table-borderless table-hover">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>@localizer["ID"]</th>
-                    <th>@localizer["Name"]</th>
-                    <th>@localizer["Description"]</th>
-                    <th>@localizer["Date"]</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.items)
-                {
-                    if (item.Enable)
-                    {
+            }
+            <table class="table table-borderless table-hover">
+                <thead>
                     <tr>
-                        <td>
-                            @counter
-                        </td>
-                        <td>
-                            @item.VendorLocationID
-                        </td>
-                        <td>
-                            @item.NameEn
-                        </td>
-                        <td>
-                            @item.Description
-                        </td>
-                        <td>
-                            @item.DTsCreate
-                        </td>
-
-
-
-                        <td>
-                            <a title="@localizer["Edit"]" asp-action="EditVendorLocation" asp-controller="VendorLocation" asp-route-VendorID="@item.VendorLocationID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-success"></span></span></a>
-                        </td>
-
-                        <td>
-                            <a title="@localizer["Delete"]" asp-action="DeleteVendorLocation" asp-controller="VendorLocation" asp-route-VendorID="@item.VendorLocationID"> <span class="small text-muted"><span class=" fe fe-24 fe-x-circle text-danger"></span></span></a>
-                        </td>
-
+                        <th>#</th>
+                        <th>@localizer["ID"]</th>
+                        <th>@localizer["Name"]</th>
+                        <th>@localizer["Description"]</th>
+                        <th>@localizer["Date"]</th>
+                        <th></th>
+                        <th></th>
                     </tr>
-                        counter++;
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.items)
+                    {
+                        if (item.Enable)
+                        {
+                            <tr class="table-success">
+                                <td>
+                                    @counter
+                                </td>
+                                <td>
+                                    @item.VendorLocationID
+                                </td>
+                                <td>
+                                    @item.NameEn
+                                </td>
+                                <td>
+                                    @item.Description
+                                </td>
+                                <td>
+                                    @item.DTsCreate
+                                </td>
+
+
+
+                                <td>
+                                    <a title="@localizer["Edit"]" asp-action="EditVendorLocation" asp-controller="VendorLocation" asp-route-VendorID="@item.VendorLocationID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-success"></span></span></a>
+                                </td>
+
+                                <td>
+                                    <a title="@localizer["Delete"]" asp-action="DeleteVendorLocation" asp-controller="VendorLocation" asp-route-VendorID="@item.VendorLocationID"> <span class="small text-muted"><span class=" fe fe-24 fe-x-circle text-danger"></span></span></a>
+                                </td>
+
+                            </tr>
+                            counter++;
+                        }
                     }
-                }
 
-            </tbody>
-        </table>
+                </tbody>
+            </table>
 
-        <nav aria-label="Table Paging" class="mb-0 text-muted">
-            <ul class="pagination justify-content-center mb-0">
-                <li class='page-item @(Model.CurrentPageIndex == 1 ? "disabled":"")' id="dataTable_previous">
-                    <a asp-action="GetAllVendorsLocation" asp-controller="VendorLocation" asp-route-currentPage="@(Model.CurrentPageIndex-1)" class="page-link">@localizer["Previous"]</a>
-                </li>
-                @*
+            <nav aria-label="Table Paging" class="mb-0 text-muted">
+                <ul class="pagination justify-content-center mb-0">
+                    <li class='page-item @(Model.CurrentPageIndex == 1 ? "disabled":"")' id="dataTable_previous">
+                        <a asp-action="GetAllVendorsLocation" asp-controller="VendorLocation" asp-route-currentPage="@(Model.CurrentPageIndex-1)" class="page-link">@localizer["Previous"]</a>
+                    </li>
+                    @*
                 <li class="page-item"><a class="page-link" href="#">1</a></li>
                 <li class="page-item active"><a class="page-link" href="#">2</a></li>
                 <li class="page-item"><a class="page-link" href="#">3</a></li>*@
-                @for (int i = 1; i <= Model.PageCount; i++)
-                {
-                    @if (i != Model.CurrentPageIndex)
+                    @for (int i = 1; i <= Model.PageCount; i++)
                     {
-                        <li class="page-item">
-                            <a asp-action="GetAllVendorsLocation" asp-controller="VendorLocation" asp-route-currentPage="@i" class="page-link">@i</a>
-                        </li>
-                    }
-                    else
-                    {
-                        <li class="page-item active">
-                            <span class="page-link">@i</span>
-                        </li>
-                    }
+                        @if (i != Model.CurrentPageIndex)
+                        {
+                            <li class="page-item">
+                                <a asp-action="GetAllVendorsLocation" asp-controller="VendorLocation" asp-route-currentPage="@i" class="page-link">@i</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item active">
+                                <span class="page-link">@i</span>
+                            </li>
+                        }
 
-                }
-                <li class='page-item @(Model.PageCount == Model.CurrentPageIndex ? "disabled":"")' id="dataTable_next">
-                    <a asp-action="GetAllVendorsLocation" asp-controller="VendorLocation" asp-route-currentPage="@(Model.CurrentPageIndex+1)" class="page-link">@localizer["Next"]</a>
-                </li>
-            </ul>
-        </nav>
-    </div>
+                    }
+                    <li class='page-item @(Model.PageCount == Model.CurrentPageIndex ? "disabled":"")' id="dataTable_next">
+                        <a asp-action="GetAllVendorsLocation" asp-controller="VendorLocation" asp-route-currentPage="@(Model.CurrentPageIndex+1)" class="page-link">@localizer["Next"]</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
 </div>
 @section Scripts {
     <script>

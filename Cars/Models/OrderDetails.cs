@@ -46,6 +46,9 @@ namespace Cars.Models
         public int? UserBranchID { get; set; }
         [ForeignKey("UserBranchID")]
         public UserBranchModel UserBranch { get; set; }
+        public long? InventoryID { get; set; }
+        [ForeignKey("InventoryID")]
+        public Inventory Inventory { get; set; }
         public string SystemUserCreate { get; set; }
         public DateTime DTsCreate { get; set; }     
 

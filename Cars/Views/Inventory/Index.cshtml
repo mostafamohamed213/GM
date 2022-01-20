@@ -1,0 +1,140 @@
+﻿@model Cars.ViewModels.PagingViewModel<OrderDetails>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer localizer
+@{
+    ViewData["Title"] = "Inventory Order Lines";
+    int counter = 1;
+}
+<div class="row">
+    <div class="col-md-10">Inventory Order Lines</div>
+</div>
+<br />
+<div class="card shadow">
+    <div class="card-body">
+        <div class="toolbar">
+            <div class="row">
+                <div class="col-md-2">
+                    <form class="form" id="InventoryOrderLinesTablelength" method="get" asp-action="ChangeTablelength" asp-controller="Inventory">
+                        <div class="form-group col-auto mr-auto">
+                            <label class="my-1 mr-2 sr-only" for="inlineFormCustomSelectPref13">@localizer["Show"]</label>
+                            <select name="length" class="custom-select mr-sm-2" onchange="document.getElementById('InventoryOrderLinesTablelength').submit();" id="inlineFormCustomSelectPref">
+                                @if (Model.Tablelength == 10)
+                                {
+                                    <option value="10" selected>10</option>
+                                }
+                                else
+                                {
+                                    <option value="10">10</option>
+                                }
+                                @if (Model.Tablelength == 25)
+                                {
+                                    <option value="25" selected>25</option>
+                                }
+                                else
+                                {
+                                    <option value="25">25</option>
+                                }
+                                @if (Model.Tablelength == 50)
+                                {
+                                    <option value="50" selected>50</option>
+                                }
+                                else
+                                {
+                                    <option value="50">50</option>
+                                }
+                                @if (Model.Tablelength == 100)
+                                {
+                                    <option value="100" selected>100</option>
+                                }
+                                else
+                                {
+                                    <option value="100">100</option>
+                                }
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-7"></div>
+                <div class="col-md-3">
+                    <form class="form" id="searchform" method="get" asp-action="Index" asp-controller="Inventory" asp-route-currentPage="1">
+                        <div class="form-group col-auto">
+                            <label for="search" class="sr-only">Search</label>
+                            <input type="text" class="form-control" id="search" placeholder="Items, Quantity, Order Line ID" name="search" value="@ViewData[" CurrentFilter"]">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <table class="table table-borderless table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>ID</th>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>CurrentQuantity</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.items)
+                {
+                    <tr>
+                        <td>@counter</td>
+                        <td>ID : @((item.UserBranch==null||item.UserBranch.Branch==null||string.IsNullOrEmpty(item.UserBranch.Branch.BranchIP))?"00":item.UserBranch.Branch.BranchIP):@item.OrderID:@item.OrderDetailsID</td>
+                        <td>@item.Items</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.Price</td>
+                        <td>@((item.Status!=null)?item.Status.Name:"")</td>
+                        <td>@((item.StatusID==2&&item.Inventory!=null)?item.Inventory.Quantity:0)</td>
+                        <td>
+                            <a title="@localizer[" View"]" asp-action="GetByID" asp-controller="Inventory" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-clipboard text-success"></span></span></a>
+                        </td>
+                        <td>
+                            <a title="@localizer[" Edit"]" asp-action="Edit" asp-controller="Inventory" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit text-success"></span></span></a>
+                        </td>
+                    </tr>
+                    counter++;
+                }
+
+            </tbody>
+        </table>
+        <nav aria-label="Table Paging" class="mb-0 text-muted">
+            <ul class="pagination justify-content-center mb-0">
+                <li class='page-item @(Model.CurrentPageIndex == 1 ? "disabled":"")' id="dataTable_previous">
+                    <a asp-action="Index" asp-controller="Inventory" asp-route-currentPage="@(Model.CurrentPageIndex-1)" class="page-link">@localizer["Previous"]</a>
+                </li>
+
+                @for (int i = 1; i <= Model.PageCount; i++)
+                {
+                    @if (i != Model.CurrentPageIndex)
+                    {
+                        <li class="page-item">
+                            <a asp-action="Index" asp-controller="Inventory" asp-route-currentPage="@i" class="page-link">@i</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item active">
+                            <span class="page-link">@i</span>
+                        </li>
+                    }
+
+
+                }
+                <li class='page-item @(Model.PageCount == Model.CurrentPageIndex ? "disabled":"")' id="dataTable_next">
+                    <a asp-action="Index" asp-controller="Inventory" asp-route-currentPage="@(Model.CurrentPageIndex+1)" class="page-link">@localizer["Next"]</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        ChangeColorSidebarItem("anavbarInventory", "aInventory");
+    </script>
+}

@@ -1,0 +1,84 @@
+﻿@model Cars.Models.OrderDetails
+
+@{
+    ViewData["Title"] = "Edit Inventory Order Line Status";
+    Layout = "~/Views/Shared/_AuthenticatedLayout.cshtml";
+}
+
+<div>
+    <a asp-action="Index" asp-controller="UserBranch" class="btn btn-primary mb-3" style="width:auto">Back to List</a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-12">
+        <h2 class="page-title">Display Inventory Order Line</h2>
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h2>ID : @((Model.UserBranch==null||Model.UserBranch.Branch==null||string.IsNullOrEmpty(Model.UserBranch.Branch.BranchIP))?"00":Model.UserBranch.Branch.BranchIP):@Model.OrderID:@Model.OrderDetailsID</h2>
+                    </div>
+                </div>
+                <hr />
+                <div class="card shadow">
+                    <div class="card-body">
+                        <form class="form" id="orderstatusForm" method="post" asp-action="Submit" asp-controller="Inventory">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" asp-for="OrderDetailsID" />
+                            <input type="hidden" asp-for="InventoryID" />
+                            <div class="form-group">
+                                <label asp-for="Items" class="control-label h5"></label>
+                                <input asp-for="Items" class="form-control col-4" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Quantity" class="control-label h5"></label>
+                                <input asp-for="Quantity" class="form-control col-4" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Price" class="control-label h5"></label>
+                                <input asp-for="Price" class="form-control col-4" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="StatusID" class="control-label h5">Status</label>
+                                <select asp-for="StatusID" class="form-control col-4" id="statuslist" asp-items=@ViewBag.Status onchange="jsFunction(this.value);"></select>
+                            </div>
+                            <div class="form-group text-danger" id="rejectwarn">
+                                NOTE: You will reject OrderLine and create new one with same info
+                            </div>
+                            <div class="form-group" id="currentquantitydiv">
+                                <label asp-for="Inventory.Quantity" class="control-label h5">Current Quantity</label>
+                                <input asp-for="Inventory.Quantity" class="form-control col-4" />
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-primary" asp-action="Index" asp-controller="Inventory">Back</a>
+                                <input class="btn btn-primary" style="" type="submit" value="Submit" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $("#rejectwarn").hide();
+        ChangeColorSidebarItem("anavbarInventory", "aInventory");
+        function jsFunction(value) {
+            if (value != "2") { //Not WIP
+                $("#currentquantitydiv").hide();
+            }
+            else {
+                $("#currentquantitydiv").show();
+            }
+
+            if (value != "6") { //Not Rej
+                $("#rejectwarn").hide();
+            }
+            else {
+                $("#rejectwarn").show();
+            }
+        }
+    </script>
+}

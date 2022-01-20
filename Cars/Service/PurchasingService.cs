@@ -50,10 +50,12 @@ namespace Cars.Service
 
         internal SelectList getRunners()
         {
-            var Runners = db.Runners.Where(c => c.Enable).ToList();
+          
+          var usersId = db.UserRoles.Where(c => c.RoleId == db.Roles.FirstOrDefault(a => a.Name != "Runner" || a.Name != "Runners").Id).Select(c=>c.UserId).ToList();
+          var Runners = db.Users.Where(c => usersId.Contains(c.Id)).Select(c=> new { ID = c.Id,Name =c.FirstName+" "+c.SeconedName }).ToList();
             if (Runners.Count() > 0)
             {
-                return new SelectList(Runners, "RunnerID", "Name");
+                return new SelectList(Runners, "ID", "Name");             
             }
             return null;
         }
@@ -69,7 +71,7 @@ namespace Cars.Service
             return getOrderDetails(currentPageIndex);
         }
 
-        internal int AssignVendor(long orderDetailsID, int runnerID,string user)
+        internal int AssignVendor(long orderDetailsID, string runnerID,string user)
         {
             OrderDetails orderDetails = db.OrderDetails.FirstOrDefault(c=>c.OrderDetailsID == orderDetailsID);
             if (orderDetails is not null)

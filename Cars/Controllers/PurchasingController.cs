@@ -1,5 +1,7 @@
-﻿using Cars.Service;
+﻿using Cars.Models;
+using Cars.Service;
 using Cars.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,9 +14,13 @@ namespace Cars.Controllers
     public class PurchasingController : Controller
     {
         private PurchasingService  service { get; set; }
-        public PurchasingController(PurchasingService _service)
+        //private readonly UserManager<ApplicationUser> userManager;
+        //private readonly RoleManager<IdentityRole> roleManager;
+        public PurchasingController(PurchasingService _service/*, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager*/)
         {
             service = _service;
+            //this.userManager = userManager;
+            //this.roleManager = roleManager;
         }
         public IActionResult Index(int currentPage)
         {
@@ -82,20 +88,20 @@ namespace Cars.Controllers
             }
         }
         [HttpPost]
-        public IActionResult AssignVendor(long OrderDetailsID,int RunnerID)
+        public IActionResult AssignVendor(long OrderDetailsID,string RunnerID)
         {
             try
             {
                 if (OrderDetailsID > 0)
                 {
-                    if (RunnerID <= 0)
+                    if (string.IsNullOrEmpty(RunnerID))
                     {
                        ViewBag.Runners = service.getRunners();
                        ModelState.AddModelError("RunnerID", "This field is required");
                        return View("AssignVendor", service.getOrderDetailsByID(OrderDetailsID));                      
                     }
                  
-                    int status = service.AssignVendor( OrderDetailsID,RunnerID, User.FindFirstValue(ClaimTypes.NameIdentifier));
+                   int status = service.AssignVendor( OrderDetailsID, RunnerID, User.FindFirstValue(ClaimTypes.NameIdentifier));
                     if (status == 1)
                     {
                         service.OpenOrderDetails(OrderDetailsID);
@@ -174,5 +180,15 @@ namespace Cars.Controllers
                 return View("_CustomError");
             }
         }
+        //[NonAction]
+        //public void GetRunners()
+        //{
+        //    var users = (from s in userManager.Users
+        //                 where s.Id != "039e233e-da34-4bbc-aa4a-8b5ff8942e48"
+        //                 select s).OrderBy(a => a.UserName).ToList();
+        //    var role= roleManager.Roles.Where(a => a.Name != "Runner" || a.Name != "Runners").FirstOrDefault();
+        //    var roles = roleManager.user.Where(a => a.Name != "Runner" || a.Name != "Runners").FirstOrDefault();
+        //    var runners =userManager.User.Where(c=>c.).
+        //}
     }
 }

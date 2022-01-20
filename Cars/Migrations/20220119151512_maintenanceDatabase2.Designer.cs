@@ -3,15 +3,17 @@ using System;
 using Cars.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Cars.Migrations
 {
     [DbContext(typeof(CarsContext))]
-    partial class CarsContextModelSnapshot : ModelSnapshot
+    [Migration("20220119151512_maintenanceDatabase2")]
+    partial class maintenanceDatabase2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -340,70 +342,6 @@ namespace Cars.Migrations
                     b.ToTable("FinanceDocuments");
                 });
 
-            modelBuilder.Entity("Cars.Models.Inventory", b =>
-                {
-                    b.Property<long>("InventoryID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<bool>("Confirmed")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("DTsCreate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DTsUpdate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Reason")
-                        .HasColumnType("text");
-
-                    b.Property<string>("SystemUserCreate")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("SystemUserUpdate")
-                        .HasColumnType("text");
-
-                    b.HasKey("InventoryID");
-
-                    b.ToTable("Inventory");
-                });
-
-            modelBuilder.Entity("Cars.Models.InventoryDocument", b =>
-                {
-                    b.Property<long>("FinanceDocumentID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("DTsCreate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long>("InventoryID")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Path")
-                        .HasColumnType("text");
-
-                    b.Property<string>("SystemUserID")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("FinanceDocumentID");
-
-                    b.HasIndex("InventoryID");
-
-                    b.ToTable("InventoryDocuments");
-                });
-
             modelBuilder.Entity("Cars.Models.Order", b =>
                 {
                     b.Property<long>("OrderID")
@@ -466,9 +404,6 @@ namespace Cars.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<long?>("FinanceID")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("InventoryID")
                         .HasColumnType("bigint");
 
                     b.Property<bool?>("IsApproved")
@@ -535,8 +470,6 @@ namespace Cars.Migrations
                     b.HasKey("OrderDetailsID");
 
                     b.HasIndex("FinanceID");
-
-                    b.HasIndex("InventoryID");
 
                     b.HasIndex("OrderDetailsTypeID");
 
@@ -1176,17 +1109,6 @@ namespace Cars.Migrations
                     b.Navigation("Finance");
                 });
 
-            modelBuilder.Entity("Cars.Models.InventoryDocument", b =>
-                {
-                    b.HasOne("Cars.Models.Inventory", "Inventory")
-                        .WithMany("InventoryDocument")
-                        .HasForeignKey("InventoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Inventory");
-                });
-
             modelBuilder.Entity("Cars.Models.Order", b =>
                 {
                     b.HasOne("Cars.Models.Customer", "Customer")
@@ -1225,10 +1147,6 @@ namespace Cars.Migrations
                     b.HasOne("Cars.Models.Finance", "Finance")
                         .WithMany("OrderDetails")
                         .HasForeignKey("FinanceID");
-
-                    b.HasOne("Cars.Models.Inventory", "Inventory")
-                        .WithMany("OrderDetails")
-                        .HasForeignKey("InventoryID");
 
                     b.HasOne("Cars.Models.OrderDetailsType", "OrderDetailsType")
                         .WithMany("OrderDetails")
@@ -1271,8 +1189,6 @@ namespace Cars.Migrations
                         .IsRequired();
 
                     b.Navigation("Finance");
-
-                    b.Navigation("Inventory");
 
                     b.Navigation("Order");
 
@@ -1486,13 +1402,6 @@ namespace Cars.Migrations
             modelBuilder.Entity("Cars.Models.Finance", b =>
                 {
                     b.Navigation("FinanceDocument");
-
-                    b.Navigation("OrderDetails");
-                });
-
-            modelBuilder.Entity("Cars.Models.Inventory", b =>
-                {
-                    b.Navigation("InventoryDocument");
 
                     b.Navigation("OrderDetails");
                 });

@@ -1,0 +1,53 @@
+﻿@model Cars.Models.OrderDetails
+
+@{
+    ViewData["Title"] = "Display Inventory Order Line";
+}
+
+<div class="row justify-content-center">
+    <div class="col-12">
+        <h2 class="page-title">Display Inventory Order Line</h2>
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <strong class="card-title">Details</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h5>ID : @((Model.UserBranch==null||Model.UserBranch.Branch==null||string.IsNullOrEmpty(Model.UserBranch.Branch.BranchIP))?"00":Model.UserBranch.Branch.BranchIP):@Model.OrderID:@Model.OrderDetailsID</h5>
+                    </div>
+                </div>
+                <hr />
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="row h5">
+                            <div class="col-md-2">
+                                Items  :  @Model.Items
+                            </div>
+                            <div class="col-md-2 border-left border-right">
+                                Quantity  :  @Model.Quantity
+                            </div>
+                            <div class="col-md-2 border-left border-right">
+                                Price  :  @Model.Price
+                            </div>
+                            <div class="col-md-2 border-left border-right">
+                                Status  :  @((Model.Status!=null)? Model.Status.Name:"")
+                            </div>
+                            <div class="col-md-2">
+                                Current Quantity  :  @((Model.StatusID==2&& Model.Inventory!=null)? Model.Inventory.Quantity:0)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <a class="btn btn-primary" asp-action="Index" asp-controller="Inventory">Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        ChangeColorSidebarItem("anavbarInventory", "aInventory");
+    </script>
+}

@@ -3,15 +3,17 @@ using System;
 using Cars.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Cars.Migrations
 {
     [DbContext(typeof(CarsContext))]
-    partial class CarsContextModelSnapshot : ModelSnapshot
+    [Migration("20220118150132_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -508,8 +510,8 @@ namespace Cars.Migrations
                     b.Property<long?>("QuotationID")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("RunnerID")
-                        .HasColumnType("text");
+                    b.Property<int?>("RunnerID")
+                        .HasColumnType("integer");
 
                     b.Property<int>("StatusID")
                         .HasColumnType("integer");
@@ -1246,7 +1248,7 @@ namespace Cars.Migrations
                         .WithMany("OrderDetails")
                         .HasForeignKey("QuotationID");
 
-                    b.HasOne("Cars.Models.ApplicationUser", "User")
+                    b.HasOne("Cars.Models.Runner", "Runner")
                         .WithMany()
                         .HasForeignKey("RunnerID");
 
@@ -1260,7 +1262,7 @@ namespace Cars.Migrations
                         .WithMany()
                         .HasForeignKey("UserBranchID");
 
-                    b.HasOne("Cars.Models.BranchModel", "VendorLocation")
+                    b.HasOne("Cars.Models.VendorLocation", "VendorLocation")
                         .WithMany()
                         .HasForeignKey("VendorLocationID");
 
@@ -1280,9 +1282,9 @@ namespace Cars.Migrations
 
                     b.Navigation("Quotation");
 
-                    b.Navigation("Status");
+                    b.Navigation("Runner");
 
-                    b.Navigation("User");
+                    b.Navigation("Status");
 
                     b.Navigation("UserBranch");
 

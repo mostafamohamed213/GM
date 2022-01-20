@@ -33,7 +33,7 @@ namespace Cars.Models
 
         public int? VendorLocationID { get; set; }
         [ForeignKey("VendorLocationID")]
-        public VendorLocation VendorLocation { get; set; }
+        public BranchModel VendorLocation { get; set; }
         public int WorkflowID { get; set; }
         [ForeignKey("WorkflowID")]
         public Workflow Workflow { get; set; }
@@ -46,6 +46,9 @@ namespace Cars.Models
         public int? UserBranchID { get; set; }
         [ForeignKey("UserBranchID")]
         public UserBranchModel UserBranch { get; set; }
+        public long? InventoryID { get; set; }
+        [ForeignKey("InventoryID")]
+        public Inventory Inventory { get; set; }
         public string SystemUserCreate { get; set; }
         public DateTime DTsCreate { get; set; }     
 
@@ -55,10 +58,10 @@ namespace Cars.Models
 
         public int StatusID { get; set; }
         [ForeignKey("StatusID")]
-        public Status Status { get; set; }
-        public int? RunnerID { get; set; }
+        public Status Status { get; set; }     
+        public string RunnerID { get; set; }
         [ForeignKey("RunnerID")]
-        public Runner Runner { get; set; }
+        public virtual ApplicationUser User { get; set; }
 
         [NotMapped]
         public List<OrderDetails> Children { get; set; }

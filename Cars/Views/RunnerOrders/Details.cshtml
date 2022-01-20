@@ -1,0 +1,62 @@
+﻿@model Cars.Models.OrderDetails
+
+@{
+    ViewData["Title"] = "Display Runner Order Line";
+}
+
+<div class="row justify-content-center">
+    <div class="col-12">
+        <h2 class="page-title">Display Runner Order Line</h2>
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 h2">
+                        ID : @((Model.UserBranch==null||Model.UserBranch.Branch==null||string.IsNullOrEmpty(Model.UserBranch.Branch.BranchIP))?"00":Model.UserBranch.Branch.BranchIP):@Model.OrderID:@Model.OrderDetailsID
+                    </div>
+                </div>
+                <hr />
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="row h5">
+                            <div class="col-md-2">
+                                Items  :  @Model.Items
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row h5">
+                            <div class="col-md-2">
+                                Quantity  :  @Model.Quantity
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row h5">
+                            <div class="col-md-2">
+                                Price  :  @Model.Price
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row h5">
+                            <div class="col-md-2">
+                                Status  :  @((Model.Workflow!=null)? Model.Workflow.Name:"")
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row h5">
+                            <div class="col-md-2">
+                                Branch  :  @((Model.UserBranch!=null&&Model.UserBranch.Branch!=null)? Model.UserBranch.Branch.Name:"")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <a class="btn btn-primary" asp-action="Index" asp-controller="RunnerOrders">Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        ChangeColorSidebarItem("", "aRunnerOrder");
+    </script>
+}

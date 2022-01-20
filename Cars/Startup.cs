@@ -70,6 +70,7 @@ namespace Cars
             services.AddTransient<PurchasingService, PurchasingService>();
             services.AddTransient<AllOrderLinesService, AllOrderLinesService>();
             services.AddTransient<InventoryService, InventoryService>();
+            services.AddTransient<RunnerOrdersService, RunnerOrdersService>();
 
             
             services.AddSession();

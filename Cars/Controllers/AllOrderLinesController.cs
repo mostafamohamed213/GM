@@ -65,12 +65,15 @@ namespace Cars.Controllers
                    
                     if (orderDetails is not null )
                     {
+                      var reason = db.OrderDetailsStatusLogs.Where(r => r.OrderDetailsID == orderDetails.OrderDetailsID).FirstOrDefault();
                         ViewBag.types = services.GetSelectListOrderDetailsType();
                         var workflow = db.Workflows.Where(w => w.WorkflowID == orderDetails.WorkflowID).FirstOrDefault();
                         var status=db.Status.Where(s=>s.StatusID== orderDetails.StatusID).FirstOrDefault();
                         TempData["workflow"] = workflow.Name;
                         TempData["status"] = status.Name;
-                        return View(orderDetails);
+                        if(reason!=null)
+                        TempData["Reason"] = reason.Reason;
+                    return View(orderDetails);
                     }
 
                 return View("_CustomError");

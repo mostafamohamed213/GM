@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Cars.Models;
 using Cars.Service;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Cars.Controllers
 {
@@ -61,6 +62,7 @@ namespace Cars.Controllers
         }
 
         // GET: Branch/Create
+        [Authorize(Permissions.HR.Manage)]
         public IActionResult Create()
         {
             return View();

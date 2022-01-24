@@ -1,6 +1,6 @@
 ﻿@*@model IEnumerable<Cars.Models.BranchModel>*@
 @model PaginatedList<Cars.Models.BranchModel>
-
+@inject IAuthorizationService AuthorizationService
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_AuthenticatedLayout.cshtml";
@@ -26,9 +26,12 @@
     </div>
 
 </form>
-<p>
-    <a asp-action="Create" asp-controller="Branch" class="btn btn-primary mb-3" style="width: auto;"> Add Branch</a>
-</p>
+@if (AuthorizationService.AuthorizeAsync(User, Permissions.HR.Manage).Result.Succeeded)
+{
+    <p>
+        <a asp-action="Create" asp-controller="Branch" class="btn btn-primary mb-3" style="width: auto;"> Add Branch</a>
+    </p>
+}
 <div class="table-responsive mb-3">
     <table class="table table-bordered table-striped mb-0">
         <thead>
@@ -43,23 +46,23 @@
         <tbody>
             @foreach (var item in Model)
             {
-            <tr>
-                <td>
-                    @item.Name
-                </td>
-                <td>
-                    @item.BranchIP
-                </td>
-                <td>
-                    @item.IsActive
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.BranchID" class="btn btn-primary mb-3 ml-3" style="width:auto">Details</a>
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.BranchID" class="btn btn-primary mb-3 ml-3" style="width:auto">Edit</a>
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.BranchIP
+                    </td>
+                    <td>
+                        @item.IsActive
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.BranchID" class="btn btn-primary mb-3 ml-3" style="width:auto">Details</a>
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.BranchID" class="btn btn-primary mb-3 ml-3" style="width:auto">Edit</a>
+                    </td>
+                </tr>
             }
         </tbody>
     </table>

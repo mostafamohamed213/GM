@@ -43,6 +43,102 @@ namespace Cars.Models
 
             }
 
+            else if (module == "HR")
+            {
+                return new List<string>()
+            {
+                $"Permissions.{module}.Manage",
+            
+            };
+
+            }
+
+            else if (module == "Sales")
+            {
+                return new List<string>()
+            {
+                $"Permissions.{module}.Manage",
+
+            };
+
+            }
+
+            else if (module == "Pricing")
+            {
+                return new List<string>()
+            {
+                $"Permissions.{module}.Manage",
+
+            };
+
+            }
+
+            else if (module == "Labor")
+            {
+                return new List<string>()
+            {
+                $"Permissions.{module}.Manage",
+
+            };
+
+            }
+
+            else if (module == "Qoutation")
+            {
+                return new List<string>()
+            {
+                $"Permissions.{module}.Manage",
+
+            };
+
+            }
+
+            else if (module == "Finance")
+            {
+                return new List<string>()
+            {
+                $"Permissions.{module}.Manage",
+
+            };
+
+            }
+
+            else if (module == "Purchasing")
+            {
+                return new List<string>()
+            {
+                $"Permissions.{module}.Manage",
+
+            };
+
+            }
+            else if (module == "Inventory")
+            {
+                return new List<string>()
+            {
+                $"Permissions.{module}.Manage",
+
+            };
+
+            }
+            else if (module == "Runner")
+            {
+                return new List<string>()
+            {
+                $"Permissions.{module}.Manage",
+
+            };
+
+            }
+            else if (module == "Lockups")
+            {
+                return new List<string>()
+            {
+                $"Permissions.{module}.Manage",
+
+            };
+
+            }
             else
             {
                 return new List<string>()
@@ -139,11 +235,67 @@ namespace Cars.Models
 
 
         }
+        public static class HR
+        {
+            public const string Manage = "Permissions.HR.Manage";
+       
+        }
+        public static class Sales
+        {
+            public const string Manage = "Permissions.Sales.Manage";
+
+        }
+        public static class Pricing
+        {
+            public const string Manage = "Permissions.Pricing.Manage";
+
+        }
+        public static class Labor
+        {
+            public const string Manage = "Permissions.Labor.Manage";
+
+        }
+        public static class Qoutation
+        {
+            public const string Manage = "Permissions.Qoutation.Manage";
+
+        }
+        public static class Purchasing
+        {
+            public const string Manage = "Permissions.Purchasing.Manage";
+
+        }
+        public static class Inventory
+        {
+            public const string Manage = "Permissions.Inventory.Manage";
+
+        }
+        public static class Runner
+        {
+            public const string Manage = "Permissions.Runner.Manage";
+
+        }
+        public static class Lockups
+        {
+            public const string Manage = "Permissions.Lockups.Manage";
+
+        }
+    
+
     }
     public enum Modules
     {
       
         Users,
-        Roles
+        Roles,
+        HR,
+        Sales,
+        Pricing,
+        Labor,
+        Qoutation,
+        Purchasing,
+        Inventory,
+        Runner,
+        Lockups
     }
 }

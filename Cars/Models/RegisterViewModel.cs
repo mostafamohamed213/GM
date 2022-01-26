@@ -19,6 +19,17 @@ namespace Cars.Models
         [Display(Name = "User Name")]
         public string UserName { get; set; }
 
+
+        [Required]
+        [Display(Name = "Mobile")]
+        public long Mobile { get; set; }
+
+
+        [Required]
+        [Display(Name = "WhatsApp")]
+        public long Whatsapp { get; set; }
+
+
         [Required]
         [EmailAddress]
         public string Email { get; set; }

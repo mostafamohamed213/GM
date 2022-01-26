@@ -13,6 +13,9 @@ namespace Cars.Models
 
         public string LocationIP { get; set; }
 
+        public long Mobile { get; set; }
+
+        public long Whatsapp { get; set; }
         public virtual ICollection<UsersLogs> UsersLogs { get; set; }
         public virtual ICollection<UserBranchModel> UserBranches { get; set; }
     }

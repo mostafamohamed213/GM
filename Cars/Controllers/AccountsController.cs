@@ -134,8 +134,8 @@ namespace Cars.Controllers
                     Email = model.Email,
                     FirstName = model.FirstName,
                     SeconedName = model.SeconedName,
-                 
-
+                    Mobile  = model.Mobile,
+                    Whatsapp = model.Whatsapp
                 };
 
                 // Store user data in AspNetUsers database table

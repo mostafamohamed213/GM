@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Cars.Controllers
 {
+    [Authorize(Permissions.HR.Manage)]
     public class BranchController : Controller
     {
         private readonly BranchService _service;
@@ -62,7 +63,7 @@ namespace Cars.Controllers
         }
 
         // GET: Branch/Create
-        [Authorize(Permissions.HR.Manage)]
+     
         public IActionResult Create()
         {
             return View();

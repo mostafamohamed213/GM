@@ -28,6 +28,16 @@ namespace Cars.Models
         [Display(Name = "Last Name")]
         public string SeconedName { get; set; }
 
+        [Required]
+        [Display(Name = "Mobile")]
+        public long Mobile { get; set; }
+
+
+        [Required]
+        [Display(Name = "WhatsApp")]
+        public long Whatsapp { get; set; }
+
+
         [DataType(DataType.Password)]
         [Display(Name = "New password")]
         public string NewPassword { get; set; }

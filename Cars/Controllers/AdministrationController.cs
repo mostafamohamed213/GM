@@ -157,6 +157,8 @@ namespace Cars.Controllers
                 UserName = user.UserName,
                 FirstName = user.FirstName,
                 SeconedName = user.SeconedName,
+                Mobile = user.Mobile,
+                Whatsapp = user.Whatsapp,
                 Role = role
 
             };
@@ -216,6 +218,8 @@ namespace Cars.Controllers
                     user.UserName = model.UserName;
                     user.FirstName = model.FirstName;
                     user.SeconedName = model.SeconedName;
+                    user.Whatsapp = model.Whatsapp;
+                    user.Mobile = model.Mobile;
                     //  user.PasswordHash = userManager.PasswordHasher.HashPassword(user,model.NewPassword);
 
                     IdentityResult result = await userManager.UpdateAsync(user);

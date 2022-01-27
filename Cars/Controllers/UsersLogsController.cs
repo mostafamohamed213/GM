@@ -24,13 +24,17 @@ namespace Cars.Controllers
             string searchString,
              string currentFilter2,
             string searchString2,
+            DateTime? searchString3,
+            DateTime? searchString4,
+               DateTime? currentFilter3,
+                  DateTime? currentFilter4,
             int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
             //  ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             //ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
 
-            if (searchString != null || searchString2 != null)
+            if (searchString != null || searchString2 != null || searchString3 != null || searchString4 != null)
             {
                 pageNumber = 1;
             }
@@ -38,10 +42,16 @@ namespace Cars.Controllers
             {
                 searchString = currentFilter;
                 searchString2 = currentFilter2;
+                searchString3 = currentFilter3;
+                searchString4 = currentFilter4;
             }
 
             ViewData["CurrentFilter"] = searchString;
             ViewData["CurrentFilter2"] = searchString2;
+
+            ViewData["CurrentFilter3"] = searchString3;
+            ViewData["CurrentFilter4"] = searchString4;
+
 
             var usersLogs = from s in _context.UsersLogs
                             select s;
@@ -56,12 +66,22 @@ namespace Cars.Controllers
                 usersLogs = usersLogs.Where(s => s.User.UserName.ToLower().Trim().Contains(searchString2.ToLower().Trim()));
             }
 
+            if (searchString3 !=null)
+            {
+                usersLogs = usersLogs.Where(s => s.CreateDts>=searchString3);
+            }
+
+            if (searchString4 != null)
+            {
+                usersLogs = usersLogs.Where(s => s.CreateDts <= searchString4);
+            }
+
             int count = usersLogs.Count();
             int pageSize = 20;
             int TotalPages = (int)Math.Ceiling(count / (double)pageSize);
             ViewBag.pages = TotalPages;
             ViewBag.currentpage = pageNumber ?? 1;
-            return View(await PaginatedList<UsersLogs>.CreateAsync(usersLogs.Include(s=>s.User).AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<UsersLogs>.CreateAsync(usersLogs.Include(s=>s.User).OrderByDescending(a=>a.CreateDts).AsNoTracking(), pageNumber ?? 1, pageSize));
          
         }
 

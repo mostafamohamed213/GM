@@ -25,6 +25,19 @@
 
 
             </div>
+
+            <div class="input-group col-md-5">
+                <label>Date From</label>
+                <input type="date" class="form-control ml-2 rounded"  aria-label="Search"
+                       aria-describedby="search-addon" name="SearchString3" value="@(((DateTime?)ViewData["CurrentFilter3"])?.ToString("yyyy-MM-dd"))" />
+            </div>
+            <div class="input-group col-md-5">
+                <label>Date To</label>
+                <input type="date" class="form-control ml-2 rounded" aria-label="Search"
+                       aria-describedby="search-addon" name="SearchString4" value="@(((DateTime?)ViewData["CurrentFilter4"])?.ToString("yyyy-MM-dd"))" />
+
+            </div>
+
             <button type="submit" class="btn btn-outline-primary">Search</button>
         </div>
         <div class="col-sm-3">
@@ -94,6 +107,8 @@
        asp-route-pageNumber="@(Model.PageIndex - 1)"
        asp-route-currentFilter="@ViewData["CurrentFilter"]"
        asp-route-currentFilter2="@ViewData["CurrentFilter2"]"
+       asp-route-currentFilter3="@ViewData["CurrentFilter3"]"
+       asp-route-currentFilter4="@ViewData["CurrentFilter4"]"
        class="btn btn-primary @prevDisabled">
         Previous
     </a>
@@ -124,6 +139,8 @@
                asp-route-pageNumber="@i"
                asp-route-currentFilter="@ViewData["CurrentFilter"]"
                asp-route-currentFilter2="@ViewData["CurrentFilter2"]"
+               asp-route-currentFilter3="@ViewData["CurrentFilter3"]"
+               asp-route-currentFilter4="@ViewData["CurrentFilter4"]"
                class="btn btn-success">
                 @i
             </a>
@@ -135,6 +152,8 @@
                asp-route-pageNumber="@i"
                asp-route-currentFilter="@ViewData["CurrentFilter"]"
                asp-route-currentFilter2="@ViewData["CurrentFilter2"]"
+               asp-route-currentFilter3="@ViewData["CurrentFilter3"]"
+              asp-route-currentFilter4="@ViewData["CurrentFilter4"]"
                class="btn btn-primary">
                 @i
             </a>
@@ -145,6 +164,8 @@
        asp-route-pageNumber="@(Model.PageIndex + 1)"
        asp-route-currentFilter="@ViewData["CurrentFilter"]"
        asp-route-currentFilter2="@ViewData["CurrentFilter2"]"
+       asp-route-currentFilter3="@ViewData["CurrentFilter3"]"
+       asp-route-currentFilter4="@ViewData["CurrentFilter4"]"
        class="btn btn-primary @nextDisabled">
         Next
     </a>

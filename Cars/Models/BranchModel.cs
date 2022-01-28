@@ -21,5 +21,9 @@ namespace Cars.Models
         public DateTime? DTsUpdate { get; set; }
 
         public virtual ICollection<UserBranchModel> UserBranches { get; set; }
+
+
+        [NotMapped]
+        public string[] employee { get; set; }
     }
 }

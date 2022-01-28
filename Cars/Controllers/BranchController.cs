@@ -8,16 +8,20 @@ using Microsoft.EntityFrameworkCore;
 using Cars.Models;
 using Cars.Service;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Cars.Controllers
 {
     [Authorize(Permissions.HR.Manage)]
     public class BranchController : Controller
     {
+        private readonly CarsContext _context;
         private readonly BranchService _service;
-
-        public BranchController( BranchService service)
+        private readonly UserManager<ApplicationUser> userManager;
+        public BranchController( BranchService service, CarsContext context, UserManager<ApplicationUser> userManager)
         {
+            _context = context;
+            this.userManager = userManager;
             _service = service;
         }
 
@@ -66,6 +70,16 @@ namespace Cars.Controllers
      
         public IActionResult Create()
         {
+            var users = userManager.Users.Select(s => new
+            {
+                UserID = s.Id,
+                Name = string.Format("{0}", s.UserName)
+            }).ToList();
+
+
+            ViewData["Employee"] = new MultiSelectList(users, "UserID", "Name");
+
+
             return View();
         }
 
@@ -74,7 +88,7 @@ namespace Cars.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BranchID,Name,BranchIP")] BranchModel branchModel)
+        public async Task<IActionResult> Create([Bind("BranchID,Name,BranchIP")] BranchModel branchModel, string[] Employee)
         {
             try
             {
@@ -89,7 +103,7 @@ namespace Cars.Controllers
                             ViewBag.ErrorMessage = "Branch IP Already Exists";
                         return View(branchModel);
                     }
-                    await _service.AddAsync(branchModel);
+                    await _service.AddAsync(branchModel, Employee);
                     return RedirectToAction(nameof(Index));
                 }
                 return View(branchModel);
@@ -115,6 +129,23 @@ namespace Cars.Controllers
                 {
                     return View("_CustomError");
                 }
+
+
+                IEnumerable<string> approverFields = _context.UserBranches.Where(a => a.BranchID == id && a.IsActive==true).Select(a => a.UserID).ToList();
+                //ViewBag.ResearchFields = Fields;
+                branchModel.employee = approverFields.ToArray();
+
+
+
+                var users = userManager.Users.Select(s => new
+                {
+                    UserID = s.Id,
+                    Name = string.Format("{0}", s.UserName)
+                }).ToList();
+
+
+                ViewData["Employee"] = new MultiSelectList(users, "UserID", "Name");
+
                 return View(branchModel);
             }
             catch (Exception)
@@ -128,7 +159,7 @@ namespace Cars.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BranchID,Name,BranchIP,IsActive")] BranchModel branchModel)
+        public async Task<IActionResult> Edit(int id, [Bind("BranchID,Name,employee,BranchIP,IsActive")] BranchModel branchModel)
         {
             try
             {

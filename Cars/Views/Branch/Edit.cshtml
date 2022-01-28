@@ -4,7 +4,7 @@
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_AuthenticatedLayout.cshtml";
 }
-
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <h1>Edit Branch</h1>
 
 <h4>Branch</h4>
@@ -24,6 +24,14 @@
                 <input asp-for="BranchIP" class="form-control" />
                 <span asp-validation-for="BranchIP" class="text-danger"></span>
             </div>
+            <div class="form-group">
+
+                <label class="control-label">Employee</label>
+
+                <select asp-for="employee" asp-items="ViewBag.Employee" multiple="multiple" class="form-control"  id="multiSelectDropDownApprovers"></select>
+
+            </div>
+
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
@@ -52,7 +60,14 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    ChangeColorSidebarItem("branches", "abranches");
+    $(document).ready(function () {
+
+
+        $('#multiSelectDropDownApprovers').select2();
+
+        ChangeColorSidebarItem("branches", "abranches");
+    });
 </script>
 }

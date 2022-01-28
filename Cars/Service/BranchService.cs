@@ -103,7 +103,7 @@ namespace Cars.Service
             }
         }
 
-        public async Task<BranchModel> AddAsync(BranchModel model)
+        public async Task<BranchModel> AddAsync(BranchModel model,string[] Employee)
         {
             try
             {
@@ -111,6 +111,28 @@ namespace Cars.Service
                 model.IsActive = true;
                 var result = await _context.AddAsync(model);
                 await _context.SaveChangesAsync();
+                List<UserBranchModel> employees = new List<UserBranchModel>();
+
+
+                foreach (var item in Employee)
+                {
+                  var x=  _context.UserBranches.Where(a => a.UserID == item && a.IsActive==true).ToList();
+                    if (x.Count != 0)
+                    {
+                        x.ForEach(a => { a.IsActive = false; a.DTsEnd = DateTime.Now; });
+                        await _context.SaveChangesAsync();
+                    }
+                
+                
+
+                    employees.Add(new UserBranchModel() { BranchID=result.Entity.BranchID, UserID =item ,IsActive=true,DTsCreate=DateTime.Now });
+                 
+                }
+                _context.UserBranches.AddRange(employees);
+                await _context.SaveChangesAsync();
+
+
+
                 return result.Entity;
             }
             catch (Exception ex)
@@ -126,6 +148,31 @@ namespace Cars.Service
                 model.DTsUpdate = DateTime.UtcNow;
                 var result = _context.Update(model);
                 await _context.SaveChangesAsync();
+                List<UserBranchModel> employees = new List<UserBranchModel>();
+                List<UserBranchModel> x = _context.UserBranches.Where(e => e.BranchID == model.BranchID && e.IsActive == true).ToList();
+                if (x.Count !=0)
+                {
+                    x.ForEach(a => { a.IsActive = false; a.DTsEnd = DateTime.Now; });
+                    await _context.SaveChangesAsync();
+                }
+                if (model.employee != null)
+                {
+                    foreach (var item in model.employee)
+                    {
+                        var y = _context.UserBranches.Where(a => a.UserID == item && a.IsActive==true).ToList();
+                        if (y.Count != 0)
+                        {
+                            y.ForEach(a => { a.IsActive = false; a.DTsEnd = DateTime.Now; });
+                            await _context.SaveChangesAsync();
+                        }
+
+                        employees.Add(new UserBranchModel() { BranchID = result.Entity.BranchID, UserID = item, IsActive = true, DTsCreate = DateTime.Now });
+            
+                    }
+                    _context.UserBranches.AddRange(employees);
+                    await _context.SaveChangesAsync();
+                }
+
                 return result.Entity;
             }
             catch (Exception ex)

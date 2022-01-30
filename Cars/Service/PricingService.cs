@@ -82,10 +82,10 @@ namespace Cars.Service
 
         internal SelectList GetSelectListVendorLocations()
         {
-            var VendorLocations = db.VendorLocations.ToList();
+            var VendorLocations = db.Branches.ToList();
             if (VendorLocations.Count() > 0)
             {
-                return new SelectList(VendorLocations, "VendorLocationID", "NameEn");
+                return new SelectList(VendorLocations, "BranchID", "Name");
             }
             return null;
         }

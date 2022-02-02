@@ -36,6 +36,8 @@ namespace Cars.Models
         public virtual DbSet<StatusLogDocument> StatusLogDocuments { get; set; }
         public virtual DbSet<Inventory> Inventory { get; set; }
         public virtual DbSet<InventoryDocument> InventoryDocuments { get; set; }
+        public virtual DbSet<NotificationUser> NotificationUser { get; set; }
+        public virtual DbSet<Notification> Notification { get; set; }
 
         public virtual DbSet<UsersLogs> UsersLogs { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,6 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer localizer
 @using Cars.ViewModels
+@inject IAuthorizationService AuthorizationService
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -26,19 +28,25 @@
     <link rel="stylesheet" href="~/Template/css/daterangepicker.css">
     <!-- App CSS -->
     @*<link rel="stylesheet" href="~/Template/css/app-light.css" id="lightTheme">
-    <link rel="stylesheet" href="~/Template/css/app-dark.css" id="darkTheme" disabled>*@
+        <link rel="stylesheet" href="~/Template/css/app-dark.css" id="darkTheme" disabled>*@
     @if (StaticValues.RTL)
     {
-<link rel="stylesheet" href="~/Template/RTL/app-light.css" id="lightTheme" />
-                <link rel="stylesheet" href="~/Template/RTL/app-dark.css" id="darkTheme" disabled />
- }
-            else
-            {
-<link rel="stylesheet" href="~/Template/css/app-light.css" id="lightTheme">
-                <link rel="stylesheet" href="~/Template/css/app-dark.css" id="darkTheme" disabled>
-}
+        <link rel="stylesheet" href="~/Template/RTL/app-light.css" id="lightTheme" />
+        <link rel="stylesheet" href="~/Template/RTL/app-dark.css" id="darkTheme" disabled />
+    }
+    else
+    {
+        <link rel="stylesheet" href="~/Template/css/app-light.css" id="lightTheme">
+        <link rel="stylesheet" href="~/Template/css/app-dark.css" id="darkTheme" disabled>
+    }
     @*<link rel="stylesheet" href="~/Template/RTL/app-light.css" id="lightTheme"/>
         <link rel="stylesheet" href="~/Template/RTL/app-dark.css" id="darkTheme" disabled />*@
+    <style>
+        /* Notification*/
+        #notbell {
+            visibility: hidden;
+        }
+    </style>
 
 </head>
 <body class="vertical  light   @(StaticValues.RTL ? "rtl" : string.Empty) ">
@@ -51,7 +59,7 @@
                 <input class="form-control mr-sm-2 bg-transparent border-0 pl-4 text-muted" type="search" placeholder="Type something..." aria-label="Search">
             </form>
             @*<div>
-                    <partial name="_SelectLanguagePartial" /> 
+                    <partial name="_SelectLanguagePartial" />
                 </div>*@
             <ul class="nav">
                 <li class="nav-item">
@@ -66,9 +74,16 @@
                     </a>
                 </li>
                 <li class="nav-item nav-notif">
-                    <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-notif">
+                    <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-onlineuser">
                         <span class="fe fe-users fe-16"></span>
                         <span class="dot dot-md bg-success"></span>
+                    </a>
+                </li>
+                @*Notifications*@
+                <li class="nav-item nav-notif">
+                    <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-notif">
+                        <span class="fe fe-bell fe-16"></span>
+                        <span class="dot dot-md bg-success" id="notbell"></span>
                     </a>
                 </li>
                 <li class="nav-item dropdown">
@@ -81,17 +96,17 @@
                         <a class="dropdown-item" href="#">Profile</a>
                         <a class="dropdown-item" href="#">Settings</a>
                         <a class="dropdown-item" href="#">Activities</a>
-                    
-
-                            <form method="post" asp-controller="Accounts" asp-action="logout">
-                                <button type="submit" style="width:auto"
-                                        class="nav-link btn btn-link py-0">
-                                    Logout <i class="fas fa-sign-out-alt"></i>
-                                </button>
-                            </form>
 
 
-                        
+                        <form method="post" asp-controller="Accounts" asp-action="logout">
+                            <button type="submit" style="width:auto"
+                                    class="nav-link btn btn-link py-0">
+                                Logout <i class="fas fa-sign-out-alt"></i>
+                            </button>
+                        </form>
+
+
+
                     </div>
                 </li>
             </ul>
@@ -140,12 +155,12 @@
                                 <a class="nav-link pl-3" asp-controller="Sales" asp-action="Draft" asp-route-currentPage="1" id="aDraftOrderHeader"><span class="ml-1 item-text">@localizer["Draft"]</span></a>
                             </li>
                             @*<li class="nav-item">
-                           <a class="nav-link pl-3" asp-controller="Sales" asp-action="GetOrderLines" asp-route-currentPage="1" id="aOrderLines"><span class="ml-1 item-text">@localizer["Draft"]</span></a>
-                    </li>*@
+                                       <a class="nav-link pl-3" asp-controller="Sales" asp-action="GetOrderLines" asp-route-currentPage="1" id="aOrderLines"><span class="ml-1 item-text">@localizer["Draft"]</span></a>
+                                </li>*@
                             @*<li class="nav-item active">
-                        <a class="nav-link pl-3" id="testit" asp-controller="Sales" asp-action="ViewOrder" asp-route-OrderId="10"> <span class=" ml-1 item-text"></span></a>
+                                    <a class="nav-link pl-3" id="testit" asp-controller="Sales" asp-action="ViewOrder" asp-route-OrderId="10"> <span class=" ml-1 item-text"></span></a>
 
-                    </li>*@
+                                </li>*@
 
                         </ul>
                     </li>
@@ -153,25 +168,25 @@
                 </ul>
 
                 @*<p class="text-muted nav-heading mt-4 mb-1">
-            <span>Leader</span>
-        </p>
-        <ul class="navbar-nav flex-fill w-100 mb-2">
-            <li class="nav-item dropdown">
-                <a href="#ui-OrderLinesUsed" data-toggle="collapse" aria-expanded="false" id="anavbarOrderLinesUsed" class="dropdown-toggle nav-link">
-                    <i class="fe fe-box fe-16"></i>
-                    <span class="ml-3 item-text">Order Lines</span>
-                </a>
-                <ul class="collapse list-unstyled pl-4 w-100" id="ui-OrderLinesUsed">
-                    <li class="nav-item">
-                        <a class="nav-link pl-3" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
-                            <span class="ml-1 item-text">Order lines used</span>
-                        </a>
-                    </li>
+                        <span>Leader</span>
+                    </p>
+                    <ul class="navbar-nav flex-fill w-100 mb-2">
+                        <li class="nav-item dropdown">
+                            <a href="#ui-OrderLinesUsed" data-toggle="collapse" aria-expanded="false" id="anavbarOrderLinesUsed" class="dropdown-toggle nav-link">
+                                <i class="fe fe-box fe-16"></i>
+                                <span class="ml-3 item-text">Order Lines</span>
+                            </a>
+                            <ul class="collapse list-unstyled pl-4 w-100" id="ui-OrderLinesUsed">
+                                <li class="nav-item">
+                                    <a class="nav-link pl-3" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
+                                        <span class="ml-1 item-text">Order lines used</span>
+                                    </a>
+                                </li>
 
-                </ul>
-            </li>
+                            </ul>
+                        </li>
 
-        </ul>*@
+                    </ul>*@
                 <p class="text-muted nav-heading mt-4 mb-1">
                     <span>@localizer["Pricing"]</span>
                 </p>
@@ -230,24 +245,27 @@
                     </li>
 
                 </ul>
-                <p class="text-muted nav-heading mt-4 mb-1">
-                    <span>@localizer["Finance"]</span>
-                </p>
-                <ul class="navbar-nav flex-fill w-100 mb-2">
-                    <li class="nav-item dropdown">
-                        <a href="#ui-elements-Finance" data-toggle="collapse" aria-expanded="false" id="anavbarFinance" class="dropdown-toggle nav-link">
-                            <i class="fe fe-dollar-sign fe-16"></i>
-                            <span class="ml-3 item-text">@localizer["Finance"]</span>
-                        </a>
-                        <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements-Finance">
-                            <li class="nav-item">
-                                <a class="nav-link pl-3" asp-action="Index" asp-controller="Finance" asp-route-currentPage="1" id="aFinance">
-                                    <span class="ml-1 item-text">Finances</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
+                @if (AuthorizationService.AuthorizeAsync(User, Permissions.Finance.Manage).Result.Succeeded)
+                {
+                    <p class="text-muted nav-heading mt-4 mb-1">
+                        <span>@localizer["Finance"]</span>
+                    </p>
+                    <ul class="navbar-nav flex-fill w-100 mb-2">
+                        <li class="nav-item dropdown">
+                            <a href="#ui-elements-Finance" data-toggle="collapse" aria-expanded="false" id="anavbarFinance" class="dropdown-toggle nav-link">
+                                <i class="fe fe-dollar-sign fe-16"></i>
+                                <span class="ml-3 item-text">@localizer["Finance"]</span>
+                            </a>
+                            <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements-Finance">
+                                <li class="nav-item">
+                                    <a class="nav-link pl-3" asp-action="Index" asp-controller="Finance" asp-route-currentPage="1" id="aFinance">
+                                        <span class="ml-1 item-text">Finances</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                }
                 <p class="text-muted nav-heading mt-4 mb-1">
                     <span>@localizer["Purchasing"]</span>
                 </p>
@@ -267,25 +285,26 @@
                     </li>
 
                 </ul>
-                <p class="text-muted nav-heading mt-4 mb-1">
-                    <span>@localizer["Inventory"]</span>
-                </p>
-                <ul class="navbar-nav flex-fill w-100 mb-2">
-                    <li class="nav-item dropdown">
-                        <a href="#ui-elements-Inventory" data-toggle="collapse" aria-expanded="false" id="anavbarInventory" class="dropdown-toggle nav-link">
-                            <i class="fe fe-home fe-16"></i>
-                            <span class="ml-3 item-text">@localizer["Inventory"]</span>
-                        </a>
-                        <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements-Inventory">
-                            <li class="nav-item">
-                                <a class="nav-link pl-3" asp-action="Index" asp-controller="Inventory" asp-route-currentPage="1" id="aInventory">
-                                    <span class="ml-1 item-text">Inventory</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-
+                @if (AuthorizationService.AuthorizeAsync(User, Permissions.Inventory.Manage).Result.Succeeded)
+                {<p class="text-muted nav-heading mt-4 mb-1">
+                        <span>@localizer["Inventory"]</span>
+                    </p>
+                    <ul class="navbar-nav flex-fill w-100 mb-2">
+                        <li class="nav-item dropdown">
+                            <a href="#ui-elements-Inventory" data-toggle="collapse" aria-expanded="false" id="anavbarInventory" class="dropdown-toggle nav-link">
+                                <i class="fe fe-home fe-16"></i>
+                                <span class="ml-3 item-text">@localizer["Inventory"]</span>
+                            </a>
+                            <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements-Inventory">
+                                <li class="nav-item">
+                                    <a class="nav-link pl-3" asp-action="Index" asp-controller="Inventory" asp-route-currentPage="1" id="aInventory">
+                                        <span class="ml-1 item-text">Inventory</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                }
 
                 <p class="text-muted nav-heading mt-4 mb-1">
                     <span>Administration</span>
@@ -350,11 +369,11 @@
 
                     @*<li class="nav-item w-100">
 
-            <a class="nav-link" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
-                <i class="fe fe-box fe-16"></i>
-                <span class="ml-3 item-text">Order lines used</span>
-            </a>
-        </li>*@
+                            <a class="nav-link" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
+                                <i class="fe fe-box fe-16"></i>
+                                <span class="ml-3 item-text">Order lines used</span>
+                            </a>
+                        </li>*@
 
                 </ul>
 
@@ -418,11 +437,79 @@
 
 
 
-            <div class="modal fade modal-notif modal-slide" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true">
+            <div class="modal fade modal-onlineuser modal-slide" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-sm" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="defaultModalLabel">Online Users</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="list-group list-group-flush my-n3">
+                                <!--<div class="list-group-item bg-transparent">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <span class="fe fe-box fe-24"></span>
+                                        </div>
+                                        <div class="col">
+                                            <small><strong>Package has uploaded successfull</strong></small>
+                                            <div class="my-0 text-muted small">Package is zipped and uploaded</div>
+                                            <small class="badge badge-pill badge-light text-muted">1m ago</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="list-group-item bg-transparent">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <span class="fe fe-download fe-24"></span>
+                                        </div>
+                                        <div class="col">
+                                            <small><strong>Widgets are updated successfull</strong></small>
+                                            <div class="my-0 text-muted small">Just create new layout Index, form, table</div>
+                                            <small class="badge badge-pill badge-light text-muted">2m ago</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="list-group-item bg-transparent">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <span class="fe fe-inbox fe-24"></span>
+                                        </div>
+                                        <div class="col">
+                                            <small><strong>Notifications have been sent</strong></small>
+                                            <div class="my-0 text-muted small">Fusce dapibus, tellus ac cursus commodo</div>
+                                            <small class="badge badge-pill badge-light text-muted">30m ago</small>
+                                        </div>
+                                    </div>-->
+                                <!-- / .row -->
+                                <!--</div>
+                                <div class="list-group-item bg-transparent">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <span class="fe fe-link fe-24"></span>
+                                        </div>
+                                        <div class="col">
+                                            <small><strong>Link was attached to menu</strong></small>
+                                            <div class="my-0 text-muted small">New layout has been attached to the menu</div>
+                                            <small class="badge badge-pill badge-light text-muted">1h ago</small>
+                                        </div>
+                                    </div>
+                                </div>-->
+                            </div> <!-- / .list-group -->
+                        </div>
+                        <div class="modal-footer">
+                            @*<button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Clear All</button>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade modal-notif modal-slide" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="defaultModalLabel">Notifications</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -792,9 +879,9 @@
                 $("#" + ParentID).click();
 
             }
-            let ItemIds = ['aOrderHeaders', 'aAddOrderHeader', 'aDraftOrderHeader', 'aOrderLines', 'aAdministration', 'aOrderLinesUsed', 'aOrderLinesForPricing', 'aQuotations', 'aAddQuotations', 'aPurchasing', 'addLabor', 'aAllOrderLines', 'aVendorLocation','aRunners'];
+            let ItemIds = ['aOrderHeaders', 'aAddOrderHeader', 'aDraftOrderHeader', 'aOrderLines', 'aAdministration', 'aOrderLinesUsed', 'aOrderLinesForPricing', 'aQuotations', 'aAddQuotations', 'aPurchasing', 'addLabor', 'aAllOrderLines', 'aVendorLocation', 'aRunners'];
             ItemIds.forEach(function (i) {
-             
+
                 if (i == ItemID) {
                     document.getElementById(i).classList.add("text-primary");
                 } else {
@@ -820,8 +907,8 @@
                 url: "/Sales/OpenOrderDetails",
                 data: { "OrderDetailsID": OrderDetailsID },
                 success: function (response) {
-                    history.go(-1);                   
-                }, 
+                    history.go(-1);
+                },
                 failure: function (response) {
                     console.log(response);
                 },

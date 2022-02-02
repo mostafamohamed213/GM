@@ -48,7 +48,7 @@ namespace Cars.Models
                 return new List<string>()
             {
                 $"Permissions.{module}.Manage",
-            
+
             };
 
             }
@@ -138,6 +138,14 @@ namespace Cars.Models
 
             };
 
+            }
+            else if (module == "Finance")
+            {
+                return new List<string>()
+                {
+                    $"Permissions.{module}.Manage",
+
+                };
             }
             else
             {
@@ -280,7 +288,12 @@ namespace Cars.Models
             public const string Manage = "Permissions.Lockups.Manage";
 
         }
-    
+        public static class Finance
+        {
+            public const string Manage = "Permissions.Finance.Manage";
+
+        }
+
 
     }
     public enum Modules
@@ -296,6 +309,7 @@ namespace Cars.Models
         Purchasing,
         Inventory,
         Runner,
-        Lockups
+        Lockups, 
+        Finance
     }
 }

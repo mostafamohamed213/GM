@@ -18,5 +18,6 @@ namespace Cars.Models
         public long Whatsapp { get; set; }
         public virtual ICollection<UsersLogs> UsersLogs { get; set; }
         public virtual ICollection<UserBranchModel> UserBranches { get; set; }
+        public virtual ICollection<NotificationUser> UserNotifications { get; set; }
     }
 }

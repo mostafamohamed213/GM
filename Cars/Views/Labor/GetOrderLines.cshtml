@@ -33,15 +33,15 @@
                     <span class="input-group-text">Vendor</span>
                     <select name="vendor" id="vendorfilter" class="custom-select">
                         <option value="all">all </option>
-                        @foreach (VendorLocation vendor in ViewData["vendor"] as IList<VendorLocation>)
+                        @foreach (BranchModel vendor in ViewData["vendor"] as IList<BranchModel>)
                         {
-                            if (TempData["lastvendor"] != null && TempData["lastvendor"].ToString() == @vendor.NameEn)
+                            if (TempData["lastvendor"] != null && TempData["lastvendor"].ToString() == @vendor.Name)
                             {
-                                <option value="@vendor.VendorLocationID" selected>@vendor.NameEn </option>
+                                <option value="@vendor.BranchID" selected>@vendor.Name </option>
                             }
                             else
                             {
-                                <option value="@vendor.VendorLocationID">@vendor.NameEn </option>
+                                <option value="@vendor.BranchID">@vendor.Name</option>
                             }
                         }
                     </select>
@@ -153,7 +153,7 @@
                         @item.OrderDetailsType.NameEn
                     </td>
                     <td>
-                        @item.VendorLocation.Name
+                        @item.VendorLocation?.Name
                     </td>
                     <td>
                         @item.DTsCreate

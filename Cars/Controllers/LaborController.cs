@@ -38,9 +38,9 @@ namespace Cars.Controllers
                 ViewData["type"] = db.OrderDetailsType.ToList();
                 TempData["lastype"] = type;
 
-                ViewData["vendor"] = db.VendorLocations.ToList();
+                ViewData["vendor"] = db.Branches.ToList();
                 if(vendor!=null)
-                TempData["lastvendor"] = db.VendorLocations.Where(v=>v.VendorLocationID==vendor).Select(v=>v.NameEn).FirstOrDefault();
+                TempData["lastvendor"] = db.Branches.Where(v=>v.BranchID==vendor).Select(v=>v.Name).FirstOrDefault();
 
                 var model = services.getByType(currentPage,type,from ,to,vendor);
                 return View(model);
@@ -60,7 +60,7 @@ namespace Cars.Controllers
                 ViewData["type"] = db.OrderDetailsType.ToList();
                
 
-                ViewData["vendor"] = db.VendorLocations.ToList();
+                ViewData["vendor"] = db.Branches.ToList();
                
                 return View("GetOrderLines", services.getOrderLinesWithChangelength(1, length));
             }

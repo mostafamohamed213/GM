@@ -51,7 +51,7 @@ namespace Cars.Service
         internal SelectList getRunners()
         {
           
-          var usersId = db.UserRoles.Where(c => c.RoleId == db.Roles.FirstOrDefault(a => a.Name != "Runner" || a.Name != "Runners").Id).Select(c=>c.UserId).ToList();
+          var usersId = db.UserRoles.Where(c => c.RoleId == db.Roles.FirstOrDefault(a => a.Name == "Runner" || a.Name == "Runners").Id).Select(c=>c.UserId).ToList();
           var Runners = db.Users.Where(c => usersId.Contains(c.Id)).Select(c=> new { ID = c.Id,Name =c.FirstName+" "+c.SeconedName }).ToList();
             if (Runners.Count() > 0)
             {

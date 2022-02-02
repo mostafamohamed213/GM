@@ -1,5 +1,6 @@
 ﻿using Cars.Models;
 using Cars.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace Cars.Controllers
 {
+    [Authorize(Permissions.Finance.Manage)]
     public class FinanceController : Controller
     {
         private readonly FinanceService _service;

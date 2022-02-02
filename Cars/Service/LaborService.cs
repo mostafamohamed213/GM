@@ -75,7 +75,7 @@ namespace Cars.Service
    
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             viewModel.items = orders.ToList();
-            var itemsCount = db.OrderDetails.Count();
+            var itemsCount = db.OrderDetails.Where(c => c.StatusID == 2 && c.Price > 0 && c.WorkflowID == 3).Count();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexLaborMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;

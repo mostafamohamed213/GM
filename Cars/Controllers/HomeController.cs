@@ -27,30 +27,75 @@ namespace Cars.Controllers
 
         public IActionResult Index()
         {
-            //var remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
-            //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            //string info = new WebClient().DownloadString("http://ipinfo.io/" + remoteIpAddress); //replace by remoteIpAddress
-            //remotip ipinfo = JsonConvert.DeserializeObject<remotip>(info);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            //ViewBag.city = ipinfo.City;
-            //ViewBag.Region = ipinfo.Region;
-            //ViewBag.IP = remoteIpAddress;
+            var isuserinbranch = _context.UserBranches.Where(a => a.UserID == userId && a.IsActive == true).FirstOrDefault();
+
+            if (isuserinbranch != null)
+            {
+                //var remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+
+                //string info = new WebClient().DownloadString("http://ipinfo.io/" + remoteIpAddress); //replace by remoteIpAddress
+                //remotip ipinfo = JsonConvert.DeserializeObject<remotip>(info);
+
+                //ViewBag.city = ipinfo.City;
+                //ViewBag.Region = ipinfo.Region;
+                //ViewBag.IP = remoteIpAddress;
 
 
 
 
-            //UsersLogs usersLogs = new UsersLogs
-            //{
-            //    UserIP = remoteIpAddress,
-            //    UserRegion = ipinfo.Region,
-            //    UserCity = ipinfo.City,
-            //    UserID = userId,
-            //    CreateDts = DateTime.Now
-            //};
-            //_context.Add(usersLogs);
-            //_context.SaveChanges();
+                //UsersLogs usersLogs = new UsersLogs
+                //{
+                //    UserIP = remoteIpAddress,
+                //    UserRegion = ipinfo.Region,
+                //    UserCity = ipinfo.City,
+                //    UserID = userId,
+                //    CreateDts = DateTime.Now
+                //};
+                //_context.Add(usersLogs);
+                //_context.SaveChanges();
 
-            return View();
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("SelectBranch");
+            }
+        }
+
+
+        public IActionResult SelectBranch()
+        {
+            var branches = _context.Branches.Where(a=>a.IsActive==true).ToList();
+            return View(branches);
+        }
+
+        
+
+        public IActionResult SelectUserBranch(int? id)
+        {
+            if(id==null)
+            {
+                return NotFound();
+            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var branches = _context.UserBranches.Where(a => a.IsActive == true && a.UserID==userId).FirstOrDefault();
+            if (branches != null)
+            {
+                branches.IsActive = false;
+                _context.SaveChanges();
+            }
+
+            UserBranchModel userbranchModel = new UserBranchModel();
+            userbranchModel.IsActive = true;
+            userbranchModel.UserID = userId;
+            userbranchModel.BranchID = (int)id;
+
+            _context.Add(userbranchModel);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         public IActionResult Privacy()

@@ -71,8 +71,9 @@ namespace Cars
             services.AddTransient<AllOrderLinesService, AllOrderLinesService>();
             services.AddTransient<InventoryService, InventoryService>();
             services.AddTransient<RunnerOrdersService, RunnerOrdersService>();
+            services.AddTransient<DeliveryService, DeliveryService>();
 
-            
+
             services.AddSession();
 
             services.Configure<SecurityStampValidatorOptions>(options =>

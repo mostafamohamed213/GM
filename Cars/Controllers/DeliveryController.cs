@@ -1,5 +1,6 @@
 ﻿using Cars.Models;
 using Cars.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Cars.Controllers
 {
+    [Authorize(Permissions.Inventory.Manage) ]
     public class DeliveryController : Controller
     {
         public DeliveryService services { get; set; }
@@ -20,7 +22,8 @@ namespace Cars.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            return View("GetOrderLines", 1);
+
         }
 
         public IActionResult GetOrderLines(int currentPage, string? search)
@@ -93,7 +96,7 @@ namespace Cars.Controllers
                 order.WorkflowID = 8;
                 order.StatusID = 3;
                 db.SaveChanges();
-                return View("GetOrderLines", 1);
+                return View("ChangeOrderLinesTablelength", 10);
             }
             catch (Exception)
             {

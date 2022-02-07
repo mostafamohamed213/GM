@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Cars.Controllers
 {
+   
     public class VendorLocationController : Controller
     {
         public CarsContext db { get; set; }

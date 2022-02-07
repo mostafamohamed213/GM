@@ -149,6 +149,13 @@ namespace Cars.Service
                 return 1;
         }
 
+        /// <summary>
+        /// Update Order Details By release Using user Move to next Work Flow "Delivery If user Branch Not same Vendor Branch" , 
+        /// Else Make Order Done 
+        /// </summary>
+        /// <param name="orderDetailsID"></param>
+        /// <param name="userID"></param>
+        /// <returns></returns>
         public async Task<int> ReleaseDoneOrderDetailsFromUserAsync(long orderDetailsID, string userID)
         {
             var orderDetailsModel = await GetInventoryOrderDetialsByIDAsync(orderDetailsID);
@@ -157,15 +164,26 @@ namespace Cars.Service
 
             orderDetailsModel.UsedByUser = null;
             orderDetailsModel.UsedDateTime = null;
-            orderDetailsModel.StatusID = 3;
-            orderDetailsModel.WorkflowID = 8;
+            if (orderDetailsModel.UserBranchID == orderDetailsModel.VendorLocationID)
+            {
+                //Make it Done
+                orderDetailsModel.StatusID = 3;
+                orderDetailsModel.WorkflowID = 8;
+            }
+            else
+            {
+                //Move to delivary 
+                orderDetailsModel.WorkflowID = 9;
+            }
             var result = await _orderDetailsService.UpdateAsync(orderDetailsModel);
 
             //Create Log 
             var log = new WorkflowOrderDetailsLog()
             {
                 Active = true,
-                Details = $"Release Order Details from User at Inventory, Make Order Details Done",
+                Details = $"Release Order Details from User at Inventory, "
+                + ((orderDetailsModel.UserBranchID == orderDetailsModel.VendorLocationID) ? "Make Order Details Done B make Status = 3 , WorkFlow = 8" :
+                "Move Order To Delevey Work FLow = 9"),
                 DTsCreate = DateTime.UtcNow,
                 OrderDetailsID = orderDetailsModel.OrderDetailsID,
                 SystemUserID = userID,

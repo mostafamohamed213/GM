@@ -1,15 +1,15 @@
 ﻿@model Cars.Models.OrderDetails
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer localizer
-
+@inject IAuthorizationService AuthorizationService
 @{
-    ViewData["Title"] = "Add Labor";
+    ViewData["Title"] = "Order LineDelivery Details";
 
 }
 
 <div class="card shadow mb-4">
     <div class="card-header">
-        <strong class="card-title">@localizer["Add Labor"]</strong>
+        <strong class="card-title">@localizer["Order Line Details"]</strong>
     </div>
     <br /><br />
     <div class="col-12 mb-4">
@@ -67,7 +67,7 @@
                     <div class="col-md-4">
                         @if (Model.StatusID != 1)
                         {
-                            <h3>ID : @(Model.Order.UserBranch is not null ? Model.Order.UserBranch.Branch.BranchIP : "00"):@Model.OrderID</h3>
+                            <h3>ID : 01:@Model.OrderID</h3>
                         }
 
                     </div>
@@ -82,86 +82,115 @@
     <div class="card-body">
         @if (Model.StatusID != 1)
         {
-            <h3> ID : @(Model.UserBranch is not null ? Model.UserBranch.Branch.BranchIP : "00"):@Model.OrderID:@Model.OrderDetailsID</h3>
+            <h3> ID :01:@Model.OrderID:@Model.OrderDetailsID</h3>
         }
-        <form class="needs-validation" asp-action="AddLaborvalues" asp-controller="Labor" method="post">
+        <form class="needs-validation" asp-action="SubmitToDone" asp-controller="Delivery" method="post">
             <div class="row">
-                <input asp-for="OrderDetailsID" style="display:none" />
-                <input asp-for="OrderID" style="display:none" />
-                <input asp-for="SystemUserCreate" style="display:none" />
-
+                <input asp-for="OrderDetailsID" style="display:none" readonly="readonly" disabled />
+                <input asp-for="OrderID" style="display:none" readonly="readonly" disabled />
+                <input asp-for="SystemUserCreate" style="display:none" readonly="readonly" disabled />
+                <input type="hidden" value="@Model.OrderDetailsID" name="OrderDetailsID" />
                 <div class="col-md-6">
                     <div class="form-group mb-4">
                         <label for="simpleinput">@localizer["Hours"]</label>
-                        <input type="number" step=".01" asp-for="Labor_Hours" class="form-control" required />
+                        <input type="number" step=".01" asp-for="Labor_Hours" readonly="readonly" class="form-control" disabled required />
                         <span asp-validation-for="Labor_Hours" class="text-danger"></span>
                     </div>
 
                     <div class="form-group mb-4">
                         <label for="simpleinput">@localizer["Items"]</label>
-                        <input asp-for="Items" class="form-control" required readonly="readonly" />
+                        <input asp-for="Items" class="form-control" required readonly="readonly" disabled />
                         <span asp-validation-for="Items" class="text-danger"></span>
                     </div>
 
                     <div class="form-group mb-3">
                         <label for="example-password">@localizer["Type"]</label>
-                        <select name="OrderDetailsTypeID" asp-for="OrderDetailsTypeID" asp-items="@ViewBag.types" class="form-control" readonly="readonly"></select>
+                        <select name="OrderDetailsTypeID" asp-for="OrderDetailsTypeID" asp-items="@ViewBag.types" class="form-control" readonly="readonly" disabled></select>
                         <span asp-validation-for="OrderDetailsTypeID" class="text-danger"></span>
                     </div>
-
-
-
-
+                    <div class="form-group mb-3">
+                        <label for="status">@localizer["Status"]</label>
+                        <input id="status" value="@TempData["status"].ToString()" class="form-control" required readonly="readonly" disabled />
+                    </div>
 
                     <div class="form-group mb-3">
-                        <div class="row">
-                            <div class="col-md-5">
-                                <a class="btn btn-danger" onclick="OpenOrderDetails('@Model.OrderDetailsID')" style=" width: 100px;" href="~/"> @localizer["Cancel"]</a>
-                                <input class="btn btn-success" style=" width: 100px;" type="submit" value="@localizer["Save"]" />
-
-                            </div>
-                            <div class="col-md-5"></div>
-
-                            <div class="col-md-2">
-
-
-                            </div>
-                        </div>
-
 
                     </div>
                 </div> <!-- /.col -->
                 <div class="col-md-6">
                     <div class="form-group mb-4">
                         <label for="simpleinput">@localizer["Value"]</label>
-                        <input type="number" asp-for="Labor_Value" class="form-control" required />
+                        <input type="number" asp-for="Labor_Value" class="form-control" readonly="readonly" disabled required />
                         <span asp-validation-for="Labor_Value" class="text-danger"></span>
                     </div>
                     <div class="form-group mb-3">
                         <label for="example-email">@localizer["Quantity"]</label>
-                        <input asp-for="Quantity" class="form-control" required readonly="readonly" />
+                        <input asp-for="Quantity" class="form-control" required readonly="readonly" disabled />
                         <span asp-validation-for="Quantity" class="text-danger"></span>
                     </div>
 
+                    <div class="form-group mb-3">
+                        <label for="wf">@localizer["WorkFlow"]</label>
+                        <input id="wf" value="@TempData["workflow"].ToString()" class="form-control" required readonly="readonly" disabled />
+                    </div>
                     <div class="form-group mb-4">
                         <label for="example-helping">
                             @localizer["Approved"]  :
                             @if (Model.IsApproved.HasValue && Model.IsApproved.Value)
                             {
-                                <input id="IsApproved" type="checkbox" value="true" name="IsApproved" checked readonly="readonly" />
-                                <input type="hidden" value="false" name="IsApproved" readonly="readonly" />
+                                <input id="IsApproved" type="checkbox" value="true" name="IsApproved" checked readonly="readonly" disabled />
+                                <input type="hidden" value="false" name="IsApproved" readonly="readonly" disabled />
+
                             }
+
                             else
                             {
-                                <input id="IsApproved" type="checkbox" value="true" name="IsApproved" readonly="readonly" />
-                                <input type="hidden" value="false" name="IsApproved" readonly="readonly" />
+                                <input id="IsApproved" type="checkbox" value="true" name="IsApproved" disabled readonly="readonly" />
+                                <input type="hidden" value="false" name="IsApproved" readonly="readonly" disabled />
+
+                                @if (@TempData["Reason"] != null)
+                                {
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Reason</span>
+                                        <input id="Reason" value="@TempData["Reason"].ToString()" class="form-control" required readonly="readonly" disabled />
+                                    </div>
+
+                                }
+                                else
+                                {
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Reason</span>
+                                        <input id="Reason" value="Not mentioned " class="form-control" required readonly="readonly" disabled />
+                                    </div>
+                                }
                             }
                         </label>
 
 
                     </div>
+                    @if (AuthorizationService.AuthorizeAsync(User, Permissions.Inventory.Manage).Result.Succeeded)
+                    {
+                        <div class="form-group mb-3">
+                            <div class="row">
+                                <div class="col-md-5">
+
+                                    <input class="btn btn-success" style=" width: 100px;" type="submit" value="@localizer["Done"]" />
+
+                                </div>
+                                <div class="col-md-5"></div>
+
+                                <div class="col-md-2">
 
 
+                                </div>
+                            </div>
+
+
+                        </div>
+                    }
+                    <div class="form-group mb-3">
+
+                    </div>
 
                 </div>
 
@@ -171,7 +200,8 @@
 </div>
 @section Scripts {
     <script>
-         ChangeColorSidebarItem("", "addLabor");
+               ChangeColorSidebarItem("", "aAllOrderLines");
+
         window.addEventListener('beforeunload', function (e) {
            OpenOrderDetails("@Model.OrderDetailsID");
         });

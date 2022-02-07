@@ -1,5 +1,6 @@
 ﻿using Cars.Models;
 using Cars.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace Cars.Controllers
 {
+    [Authorize(Permissions.Inventory.Manage)]
     public class InventoryController : Controller
     {
         private readonly InventoryService _service;

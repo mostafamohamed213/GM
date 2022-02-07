@@ -12,11 +12,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.Owin;
+using Owin;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Cars
 {
@@ -66,13 +69,16 @@ namespace Cars
             services.AddTransient<OrderDetailsService, OrderDetailsService>();
             services.AddTransient<WorkflowOrderDetailsLogsService, WorkflowOrderDetailsLogsService>();
             services.AddTransient<VendorLocationService, VendorLocationService>();
-            services.AddTransient<RunnerService,RunnerService>();
+            services.AddTransient<RunnerService, RunnerService>();
             services.AddTransient<PurchasingService, PurchasingService>();
             services.AddTransient<AllOrderLinesService, AllOrderLinesService>();
             services.AddTransient<InventoryService, InventoryService>();
             services.AddTransient<RunnerOrdersService, RunnerOrdersService>();
+            services.AddTransient<NotificationService, NotificationService>();
+            services.AddTransient<NotificationUserService, NotificationUserService>();
+            services.AddTransient<DeliveryService, DeliveryService>();
 
-            
+
             services.AddSession();
 
             services.Configure<SecurityStampValidatorOptions>(options =>
@@ -82,7 +88,8 @@ namespace Cars
 
 
             services.AddControllersWithViews();
-            services.AddMvc(config => {
+            services.AddMvc(config =>
+            {
                 var policy = new AuthorizationPolicyBuilder()
                                 .RequireAuthenticatedUser()
                                 .Build();
@@ -121,12 +128,9 @@ options.UseNpgsql(Configuration.GetConnectionString("Cars")));
             }
             app.UseStaticFiles();
             app.UseAuthentication();
-
             app.UseRouting();
-
             var locOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(locOptions.Value);
-
             app.UseAuthorization();
             app.UseSession();
 

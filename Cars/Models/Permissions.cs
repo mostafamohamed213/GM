@@ -294,11 +294,7 @@ namespace Cars.Models
             public const string Manage = "Permissions.Lockups.Manage";
 
         }
-        public static class Finance
-        {
-            public const string Manage = "Permissions.Finance.Manage";
-
-        }
+ 
 
 
     }
@@ -316,7 +312,7 @@ namespace Cars.Models
         Purchasing,
         Inventory,
         Runner,
-        Lockups, 
-        Finance
+        Lockups
+       
     }
 }

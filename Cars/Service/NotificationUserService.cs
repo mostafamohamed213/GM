@@ -21,5 +21,11 @@ namespace Cars.Service
             var result = await _context.NotificationUser.Where(c => c.UserID == userID).Include(x => x.Notification).ToListAsync();
             return result;
         }
+
+        public async Task<IEnumerable<NotificationUser>> GetTopTenByUserIDAsync(string userID)
+        {
+            var result = await _context.NotificationUser.Where(c => c.UserID == userID).Include(x => x.Notification).OrderByDescending(x => x.DTsCreate).Take(10).ToListAsync();
+            return result;
+        }
     }
 }

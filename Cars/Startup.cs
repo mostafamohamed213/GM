@@ -20,6 +20,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using Cars.Service.Notification;
 
 namespace Cars
 {
@@ -88,6 +89,11 @@ namespace Cars
 
 
             services.AddControllersWithViews();
+
+            //SignalR
+            services.AddSignalR();
+            services.AddSingleton<IUserConnectionManager, UserConnectionManager>();
+
             services.AddMvc(config =>
             {
                 var policy = new AuthorizationPolicyBuilder()
@@ -97,14 +103,17 @@ namespace Cars
             });
 
             services.AddDbContext<CarsContext>(options =>
-options.UseNpgsql(Configuration.GetConnectionString("Cars")));
+                options.UseNpgsql(Configuration.GetConnectionString("Cars")));
+
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.User.RequireUniqueEmail = true;
 
             })
-  .AddEntityFrameworkStores<CarsContext>()
-   .AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<CarsContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddHttpContextAccessor();
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -139,6 +148,7 @@ options.UseNpgsql(Configuration.GetConnectionString("Cars")));
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapHub<NotificationHubService>("/NotificationHub");
             });
         }
     }

@@ -48,7 +48,7 @@ namespace Cars.Service
 
         public PagingViewModel<OrderDetails> getByType(int currentPage,string? type, decimal? from ,decimal? to,int? vendor)
         {
-            var orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.Price > 0  && c.WorkflowID == 3).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).ToList();
+            var orders = db.OrderDetails.Include(c => c.Order).Where(c => c.StatusID == 2 && (c.Order.WithMaintenance.HasValue && c.Order.WithMaintenance.Value) && c.WorkflowID == 1).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).ToList();
 
             
             if (type != "all" && type!=null)

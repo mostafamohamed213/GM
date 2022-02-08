@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Cars.Consts;
 
+
 namespace Cars.Service
 {
     public class OrderServices
@@ -18,31 +19,31 @@ namespace Cars.Service
             db = carsContext;     
         }
 
-        public PagingViewModel<Order> getOrdersWithChangelength(int currentPageIndex, int length)
+        public PagingViewModel<Order> getOrdersWithChangelength(int currentPageIndex, int length ,string userId)
         {
             TablesMaxRows.IndexOrdersMaxRows = length;
-            return getOrders(currentPageIndex);
+            return getOrders(currentPageIndex, userId);
         }
-        public PagingViewModel<OrderDetails> getOrderLinesWithChangelength(int currentPageIndex, int length)
+        public PagingViewModel<OrderDetails> getOrderLinesWithChangelength(int currentPageIndex, int length,string userId)
         {
             TablesMaxRows.IndexOrderLinesMaxRows = length;
-            return getOrderLines(currentPageIndex);
+            return getOrderLines(currentPageIndex, userId);
         }
-        public PagingViewModel<Order> getOrdersDraftWithChangelength(int currentPageIndex, int length)
+        public PagingViewModel<Order> getOrdersDraftWithChangelength(int currentPageIndex, int length,string userid)
         {
             TablesMaxRows.IndexOrdersDraftMaxRows = length;
-            return getOrdersDraft(currentPageIndex);
+            return getOrdersDraft(currentPageIndex, userid);
         }
-        public PagingViewModel<Order> getOrders(int currentPage)
+        public PagingViewModel<Order> getOrders(int currentPage,string userid)
         {
-           var orders= db.Orders.Where(c => c.StatusID != 1 && c.StatusID != 5).
-                Include("Vehicle").Include(c=>c.UserBranch.Branch).Include("Customer").Include("Customer.CustomerContacts").Skip((currentPage - 1) * TablesMaxRows.IndexOrdersMaxRows).Take(TablesMaxRows.IndexOrdersMaxRows).ToList();
+           var orders= db.Orders.Where(c => c.StatusID != 1 && c.StatusID != 5 && c.SystemUserCreate == userid).
+                Include("Vehicle").Include(c=>c.UserBranch.Branch).Include("Customer").Include("Customer.CustomerContacts").Skip((currentPage - 1) * TablesMaxRows.IndexOrdersMaxRows).Take(TablesMaxRows.IndexOrdersMaxRows).OrderByDescending(c=>c.DTsCreate).ToList();
 
             PagingViewModel<Order> viewModel = new PagingViewModel<Order> ();
             //var Brands = unitOfWork.Brands.
             //   FindAll(null, (currentPage - 1) * TablesMaxRows.InventoryBrandIndex, TablesMaxRows.InventoryBrandIndex, d => d.Name, OrderBy.Ascending);
             viewModel.items = orders.ToList();
-            var itemsCount = db.Orders.Where(c => c.StatusID != 1 && c.StatusID != 5).Count();
+            var itemsCount = db.Orders.Where(c => c.StatusID != 1 && c.StatusID != 5 && c.SystemUserCreate == userid).Count();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexOrdersMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
@@ -51,10 +52,10 @@ namespace Cars.Service
             return viewModel;
         }
 
-        internal PagingViewModel<Order> SearchOrderHeader(string search)
+        internal PagingViewModel<Order> SearchOrderHeader(string search ,string userid)
         {
-            var orders = db.Orders.Where(c => c.StatusID != 1 && c.StatusID != 5 && (c.Vehicle.Name.Trim().ToLower().Contains(search.Trim().ToLower())|| c.Vehicle.Chases.Trim().ToLower().Contains(search.Trim().ToLower()))).
-               Include("Vehicle").Include(c => c.UserBranch.Branch).Include("Customer").Include("Customer.CustomerContacts").Take(100).ToList();
+            var orders = db.Orders.Where(c => c.SystemUserCreate == userid &&c.StatusID != 1 && c.StatusID != 5 && (c.Vehicle.Name.Trim().ToLower().Contains(search.Trim().ToLower())|| c.Vehicle.Chases.Trim().ToLower().Contains(search.Trim().ToLower()))).
+               Include("Vehicle").Include(c => c.UserBranch.Branch).Include("Customer").Include("Customer.CustomerContacts").Take(100).OrderByDescending(c => c.DTsCreate).ToList();
             PagingViewModel<Order> viewModel = new PagingViewModel<Order>();           
             viewModel.items = orders.ToList();
             var itemsCount = orders.Count;
@@ -66,10 +67,10 @@ namespace Cars.Service
             return viewModel;
         }
 
-        internal PagingViewModel<OrderDetails> SearchOrderLines(string search)
+        internal PagingViewModel<OrderDetails> SearchOrderLines(string search,string userid)
         {
-            var orders = db.OrderDetails.Where(c => c.StatusID != 1 && c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2) && c.Items.Trim().ToLower().Contains(search.Trim().ToLower())).
-               Include("OrderDetailsType").Include(c => c.UserBranch.Branch).Take(100).ToList();
+            var orders = db.OrderDetails.Where(c => c.SystemUserCreate == userid && c.StatusID != 1 && c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2) && c.Items.Trim().ToLower().Contains(search.Trim().ToLower())).
+               Include("OrderDetailsType").Include(c => c.UserBranch.Branch).Take(100).OrderByDescending(c => c.DTsCreate).ToList();
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             viewModel.items = orders.ToList();
             var itemsCount = orders.Count;
@@ -81,15 +82,15 @@ namespace Cars.Service
             return viewModel;
         }
 
-        public PagingViewModel<OrderDetails> getOrderLines(int currentPage)
+        public PagingViewModel<OrderDetails> getOrderLines(int currentPage,string userId)
         {
-            var orders = db.OrderDetails.Where(c=> c.StatusID != 1 && c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexOrderLinesMaxRows).Take(TablesMaxRows.IndexOrderLinesMaxRows).ToList();
+            var orders = db.OrderDetails.Where(c=> c.SystemUserCreate == userId && c.StatusID != 1 && c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexOrderLinesMaxRows).Take(TablesMaxRows.IndexOrderLinesMaxRows).OrderByDescending(c => c.DTsCreate).ToList();
 
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             //var Brands = unitOfWork.Brands.
             //   FindAll(null, (currentPage - 1) * TablesMaxRows.InventoryBrandIndex, TablesMaxRows.InventoryBrandIndex, d => d.Name, OrderBy.Ascending);
             viewModel.items = orders.ToList();
-            var itemsCount = db.OrderDetails.Where(c => c.StatusID != 1 && c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Count();
+            var itemsCount = db.OrderDetails.Where(c => c.SystemUserCreate == userId && c.StatusID != 1 && c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2)).Count();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexOrderLinesMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
@@ -97,15 +98,15 @@ namespace Cars.Service
             viewModel.Tablelength = TablesMaxRows.IndexOrderLinesMaxRows;
             return viewModel;
         }
-        public PagingViewModel<Order> getOrdersDraft(int currentPage)
+        public PagingViewModel<Order> getOrdersDraft(int currentPage,string userId)
         {
-            var orders = db.Orders.Include("Vehicle").Include(c => c.UserBranch.Branch).Include(c => c.UserBranch).Include("Customer").Include("Customer.CustomerContacts").Where(c=> c.StatusID == 1).Skip((currentPage - 1) * TablesMaxRows.IndexOrdersDraftMaxRows).Take(TablesMaxRows.IndexOrdersDraftMaxRows).ToList();
+            var orders = db.Orders.Include("Vehicle").Include(c => c.UserBranch.Branch).Include(c => c.UserBranch).Include("Customer").Include("Customer.CustomerContacts").Where(c=> c.StatusID == 1 && c.SystemUserCreate == userId).Skip((currentPage - 1) * TablesMaxRows.IndexOrdersDraftMaxRows).Take(TablesMaxRows.IndexOrdersDraftMaxRows).ToList();
 
             PagingViewModel<Order> viewModel = new PagingViewModel<Order>();
             //var Brands = unitOfWork.Brands.
             //   FindAll(null, (currentPage - 1) * TablesMaxRows.InventoryBrandIndex, TablesMaxRows.InventoryBrandIndex, d => d.Name, OrderBy.Ascending);
             viewModel.items = orders.ToList();
-            var itemsCount = db.Orders.Where(c => c.StatusID == 1).Count();
+            var itemsCount = db.Orders.Where(c => c.StatusID == 1 && c.SystemUserCreate == userId).Count();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexOrdersDraftMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
@@ -114,9 +115,9 @@ namespace Cars.Service
             return viewModel;
         }
 
-        internal PagingViewModel<Order> SearOrdersDraft(string search)
+        internal PagingViewModel<Order> SearOrdersDraft(string search,string UserId)
         {
-            var orders = db.Orders.Where(c => c.StatusID ==1 && (c.Vehicle.Name.Trim().ToLower().Contains(search.Trim().ToLower()) || c.Vehicle.Chases.Trim().ToLower().Contains(search.Trim().ToLower()))).
+            var orders = db.Orders.Where(c => c.SystemUserCreate == UserId && c.StatusID ==1 && (c.Vehicle.Name.Trim().ToLower().Contains(search.Trim().ToLower()) || c.Vehicle.Chases.Trim().ToLower().Contains(search.Trim().ToLower()))).
                Include("Vehicle").Include(c => c.UserBranch).Include(c => c.UserBranch.Branch).Include("Customer").Include("Customer.CustomerContacts").Take(100).ToList();
             PagingViewModel<Order> viewModel = new PagingViewModel<Order>();
             viewModel.items = orders.ToList();
@@ -131,14 +132,14 @@ namespace Cars.Service
         object b = new object();
         internal OrderDetails GetOrderDetailsByOrderDetailsID(long orderDetailsID ,string user)
         {
-            return db.OrderDetails.Where(c => c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2) && c.OrderDetailsID == orderDetailsID).Include(c=>c.UserBranch.Branch).Include("Order").Include(c => c.Order.UserBranch.Branch).Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault();
+            return db.OrderDetails.Where(c => c.SystemUserCreate == user &&  c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2) && c.OrderDetailsID == orderDetailsID).Include(c=>c.UserBranch.Branch).Include("Order").Include(c => c.Order.UserBranch.Branch).Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault();
         }
 
-        public Order GetOrderByID(long orderId)
+        public Order GetOrderByID(long orderId, string UserId)
         {
             try
             {
-                Order order = db.Orders.Where(c => c.OrderID == orderId).Include("Vehicle").Include("Customer")
+                Order order = db.Orders.Where(c => c.OrderID == orderId && c.SystemUserCreate == UserId).Include("Vehicle").Include("Customer")
                                .Include("UserBranch").Include("UserBranch.Branch").Include("Customer.CustomerContacts").Include(c=>c.OrderDetails.Where(x=> x.StatusID != 5)).Include("OrderDetails.OrderDetailsType").Include("OrderDetails.UserBranch.Branch").FirstOrDefault();
                 //db.OrderDetails.Where(c => c.OrderID == order.OrderID && c.StatusID != 5).Include(c => c.UserBranch.Branch);
                 if (order is not null)
@@ -208,7 +209,7 @@ namespace Cars.Service
         internal int SaveOrder(long orderId,string user)
         {
             Order order = db.Orders.Include("OrderDetails").FirstOrDefault(c => c.OrderID == orderId);
-            Workflow _Workflow = db.Workflows.FirstOrDefault(c => c.WorkflowID == 2);
+            Workflow _Workflow = db.Workflows.FirstOrDefault(c => c.WorkflowID == 1);
             if (order is not null)
             {
                 order.StatusID = 2;
@@ -407,9 +408,9 @@ namespace Cars.Service
         }
        
 
-        internal List<OrderDetailsViewModel> GetOrderDetailsByOrderId(long orderid)
+        internal List<OrderDetailsViewModel> GetOrderDetailsByOrderId(long orderid ,string userId)
         {
-            var List = db.OrderDetails.Where(c => c.OrderID == orderid && c.StatusID != 5).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").ToList();
+            var List = db.OrderDetails.Where(c => c.SystemUserCreate == userId && c.OrderID == orderid && c.StatusID != 5).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").OrderByDescending(C=>C.DTsCreate).ToList();
             if (List.Count > 0)
             {
                 List<OrderDetailsViewModel> model = new List<OrderDetailsViewModel>();
@@ -442,7 +443,7 @@ namespace Cars.Service
                     OrderID = orderID,
                     UserBranchID = UserBranch != null ? UserBranch.UserBranchID : -1,
                     StatusID = order.StatusID,
-                    WorkflowID = order.StatusID == 2 ? 2 : 1
+                    WorkflowID = 1 /*order.StatusID == 2 ? 2 : 1*/
                 };
                 db.OrderDetails.Add(orderDetails);
                 db.SaveChanges();

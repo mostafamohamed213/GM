@@ -22,6 +22,8 @@ namespace Cars.Models
         public string Comments { get; set; }
         public DateTime? UsedDateTime { get; set; }
         public string UsedByUser { get; set; }
+        public DateTime? UsedDateTime2 { get; set; }
+        public string UsedByUser2 { get; set; }
         public long? ParentOrderDetailsID { get; set; }
         public long OrderID { get; set; }
         [ForeignKey("OrderID")]

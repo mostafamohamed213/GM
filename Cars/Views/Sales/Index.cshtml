@@ -5,7 +5,13 @@
     ViewData["Title"] = "Orders";
     int counter = 1;
 }
-<h2 class="h5 page-title">Order Header</h2>
+<div class="row">
+    <div class="col-md-10">
+
+        <h2 class="h5 page-title">Order Header</h2>
+    </div>
+    <div class="col-md-2"> <a class="btn-lg btn-success" asp-action="CreateOrder" asp-controller="Sales">Add Order </a></div>
+</div>
 <div class="card shadow">
     <div class="card-body">
         <div class="toolbar">

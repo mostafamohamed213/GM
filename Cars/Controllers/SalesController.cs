@@ -10,9 +10,10 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Authorization;
 namespace Cars.Controllers
 {
+    [Authorize(Permissions.Sales.Manage)]
     public class SalesController : Controller
     {
         public OrderServices orderServices { get; set; }      
@@ -34,7 +35,7 @@ namespace Cars.Controllers
 
             try
             {               
-                return View("Index", orderServices.getOrders(currentPage));
+                return View("Index", orderServices.getOrders(currentPage, User.FindFirstValue(ClaimTypes.NameIdentifier)));
             }
             catch (Exception)
             {
@@ -54,7 +55,7 @@ namespace Cars.Controllers
                 else
                 {
                     ViewData["CurrentFilter"] = search;
-                    return View("Index", orderServices.SearchOrderHeader(search));
+                    return View("Index", orderServices.SearchOrderHeader(search, User.FindFirstValue(ClaimTypes.NameIdentifier)));
                 }
                
             }
@@ -76,7 +77,7 @@ namespace Cars.Controllers
                 else
                 {
                     ViewData["CurrentFilter"] = search;
-                    return View("OrderLines", orderServices.SearchOrderLines(search));
+                    return View("OrderLines", orderServices.SearchOrderLines(search, User.FindFirstValue(ClaimTypes.NameIdentifier)));
                 }
 
             }
@@ -92,7 +93,7 @@ namespace Cars.Controllers
         {
             try
             {
-                return View("Index", orderServices.getOrdersWithChangelength(1, length));
+                return View("Index", orderServices.getOrdersWithChangelength(1, length, User.FindFirstValue(ClaimTypes.NameIdentifier)));
             }
             catch (Exception )
             {
@@ -105,7 +106,7 @@ namespace Cars.Controllers
 
             try
             {
-                return View("OrderLines", orderServices.getOrderLines(currentPage));
+                return View("OrderLines", orderServices.getOrderLines(currentPage, User.FindFirstValue(ClaimTypes.NameIdentifier)));
             }
             catch (Exception)
             {
@@ -117,7 +118,7 @@ namespace Cars.Controllers
         {
             try
             {
-                return View("OrderLines", orderServices.getOrderLinesWithChangelength(1, length));
+                return View("OrderLines", orderServices.getOrderLinesWithChangelength(1, length, User.FindFirstValue(ClaimTypes.NameIdentifier)));
             }
             catch (Exception)
             {
@@ -129,7 +130,7 @@ namespace Cars.Controllers
         {
             try
             {
-                return View("Draft", orderServices.getOrdersDraftWithChangelength(1, length));
+                return View("Draft", orderServices.getOrdersDraftWithChangelength(1, length, User.FindFirstValue(ClaimTypes.NameIdentifier)));
             }
             catch (Exception)
             {
@@ -187,7 +188,7 @@ namespace Cars.Controllers
         {
             try
             {
-                return View("Draft", orderServices.getOrdersDraft(currentPage));
+                return View("Draft", orderServices.getOrdersDraft(currentPage, User.FindFirstValue(ClaimTypes.NameIdentifier)));
             }
             catch (Exception)
             {
@@ -208,7 +209,7 @@ namespace Cars.Controllers
                 else
                 {
                     ViewData["CurrentFilter"] = search;
-                    return View("Draft", orderServices.SearOrdersDraft(search));
+                    return View("Draft", orderServices.SearOrdersDraft(search, User.FindFirstValue(ClaimTypes.NameIdentifier)));
                 }
 
             }
@@ -246,7 +247,7 @@ namespace Cars.Controllers
         [HttpGet]
         public IActionResult ViewOrder(long OrderId)
         {
-            var order = orderServices.GetOrderByID(OrderId);
+            var order = orderServices.GetOrderByID(OrderId, User.FindFirstValue(ClaimTypes.NameIdentifier));
             ViewBag.types = orderServices.GetSelectListOrderDetailsType();
             //ViewBag.orderDetails = orderServices.GetOrderDetailsByOrderId(OrderId);
             return View(order);
@@ -296,7 +297,7 @@ namespace Cars.Controllers
             {
                 try
                 {
-                    var orderDetails = orderServices.GetOrderDetailsByOrderId(orderId);
+                    var orderDetails = orderServices.GetOrderDetailsByOrderId(orderId, User.FindFirstValue(ClaimTypes.NameIdentifier));
                     return Json(new { status = 1, @object = orderDetails });
                 }
                 catch (Exception)
@@ -411,7 +412,7 @@ namespace Cars.Controllers
                 long orderId = orderServices.DeleteOrderDetails(OrderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
                 if (orderId > 0)
                 {
-                    var orderDetails = orderServices.GetOrderDetailsByOrderId(orderId);
+                    var orderDetails = orderServices.GetOrderDetailsByOrderId(orderId, User.FindFirstValue(ClaimTypes.NameIdentifier));
                     return RedirectToAction("ViewOrder", new { OrderId = orderId });
                 }
                 return View("_CustomError");
@@ -457,7 +458,7 @@ namespace Cars.Controllers
                 long orderId = orderServices.CancelOrderDetails(OrderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
                 if (orderId > 0)
                 {
-                    var orderDetails = orderServices.GetOrderDetailsByOrderId(orderId);
+                    var orderDetails = orderServices.GetOrderDetailsByOrderId(orderId, User.FindFirstValue(ClaimTypes.NameIdentifier));
                     return RedirectToAction("ViewOrder", new { OrderId = orderId });
                 }
                 return View("_CustomError");
@@ -489,7 +490,6 @@ namespace Cars.Controllers
             }
             catch (Exception)
             {
-
                 return View("_CustomError");
             }
 

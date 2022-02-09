@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Cars.Controllers
@@ -14,9 +15,11 @@ namespace Cars.Controllers
     public class SystemIssuesController : Controller
     {
         public SystemIssuesServices services { get; set; }
-        public SystemIssuesController(SystemIssuesServices _services)
+        public OrderLineUsedService usedService { get; set; }
+        public SystemIssuesController(SystemIssuesServices _services ,OrderLineUsedService _usedService)
         {
             services = _services;
+            usedService = _usedService;
         }
         public IActionResult GetOrderLinesUsed(int currentPage)
         {
@@ -95,6 +98,13 @@ namespace Cars.Controllers
                 return RedirectToAction("GetOrderLinesUsed", "SystemIssues",new {currentPage = 1});
             }
             return View("_CustomError");            
+        }
+        [HttpGet]
+        public IActionResult OpenOrderDetailsPSL(long OrderDetailsID)
+        {
+            //long orderDetails = orderServices.OpenOrderDetails(OrderDetailsID);
+            usedService.OpenOrderDetails(OrderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
+            return Ok();
         }
 
 

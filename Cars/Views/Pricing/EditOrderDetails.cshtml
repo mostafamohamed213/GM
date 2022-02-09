@@ -126,7 +126,7 @@
                     <div class="col-md-4">
                         @if (Model.StatusID != 1)
                         {
-                        <span> ID : @(Model.UserBranch is not null ? Model.UserBranch.Branch.BranchIP : "00"):@Model.OrderID:@Model.OrderDetailsID</span>
+                        <span> ID : @Model.Prefix</span>
                         }
 
                     </div>
@@ -161,7 +161,7 @@
                                     {
                                         <tr>
                                             <td>@counter</td>
-                                            <td>@(item.UserBranch is not null ? item.UserBranch.Branch.BranchIP : "00"):@Model.OrderID:@item.OrderDetailsID</td>
+                                            <td>@item.Prefix</td>
                                             <td>@item.OrderDetailsType.NameEn</td>
                                             <td>@item.Price</td>
                                             <td>@item.PartNumber</td>

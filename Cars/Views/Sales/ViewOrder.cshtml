@@ -130,10 +130,10 @@
                     {
                     <tr>
                         <td>@counter</td>
-                        @if (item.WorkflowID > 1)
+                        @if (item.StatusID != 1)
                         {
 
-                            <td>@(item.UserBranch is not null ? item.UserBranch.Branch.BranchIP : "00"):@Model.OrderID:@item.OrderDetailsID</td>
+                            <td>@item.Prefix</td>
                         }
                         else
                         {
@@ -263,7 +263,7 @@
                 url: "/Sales/AddOrderDetails",
                 data: { "orderId": OrderID.value, "Items": OrderDetailsItems.value, "Quantity": OrderDetailsQuantity.value, "Type": OrderDetailsType.value, "Approved": OrderDetailsApproved.checked },
                 success: function (response) {
-                    console.log(response);
+                  /*  console.log(response);*/
                     document.getElementById("btnCloseOrderDetails").disabled = true;
                     document.getElementById("btnSaveOrderDetails").disabled = true;
                     if (response.status == 1) {
@@ -277,14 +277,14 @@
                                 var row_data_0 = document.createElement('td');
                                 row_data_0.innerHTML = counter;
                                 var row_data_1 = document.createElement('td');
-                                if (value.workflowID > 1  )
+                                if (value.statusID != 1 && value.statusID != '1')
                                 {                                    
                                     if (value.branchIP != "0" ) {
                                        
-                                        row_data_1.innerHTML = value.branchIP + ":" + value.orderID + ":" + value.orderDetailsID;
+                                        row_data_1.innerHTML = value.prefix;
 
                                         } else {
-                                        row_data_1.innerHTML = "00:" + value.orderID + ":" + value.orderDetailsID;
+                                        row_data_1.innerHTML = " ";
 
                                         }
                                     }

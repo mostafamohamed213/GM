@@ -7,9 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Authorization;
 namespace Cars.Controllers
 {
+    [Authorize(Permissions.Pricing.Manage)]
     public class PricingController : Controller
     {
         public PricingService services { get; set; }
@@ -128,7 +129,7 @@ namespace Cars.Controllers
                 int status = services.AddPricingField(orderDetailsID,PartNumber,Price,VendorLocationID,Comments, User.FindFirstValue(ClaimTypes.NameIdentifier));
                 if (status > 0 )
                 {
-                    usedService.OpenOrderDetails(orderDetailsID);
+                    usedService.OpenOrderDetails(orderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
                     return RedirectToAction("Index");
                 }
                 return View("_CustomError");

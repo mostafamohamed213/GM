@@ -13,18 +13,20 @@ namespace Cars.Service
     public class PricingService
     {
         public CarsContext db { get; set; }
-        public PricingService(CarsContext carsContext)
+        public OrderLineUsedService usedService { get; set; }
+        public PricingService(CarsContext carsContext, OrderLineUsedService _usedService)
         {
             db = carsContext;
+            usedService = _usedService;
         }
 
         public PagingViewModel<OrderDetails> getOrders(int currentPage)
         {
-            var orders = db.OrderDetails.Include(c=>c.UserBranch.Branch).Include("OrderDetailsType").Where(c => c.StatusID == 2 && c.WorkflowID == 2).Skip((currentPage - 1) * TablesMaxRows.IndexPricingMaxRows).Take(TablesMaxRows.IndexPricingMaxRows).ToList();
+            var orders = db.OrderDetails.Include("OrderDetailsType").Where(c => c.StatusID == 2 && c.WorkflowID == 1 && !c.Price.HasValue).Skip((currentPage - 1) * TablesMaxRows.IndexPricingMaxRows).Take(TablesMaxRows.IndexPricingMaxRows).OrderByDescending(c=>c.DTsCreate).ToList();
 
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();         
             viewModel.items = orders.ToList();
-            var itemsCount = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 2).Count();
+            var itemsCount = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 1 && !c.Price.HasValue).OrderByDescending(c => c.DTsCreate).Count();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexPricingMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
@@ -35,8 +37,8 @@ namespace Cars.Service
 
         internal PagingViewModel<OrderDetails> SearchOrderLines(string search)
         {
-            var orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 2 && c.Items.Trim().ToLower().Contains(search.Trim().ToLower())).
-               Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Take(100).ToList();
+            var orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 1 && !c.Price.HasValue && c.Items.Trim().ToLower().Contains(search.Trim().ToLower()))
+               .Include("OrderDetailsType").Take(100).OrderByDescending(c => c.DTsCreate).ToList();
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             viewModel.items = orders.ToList();
             var itemsCount = orders.Count;
@@ -52,7 +54,7 @@ namespace Cars.Service
             TablesMaxRows.IndexPricingMaxRows = length;
             return getOrders(currentPageIndex);
         }
-        readonly object _object = new object();
+        //readonly object _object = new object();
         //internal OrderDetails GetOrderDetailsByOrderDetailsID(long orderDetailsID)
         //{          
         //    lock (_object)
@@ -91,7 +93,7 @@ namespace Cars.Service
         }
         internal List<OrderDetails> GetOrderDeatilsChildren(long parentID)
         {
-            var Children= db.OrderDetails.Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Include("VendorLocation").Where(c => c.ParentOrderDetailsID.HasValue && c.ParentOrderDetailsID.Value == parentID).ToList();
+            var Children= db.OrderDetails.Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Include("VendorLocation").Where(c => c.ParentOrderDetailsID.HasValue && c.ParentOrderDetailsID.Value == parentID).OrderByDescending(c=>c.DTsCreate).ToList();
             return Children;
         }
 
@@ -111,26 +113,28 @@ namespace Cars.Service
                 {
                     orderDetails.Comments = comments;
                 }
+                db.SaveChanges();
+
                 if (orderDetails.Order.WithMaintenance.HasValue && orderDetails.Order.WithMaintenance.Value)
                 {
-                    orderDetails.WorkflowID = 3;
+                    //orderDetails.WorkflowID = 3;
+                    usedService.ChangeWorkflow(orderDetails.OrderDetailsID, user);
                 }
                 else
                 {
                     orderDetails.WorkflowID = 4;
-                }
-               
-               
-                WorkflowOrderDetailsLog log = new WorkflowOrderDetailsLog()
-                {
-                    WorkflowID = 2,
-                    Active = true,
-                    DTsCreate = DateTime.Now,
-                    OrderDetailsID = orderDetailsID,
-                    SystemUserID = user
-                };
-                db.WorkflowOrderDetailsLogs.Add(log);
-                db.SaveChanges();
+                    WorkflowOrderDetailsLog log = new WorkflowOrderDetailsLog()
+                    {
+                        WorkflowID = 1,
+                        Active = true,
+                        DTsCreate = DateTime.Now,
+                        OrderDetailsID = orderDetailsID,
+                        SystemUserID = user,
+                        Details = "From Pricing Team"
+                    };
+                    db.WorkflowOrderDetailsLogs.Add(log);
+                    db.SaveChanges();
+                }             
                 return 1;
             }
             catch (Exception)
@@ -142,8 +146,8 @@ namespace Cars.Service
         }
         internal OrderDetails GetOrderDetailsByOrderDetailsID(long orderDetailsID)
         {
-            var orderDetails = db.OrderDetails.Include(c => c.UserBranch.Branch).Where(c => c.StatusID == 2 && c.WorkflowID == 2 && c.OrderDetailsID == orderDetailsID).Include("OrderDetailsType").FirstOrDefault();
-            orderDetails.Children = db.OrderDetails.Include(c=>c.UserBranch.Branch).Where(c=> c.ParentOrderDetailsID.HasValue && c.ParentOrderDetailsID == orderDetails.OrderDetailsID).ToList();
+            var orderDetails = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 1 && c.OrderDetailsID == orderDetailsID).Include("OrderDetailsType").FirstOrDefault();
+            orderDetails.Children = db.OrderDetails.Where(c=> c.ParentOrderDetailsID.HasValue && c.ParentOrderDetailsID == orderDetails.OrderDetailsID).OrderByDescending(c=>c.DTsCreate).ToList();
             return orderDetails;
         }
 
@@ -170,13 +174,15 @@ namespace Cars.Service
                 };
                 if (parent.Order.WithMaintenance.HasValue && parent.Order.WithMaintenance.Value)
                 {
-                    orderDetails.WorkflowID = 3;
+                    orderDetails.WorkflowID = 1;
                 }
                 else
                 {
                     orderDetails.WorkflowID = 4;
                 }
                 db.OrderDetails.Add(orderDetails);
+                db.SaveChanges();
+                orderDetails.Prefix = $"{parent.UserBranch.Branch.BranchIP} : {parent.OrderID} : {orderDetails.OrderDetailsID}";
                 db.SaveChanges();
                 OrderDetailsStatusLog statusLog = new OrderDetailsStatusLog()
                 {
@@ -191,8 +197,9 @@ namespace Cars.Service
                     DTsCreate =DateTime.Now,
                     SystemUserID= user,
                     OrderDetailsID = orderDetails.OrderDetailsID,
-                    WorkflowID = 2,
-                    Active=true
+                    WorkflowID = 1,
+                    Active=true,
+                    Details= "From Pricing Team"
                 };
                 db.WorkflowOrderDetailsLogs.Add(workflowLog);
                 db.SaveChanges();

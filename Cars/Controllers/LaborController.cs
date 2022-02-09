@@ -15,15 +15,14 @@ namespace Cars.Controllers
     {
         public CarsContext db { get; set; }
         public LaborService services { get; set; }
-
+        public OrderLineUsedService usedService { get; set; }
         private static object Lock = new object();
 
-        public LaborController(LaborService _services, CarsContext carsContext)
+        public LaborController(LaborService _services, CarsContext carsContext, OrderLineUsedService _usedService)
         {
             services = _services;
-
             db = carsContext;
-
+            usedService = _usedService;
         }
         public IActionResult Index()
         {
@@ -76,26 +75,22 @@ namespace Cars.Controllers
 
             try
             {
-                lock (Lock)
-                {
-                    OrderDetails orderDetails = services.GetOrderDetailsByOrderDetailsID(OrderDetailsID);
+                    OrderDetails orderDetails = usedService.CloseOrderDetails(OrderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
+                    //OrderDetails orderDetails = services.GetOrderDetailsByOrderDetailsID(OrderDetailsID);
                     // orderDetails.UsedByUser = null;
-                    if (orderDetails.UsedByUser != null)
+                    if (orderDetails == null)
                     {
                         return View("UsedByUser");
                     }
-                    if (orderDetails is not null && !orderDetails.Labor_Hours.HasValue && !orderDetails.Labor_Value.HasValue)
+                    if (!orderDetails.Labor_Hours.HasValue && !orderDetails.Labor_Value.HasValue)
                     {
-                        orderDetails.UsedByUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                        orderDetails.UsedDateTime = DateTime.Now;
-
-
-
-                        db.SaveChanges();
+                        //orderDetails.UsedByUser2 = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                        //orderDetails.UsedDateTime2 = DateTime.Now;
+                        //db.SaveChanges();
                         ViewBag.types = services.GetSelectListOrderDetailsType();
                         return View(orderDetails);
                     }
-                }
+                
 
                 return View("_CustomError");
             }
@@ -113,21 +108,22 @@ namespace Cars.Controllers
             if (ModelState.IsValid)
             { 
 
-                long OrderId = services.EditOrderDetailsFromSales(orderDetails.Items, orderDetails.Quantity, orderDetails.OrderDetailsTypeID, orderDetails.IsApproved.HasValue ? orderDetails.IsApproved.Value : false, orderDetails?.Labor_Hours, orderDetails.Labor_Value, orderDetails.OrderDetailsID);
+                long OrderId = services.EditOrderDetailsFromSales(orderDetails.Items, orderDetails.Quantity, orderDetails.OrderDetailsTypeID, orderDetails.IsApproved.HasValue ? orderDetails.IsApproved.Value : false, orderDetails?.Labor_Hours, orderDetails.Labor_Value, orderDetails.OrderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
                 if (OrderId > 0)
                 {
-                        WorkflowOrderDetailsLog workflowOrder = new WorkflowOrderDetailsLog()
-                        {
-                            DTsCreate = DateTime.Now,
-                            OrderDetailsID = orderDetails.OrderDetailsID,
-                            SystemUserID = User.FindFirstValue(ClaimTypes.NameIdentifier),
-                            WorkflowID = 3,
-                            Active = true,
-                        };
-                        db.Add(workflowOrder);
-                        db.SaveChanges();                    
-                        long orderDetailsId = services.OpenOrderDetails(orderDetails.OrderDetailsID);
-                    if (orderDetailsId > 0)
+                        //WorkflowOrderDetailsLog workflowOrder = new WorkflowOrderDetailsLog()
+                        //{
+                        //    DTsCreate = DateTime.Now,
+                        //    OrderDetailsID = orderDetails.OrderDetailsID,
+                        //    SystemUserID = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                        //    WorkflowID = 1,
+                        //    Active = true,
+                        //};
+                        //db.Add(workflowOrder);
+                        //db.SaveChanges();                    
+                        //long orderDetailsId = services.OpenOrderDetails(orderDetails.OrderDetailsID);
+                    var OrderDetails=usedService.OpenOrderDetails(orderDetails.OrderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
+                    if (OrderDetails > 0)
                     {
                         return RedirectToAction("GetOrderLines", new { currentPage = 1 });
                     }
@@ -146,8 +142,8 @@ namespace Cars.Controllers
                 _orderDetails.IsApproved = orderDetails.IsApproved;
                 _orderDetails.OrderDetailsTypeID = orderDetails.OrderDetailsTypeID;
                 ViewBag.types = services.GetSelectListOrderDetailsType();*/
-                _orderDetails.UsedByUser = null;
-                _orderDetails.UsedDateTime =null;                
+                //_orderDetails.UsedByUser = null;
+                //_orderDetails.UsedDateTime =null;                
                 return View(_orderDetails);
             }
 

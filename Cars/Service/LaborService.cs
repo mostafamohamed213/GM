@@ -16,9 +16,11 @@ namespace Cars.Service
     public class LaborService
     {
         public CarsContext db { get; set; }
-        public LaborService(CarsContext carsContext)
+        public OrderLineUsedService usedService { get; set; }
+        public LaborService(CarsContext carsContext, OrderLineUsedService _usedService)
         {
             db = carsContext;
+            usedService = _usedService;
         }
 
         /*public PagingViewModel<Order> getOrdersWithChangelength(int currentPageIndex, int length)
@@ -33,11 +35,12 @@ namespace Cars.Service
         }
         public PagingViewModel<OrderDetails> getOrderLines(int currentPage)
         {
-            var orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.Price > 0 && c.WorkflowID == 3).Include(c => c.VendorLocation).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).ToList();
+           
+            var orders = db.OrderDetails.Include(c=>c.Order).Where(c => c.StatusID == 2 && c.WorkflowID == 1 && c.Order.WithMaintenance.HasValue && c.Order.WithMaintenance.Value ).Include(c => c.VendorLocation).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).OrderByDescending(c=>c.DTsCreate).ToList();
 
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             viewModel.items = orders.ToList();
-            var itemsCount = db.OrderDetails.Count();
+            var itemsCount = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 1 && c.Order.WithMaintenance.HasValue && c.Order.WithMaintenance.Value).Include(c => c.VendorLocation).Count();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexLaborMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
@@ -48,12 +51,12 @@ namespace Cars.Service
 
         public PagingViewModel<OrderDetails> getByType(int currentPage,string? type, decimal? from ,decimal? to,int? vendor)
         {
-            var orders = db.OrderDetails.Include(c => c.Order).Where(c => c.StatusID == 2 && (c.Order.WithMaintenance.HasValue && c.Order.WithMaintenance.Value) && c.WorkflowID == 1).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).ToList();
+            var orders = db.OrderDetails.Include(c => c.Order).Where(c => c.StatusID == 2 && c.WorkflowID == 1 && c.Order.WithMaintenance.HasValue && c.Order.WithMaintenance.Value).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).OrderByDescending(c=>c.DTsCreate).ToList();
 
             
             if (type != "all" && type!=null)
             {
-                orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.Price > 0 && c.OrderDetailsType.NameEn == type && c.WorkflowID == 3).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).ToList();
+                orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 1 && c.Order.WithMaintenance.HasValue && c.Order.WithMaintenance.Value && c.OrderDetailsType.NameEn == type ).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).OrderByDescending(c => c.DTsCreate).ToList();
             }
 
             if(from!=null || to!=null || vendor != null)
@@ -75,7 +78,7 @@ namespace Cars.Service
    
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             viewModel.items = orders.ToList();
-            var itemsCount = db.OrderDetails.Where(c => c.StatusID == 2 && c.Price > 0 && c.WorkflowID == 3).Count();
+            var itemsCount = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 1 && c.Order.WithMaintenance.HasValue && c.Order.WithMaintenance.Value).Count();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexLaborMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
@@ -121,7 +124,7 @@ namespace Cars.Service
         }
         internal OrderDetails GetOrderDetailsByOrderDetailsID(long orderDetailsID)
         {
-            var orderDetails = db.OrderDetails.Where(c => c.StatusID ==2 && c.WorkflowID == 3).Include(c => c.Order.UserBranch.Branch).Include(c=>c.UserBranch.Branch).Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
+            var orderDetails = db.OrderDetails.Where(c => c.StatusID ==2 && c.WorkflowID == 1).Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
                 return orderDetails;
         }
         internal SelectList GetSelectListOrderDetailsType()
@@ -134,7 +137,7 @@ namespace Cars.Service
             return null;
         }
 
-        internal long EditOrderDetailsFromSales(string items, int quantity, int type, bool approved, decimal? labor_hours, double? labor_value, long orderDetailsID)
+        internal long EditOrderDetailsFromSales(string items, int quantity, int type, bool approved, decimal? labor_hours, double? labor_value, long orderDetailsID,string UserId)
         {
             try
             {
@@ -151,9 +154,9 @@ namespace Cars.Service
                 if (labor_hours != null && labor_value != null)
                 {
                     orderDetails.Labor_Hours = labor_hours;
-                    orderDetails.Labor_Value = labor_value;
-                    orderDetails.WorkflowID = 4;
+                    orderDetails.Labor_Value = labor_value;                 
                     db.SaveChanges();
+                    usedService.ChangeWorkflow(orderDetails.OrderDetailsID, UserId);                  
                     return orderDetails.OrderID;
                 }
                 else
@@ -172,8 +175,8 @@ namespace Cars.Service
             try
             {
                 var orderDetails = db.OrderDetails.FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
-                orderDetails.UsedByUser = null;
-                orderDetails.UsedDateTime = null;
+                orderDetails.UsedByUser2 = null;
+                orderDetails.UsedDateTime2 = null;
                 db.SaveChanges();
                 return orderDetails.OrderDetailsID;
             }

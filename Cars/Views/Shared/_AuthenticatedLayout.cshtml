@@ -130,98 +130,111 @@
                     </a>
                 </div>
 
-
-                <p class="text-muted nav-heading mt-4 mb-1">
-                    <span>@localizer["Sales"]</span>
-                </p>
-                <ul class="navbar-nav flex-fill w-100 mb-2">
-                    <li class="nav-item dropdown">
-                        <a href="#ui-elements" data-toggle="collapse" aria-expanded="false" id="anavbarOrders" class="dropdown-toggle nav-link">
-                            <i class="fe fe-box fe-16"></i>
-                            <span class="ml-3 item-text">@localizer["Orders"]</span>
-                        </a>
-                        <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements">
-                            <li class="nav-item">
-                                <a class="nav-link pl-3" asp-action="GetOrders" asp-controller="Sales" asp-route-currentPage="1" id="aOrderHeaders">
-                                    <span class="ml-1 item-text">Orders</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link pl-3" asp-controller="Sales" asp-action="CreateOrder" id="aAddOrderHeader"><span class="ml-1 item-text">Add Order</span></a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link pl-3" asp-controller="Sales" asp-action="GetOrderLines" asp-route-currentPage="1" id="aOrderLines"><span class="ml-1 item-text">Order lines</span></a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link pl-3" asp-controller="Sales" asp-action="Draft" asp-route-currentPage="1" id="aDraftOrderHeader"><span class="ml-1 item-text">@localizer["Draft"]</span></a>
-                            </li>
-                            @*<li class="nav-item">
-                                       <a class="nav-link pl-3" asp-controller="Sales" asp-action="GetOrderLines" asp-route-currentPage="1" id="aOrderLines"><span class="ml-1 item-text">@localizer["Draft"]</span></a>
-                                </li>*@
-                            @*<li class="nav-item active">
-                                    <a class="nav-link pl-3" id="testit" asp-controller="Sales" asp-action="ViewOrder" asp-route-OrderId="10"> <span class=" ml-1 item-text"></span></a>
-
-                                </li>*@
-
-                        </ul>
-                    </li>
-
-                </ul>
-
-                @*<p class="text-muted nav-heading mt-4 mb-1">
-                        <span>Leader</span>
+                @if (AuthorizationService.AuthorizeAsync(User, Permissions.Sales.Manage).Result.Succeeded)
+                {
+                    <p class="text-muted nav-heading mt-4 mb-1">
+                        <span>@localizer["Sales"]</span>
                     </p>
                     <ul class="navbar-nav flex-fill w-100 mb-2">
                         <li class="nav-item dropdown">
-                            <a href="#ui-OrderLinesUsed" data-toggle="collapse" aria-expanded="false" id="anavbarOrderLinesUsed" class="dropdown-toggle nav-link">
+                            <a href="#ui-elements" data-toggle="collapse" aria-expanded="false" id="anavbarOrders" class="dropdown-toggle nav-link">
                                 <i class="fe fe-box fe-16"></i>
-                                <span class="ml-3 item-text">Order Lines</span>
+                                <span class="ml-3 item-text">@localizer["Orders"]</span>
                             </a>
-                            <ul class="collapse list-unstyled pl-4 w-100" id="ui-OrderLinesUsed">
+                            <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements">
                                 <li class="nav-item">
-                                    <a class="nav-link pl-3" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
-                                        <span class="ml-1 item-text">Order lines used</span>
+                                    <a class="nav-link pl-3" asp-action="GetOrders" asp-controller="Sales" asp-route-currentPage="1" id="aOrderHeaders">
+                                        <span class="ml-1 item-text">Orders</span>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link pl-3" asp-controller="Sales" asp-action="CreateOrder" id="aAddOrderHeader"><span class="ml-1 item-text">Add Order</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link pl-3" asp-controller="Sales" asp-action="GetOrderLines" asp-route-currentPage="1" id="aOrderLines"><span class="ml-1 item-text">Order lines</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link pl-3" asp-controller="Sales" asp-action="Draft" asp-route-currentPage="1" id="aDraftOrderHeader"><span class="ml-1 item-text">@localizer["Draft"]</span></a>
+                                </li>
+                                @*<li class="nav-item">
+                               <a class="nav-link pl-3" asp-controller="Sales" asp-action="GetOrderLines" asp-route-currentPage="1" id="aOrderLines"><span class="ml-1 item-text">@localizer["Draft"]</span></a>
+                        </li>*@
+                                @*<li class="nav-item active">
+                            <a class="nav-link pl-3" id="testit" asp-controller="Sales" asp-action="ViewOrder" asp-route-OrderId="10"> <span class=" ml-1 item-text"></span></a>
+
+                        </li>*@
 
                             </ul>
                         </li>
 
-                    </ul>*@
-                <p class="text-muted nav-heading mt-4 mb-1">
-                    <span>@localizer["Pricing"]</span>
-                </p>
-                <ul class="navbar-nav flex-fill w-100 mb-2">
-                    <li class="nav-item dropdown">
-                        <a href="#ui-elements-Pricing" data-toggle="collapse" aria-expanded="false" id="anavbarOrdersLinesPricing" class="dropdown-toggle nav-link">
-                            <i class="fe fe-box fe-16"></i>
-                            <span class="ml-3 item-text">@localizer["Orders"]</span>
-                        </a>
-                        <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements-Pricing">
-                            <li class="nav-item">
-                                <a class="nav-link pl-3" asp-action="Index" asp-controller="Pricing" asp-route-currentPage="1" id="aOrderLinesForPricing">
-                                    <span class="ml-1 item-text">Orders Lines</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                    </ul>
+                }
 
-                </ul>
-                <p class="text-muted nav-heading mt-4 mb-1">
-                    <span>Labor</span>
-                </p>
-                <ul class="navbar-nav flex-fill w-100 mb-2">
 
-                    <li class="nav-item w-100">
 
-                        <a class="nav-link" asp-controller="Labor" asp-action="GetOrderLines" asp-route-currentPage="1" id="addLabor">
-                            <i class="fe fe-folder fe-16"></i>
-                            <span class="ml-3 item-text ">Labor</span>
+                @*<p class="text-muted nav-heading mt-4 mb-1">
+            <span>Leader</span>
+        </p>
+        <ul class="navbar-nav flex-fill w-100 mb-2">
+            <li class="nav-item dropdown">
+                <a href="#ui-OrderLinesUsed" data-toggle="collapse" aria-expanded="false" id="anavbarOrderLinesUsed" class="dropdown-toggle nav-link">
+                    <i class="fe fe-box fe-16"></i>
+                    <span class="ml-3 item-text">Order Lines</span>
+                </a>
+                <ul class="collapse list-unstyled pl-4 w-100" id="ui-OrderLinesUsed">
+                    <li class="nav-item">
+                        <a class="nav-link pl-3" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
+                            <span class="ml-1 item-text">Order lines used</span>
                         </a>
                     </li>
 
-
                 </ul>
+            </li>
+
+        </ul>*@
+
+
+                @if (AuthorizationService.AuthorizeAsync(User, Permissions.Pricing.Manage).Result.Succeeded)
+                {
+                    <p class="text-muted nav-heading mt-4 mb-1">
+                        <span>@localizer["Pricing"]</span>
+                    </p>
+                    <ul class="navbar-nav flex-fill w-100 mb-2">
+                        <li class="nav-item dropdown">
+                            <a href="#ui-elements-Pricing" data-toggle="collapse" aria-expanded="false" id="anavbarOrdersLinesPricing" class="dropdown-toggle nav-link">
+                                <i class="fe fe-box fe-16"></i>
+                                <span class="ml-3 item-text">@localizer["Orders"]</span>
+                            </a>
+                            <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements-Pricing">
+                                <li class="nav-item">
+                                    <a class="nav-link pl-3" asp-action="Index" asp-controller="Pricing" asp-route-currentPage="1" id="aOrderLinesForPricing">
+                                        <span class="ml-1 item-text">Orders Lines</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                }
+                @if (AuthorizationService.AuthorizeAsync(User, Permissions.Labor.Manage).Result.Succeeded)
+                {
+                    <p class="text-muted nav-heading mt-4 mb-1">
+                        <span>Labor</span>
+                    </p>
+                    <ul class="navbar-nav flex-fill w-100 mb-2">
+
+                        <li class="nav-item w-100">
+
+                            <a class="nav-link" asp-controller="Labor" asp-action="GetOrderLines" asp-route-currentPage="1" id="addLabor">
+                                <i class="fe fe-folder fe-16"></i>
+                                <span class="ml-3 item-text ">Labor</span>
+                            </a>
+                        </li>
+
+
+                    </ul>
+                }
+
                 <p class="text-muted nav-heading mt-4 mb-1">
                     <span>@localizer["Quotation"]</span>
                 </p>
@@ -372,11 +385,11 @@
 
                     @*<li class="nav-item w-100">
 
-                            <a class="nav-link" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
-                                <i class="fe fe-box fe-16"></i>
-                                <span class="ml-3 item-text">Order lines used</span>
-                            </a>
-                        </li>*@
+                <a class="nav-link" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
+                    <i class="fe fe-box fe-16"></i>
+                    <span class="ml-3 item-text">Order lines used</span>
+                </a>
+            </li>*@
 
                     <p class="text-muted nav-heading mt-4 mb-1">
                         <span>@localizer["Delivery"]</span>
@@ -912,7 +925,8 @@
                     document.getElementById(i).classList.add("text-primary");
                 } else {
                     var item = document.getElementById(i);
-                    if (item.classList.contains("text-primary")) {
+                    /*console.log(item);*/
+                    if (item != null && item.classList.contains("text-primary")) {
                         element.classList.remove("text-primary");
                     }
                 }
@@ -930,7 +944,7 @@
         function OpenOrderDetails(OrderDetailsID) {
             $.ajax({
                 type: "Get",
-                url: "/Sales/OpenOrderDetails",
+                url: "/SystemIssues/OpenOrderDetailsPSL",
                 data: { "OrderDetailsID": OrderDetailsID },
                 success: function (response) {
                     history.go(-1);

@@ -18,5 +18,8 @@ namespace Cars.ViewModels
         public decimal? Price { get; set; }
         public string Comments { get; set; }
         public int workflowID { get; set; }
+        public int statusID { get; set; }
+        public string prefix { get; set; }
+
     }
 }

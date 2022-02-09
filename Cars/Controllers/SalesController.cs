@@ -375,7 +375,8 @@ namespace Cars.Controllers
         [HttpGet]
         public IActionResult OpenOrderDetails(long OrderDetailsID)
         {
-            long orderDetails = orderServices.OpenOrderDetails(OrderDetailsID);
+            //long orderDetails = orderServices.OpenOrderDetails(OrderDetailsID);
+            usedService.OpenOrderDetails(OrderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
             return Ok();            
         }
         [HttpGet]

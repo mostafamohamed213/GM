@@ -81,7 +81,7 @@
     <div class="card-body">
         @if (Model.StatusID != 1)
         {
-        <h3> ID : @(Model.UserBranch is not null ? Model.UserBranch.Branch.BranchIP : "00"):@Model.OrderID:@Model.OrderDetailsID</h3>
+        <h3> ID : @Model.Prefix</h3>
         }
     <form class="needs-validation" asp-action="EditOrderDetails" asp-controller="Sales" method="post">
         <div class="row">

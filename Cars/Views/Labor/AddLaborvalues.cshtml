@@ -82,7 +82,7 @@
     <div class="card-body">
         @if (Model.StatusID != 1)
         {
-            <h3> ID : @(Model.UserBranch is not null ? Model.UserBranch.Branch.BranchIP : "00"):@Model.OrderID:@Model.OrderDetailsID</h3>
+            <h3> ID : @Model.Prefix</h3>
         }
         <form class="needs-validation" asp-action="AddLaborvalues" asp-controller="Labor" method="post">
             <div class="row">
@@ -113,23 +113,7 @@
 
 
 
-                    <div class="form-group mb-3">
-                        <div class="row">
-                            <div class="col-md-5">
-                                <a class="btn btn-danger" onclick="OpenOrderDetails('@Model.OrderDetailsID')" style=" width: 100px;" href="~/"> @localizer["Cancel"]</a>
-                                <input class="btn btn-success" style=" width: 100px;" type="submit" value="@localizer["Save"]" />
 
-                            </div>
-                            <div class="col-md-5"></div>
-
-                            <div class="col-md-2">
-
-
-                            </div>
-                        </div>
-
-
-                    </div>
                 </div> <!-- /.col -->
                 <div class="col-md-6">
                     <div class="form-group mb-4">
@@ -148,13 +132,13 @@
                             @localizer["Approved"]  :
                             @if (Model.IsApproved.HasValue && Model.IsApproved.Value)
                             {
-                                <input id="IsApproved" type="checkbox" value="true" name="IsApproved" checked readonly="readonly" />
-                                <input type="hidden" value="false" name="IsApproved" readonly="readonly" />
+                            <input id="IsApproved" type="checkbox" value="true" name="IsApproved" checked readonly="readonly" />
+                            <input type="hidden" value="false" name="IsApproved" readonly="readonly" />
                             }
                             else
                             {
-                                <input id="IsApproved" type="checkbox" value="true" name="IsApproved" readonly="readonly" />
-                                <input type="hidden" value="false" name="IsApproved" readonly="readonly" />
+                            <input id="IsApproved" type="checkbox" value="true" name="IsApproved" readonly="readonly" />
+                            <input type="hidden" value="false" name="IsApproved" readonly="readonly" />
                             }
                         </label>
 
@@ -164,7 +148,20 @@
 
 
                 </div>
+               
+                <div class="row">
 
+                    <div class="col-md-1"></div>
+                    <div class="col-md-11">
+                        <a class="btn btn-danger" onclick="OpenOrderDetails('@Model.OrderDetailsID')" style=" width: 100px;" href="~/"> @localizer["Cancel"]</a>
+                        <input class="btn btn-success" style=" width: 100px;" type="submit" value="@localizer["Save"]" />
+                    </div>
+                  
+
+                </div>
+
+
+                
             </div>
         </form>
     </div>

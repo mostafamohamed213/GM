@@ -64,6 +64,7 @@ namespace Cars.Models
         public string RunnerID { get; set; }
         [ForeignKey("RunnerID")]
         public virtual ApplicationUser User { get; set; }
+        public DateTime DTsWorflowEnter { get; set; }
 
         [NotMapped]
         public List<OrderDetails> Children { get; set; }

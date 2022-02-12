@@ -186,7 +186,7 @@ namespace Cars.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return View();
+            return View("Login1");
         }
         [AllowAnonymous]
         [HttpPost]
@@ -205,7 +205,7 @@ namespace Cars.Controllers
                 ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
             }
 
-            return View(model);
+            return View("Login1", model);
         }
     }
     internal class remotip

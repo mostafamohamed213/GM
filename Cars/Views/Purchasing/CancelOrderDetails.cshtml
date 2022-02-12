@@ -72,7 +72,7 @@
             <div class="card-body">
                 <div class="row h5">
                     <div class="col-md-3">
-                        @localizer["ID"] :  @(Model.OrderDetails.UserBranch is not null ? Model.OrderDetails.UserBranch.Branch.BranchIP : "00"):@Model.OrderDetails.OrderID:@Model.OrderDetailsID
+                        @localizer["ID"] :  @Model.OrderDetails.Prefix
                     </div>
                     <div class="col-md-3 border-left border-right">
                         @localizer["Item"] : @Model.OrderDetails.Items

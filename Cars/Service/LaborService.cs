@@ -156,7 +156,8 @@ namespace Cars.Service
                     orderDetails.Labor_Hours = labor_hours;
                     orderDetails.Labor_Value = labor_value;                 
                     db.SaveChanges();
-                    usedService.ChangeWorkflow(orderDetails.OrderDetailsID, UserId);                  
+                    usedService.ChangeWorkflow(orderDetails.OrderDetailsID, UserId);
+                    usedService.ChangeDTsWorkflowEnter(orderDetails.OrderDetailsID);
                     return orderDetails.OrderID;
                 }
                 else

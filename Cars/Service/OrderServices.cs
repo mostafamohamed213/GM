@@ -220,6 +220,7 @@ namespace Cars.Service
                         item.StatusID = 2;
                         item.WorkflowID = _Workflow.WorkflowID;
                         item.Workflow = _Workflow;
+                        item.DTsWorflowEnter = DateTime.Now;
 
                         WorkflowOrderDetailsLog workflowOrder = new WorkflowOrderDetailsLog()
                         {

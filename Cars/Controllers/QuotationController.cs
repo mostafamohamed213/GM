@@ -9,9 +9,12 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Cars.Models;
 
 namespace Cars.Controllers
 {
+    [Authorize(Permissions.Sales.Manage)]
     public class QuotationController : Controller
     {
         public QuotationService services { get; set; }
@@ -19,12 +22,13 @@ namespace Cars.Controllers
         {
             services = _services;
         }
-        public IActionResult Index(int currentPage)
+        public IActionResult Index(int currentPage = 1)
         {
             try
             {
-                ViewBag.countOrderLines = services.getCountOrderLines();
-                return View(services.getQuotations(currentPage=1));
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                ViewBag.countOrderLines = services.getCountOrderLines(userId);
+                return View(services.getQuotations(currentPage, userId));
             }
             catch (Exception)
             {
@@ -37,7 +41,7 @@ namespace Cars.Controllers
         {
             try
             {
-                return View("Index", services.getQuotationsWithChangelength(1, length));
+                return View("Index", services.getQuotationsWithChangelength(1, length, User.FindFirstValue(ClaimTypes.NameIdentifier)));
             }
             catch (Exception)
             {
@@ -58,8 +62,9 @@ namespace Cars.Controllers
                 else
                 {
                     ViewData["CurrentFilter"] = search;
-                    ViewBag.countOrderLines = services.getCountOrderLines();
-                    return View("Index", services.SearchQuotations(search));
+                    string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    ViewBag.countOrderLines = services.getCountOrderLines(userId);
+                    return View("Index", services.SearchQuotations(search, userId));
                 }
 
             }
@@ -73,7 +78,7 @@ namespace Cars.Controllers
         {
             try
             {               
-                return View("CreateQuotation", services.getOrderLines());
+                return View("CreateQuotation", services.getOrderLines(User.FindFirstValue(ClaimTypes.NameIdentifier)));
             }
             catch (Exception)
             {
@@ -85,25 +90,27 @@ namespace Cars.Controllers
         {
             try
             {
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 List<long> ids = JsonSerializer.Deserialize<List<long>>(orderLinesIdList);
                 if (ids.Count > 0)
                 {
-                    CreateQuotationViewModel model = services.CreateQuotation(ids, User.FindFirstValue(ClaimTypes.NameIdentifier));
+                   
+                    CreateQuotationViewModel model = services.CreateQuotation(ids, userId);
                     if (model.status == -2)
                     {
                         string val = "Order Lines -> ";
                         foreach (var item in model.orderDetails)
                         {
-                            val += $"01:{item.OrderID}:{item.OrderDetailsID} ~ ";
+                            val += item.Prefix;
                         }
                         val += "Not available now";
                         ViewBag.ErrorMessage = val;
-                        return View("CreateQuotation", services.getOrderLines());
+                        return View("CreateQuotation", services.getOrderLines(userId));
                     }
                     if (model.status == -1)
                     {                       
                         ViewBag.ErrorMessage = "Something went wrong";
-                        return View("CreateQuotation", services.getOrderLines());
+                        return View("CreateQuotation", services.getOrderLines(userId));
                     }
                     if (model.status == 1)
                     {
@@ -114,7 +121,7 @@ namespace Cars.Controllers
 
 
                 ViewBag.ErrorMessage = "Please Select Order Lines";
-                return View("CreateQuotation", services.getOrderLines());
+                return View("CreateQuotation", services.getOrderLines(userId));
             }
             catch (Exception)
             {
@@ -194,7 +201,7 @@ namespace Cars.Controllers
         {
             try
             {
-              var quotation = services.getQuotationByQuotationID(quotationID);
+              var quotation = services.getQuotationByQuotationID(quotationID, User.FindFirstValue(ClaimTypes.NameIdentifier));
                 return View("Display",quotation);
             }
             catch (Exception)

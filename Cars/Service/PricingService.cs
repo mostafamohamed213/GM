@@ -119,6 +119,7 @@ namespace Cars.Service
                 {
                     //orderDetails.WorkflowID = 3;
                     usedService.ChangeWorkflow(orderDetails.OrderDetailsID, user);
+                    usedService.ChangeDTsWorkflowEnter(orderDetails.OrderDetailsID);
                 }
                 else
                 {

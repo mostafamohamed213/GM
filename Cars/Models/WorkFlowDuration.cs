@@ -7,16 +7,21 @@ using System.Threading.Tasks;
 
 namespace Cars.Models
 {
-    public class Workflow
+    public class WorkFlowDuration
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public int WorkflowID { get; set; }
-        [Required]
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public int WorkFlowDurationID { get; set; }
 
-        public virtual WorkFlowDuration WorkFlowDuration { get; set; }
+       
+        public int WorkflowID { get; set; }
+
+        public double Duration { get; set; }
+
+        [ForeignKey("WorkflowID")]
+        public virtual Workflow WorkFlow { get; set; }
+
+       
 
     }
 }

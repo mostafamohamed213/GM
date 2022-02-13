@@ -19,10 +19,10 @@ namespace Cars.Service
         }
 
 
-        public PagingViewModel<OrderDetails> getOrderLinesWithChangelength(int currentPageIndex, int length)
+        public PagingViewModel<OrderDetails> getOrderLinesWithChangelength(int currentPageIndex, int length,string DeliverID)
         {
             TablesMaxRows.IndexDeliverysRows = length;
-            return getOrderLines(currentPageIndex, null);
+            return getOrderLines(currentPageIndex, null,DeliverID);
         }
 
         internal SelectList GetSelectListOrderDetailsType()
@@ -42,18 +42,18 @@ namespace Cars.Service
             var orderDetails = db.OrderDetails.Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
             return orderDetails;
         }
-        public PagingViewModel<OrderDetails> getOrderLines(int currentPage, string? search)
+        public PagingViewModel<OrderDetails> getOrderLines(int currentPage, string? search ,string? DeliveryID)
         {
-            var orders = db.OrderDetails.Where(c => c.WorkflowID == 9).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexDeliverysRows).Take(TablesMaxRows.IndexDeliverysRows).ToList();
+            var orders = db.OrderDetails.Where(c => c.WorkflowID == 9 && c.DeliveryID== DeliveryID).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexDeliverysRows).Take(TablesMaxRows.IndexDeliverysRows).ToList();
 
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
 
-            var itemsCount = db.OrderDetails.Where(c => c.WorkflowID == 9).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexDeliverysRows).Take(TablesMaxRows.IndexDeliverysRows).Count();
+            var itemsCount = db.OrderDetails.Where(c => c.WorkflowID == 9 && c.DeliveryID == DeliveryID).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexDeliverysRows).Take(TablesMaxRows.IndexDeliverysRows).Count();
 
             if (search != null)
             {
-                orders = db.OrderDetails.Where(c => c.WorkflowID == 9 && c.Items.Contains(search)).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexDeliverysRows).Take(TablesMaxRows.IndexDeliverysRows).ToList();
-                itemsCount = db.OrderDetails.Where(c => c.WorkflowID == 9 && c.Items.Contains(search)).Include("OrderDetailsType").Count();
+                orders = db.OrderDetails.Where(c => c.WorkflowID == 9 && c.DeliveryID == DeliveryID && c.Items.Contains(search)).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexDeliverysRows).Take(TablesMaxRows.IndexDeliverysRows).ToList();
+                itemsCount = db.OrderDetails.Where(c => c.WorkflowID == 9 && c.DeliveryID == DeliveryID && c.Items.Contains(search)).Include("OrderDetailsType").Count();
             }
             viewModel.items = orders.ToList();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexDeliverysRows));

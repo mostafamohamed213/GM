@@ -34,7 +34,7 @@ namespace Cars.Controllers
             try
             {
                 var UserID = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var allRunners = services.getAllRunners(currentPage, search);
+                var allRunners = services.getAllRunners(currentPage, search, User.FindFirstValue(ClaimTypes.NameIdentifier));
 
                 if (search != null)
                     TempData["lastsearch"] = search;
@@ -56,7 +56,7 @@ namespace Cars.Controllers
             {
                 TempData["ErrorMessage"] = "";
 
-                return View("GetAllRunners", services.getOrderLinesWithChangelength(1, length));
+                return View("GetAllRunners", services.getOrderLinesWithChangelength(1, length, User.FindFirstValue(ClaimTypes.NameIdentifier)));
             }
             catch (Exception)
             {
@@ -64,11 +64,11 @@ namespace Cars.Controllers
             }
         }
         [HttpGet]
-        public IActionResult GetRunnerByID(long RunnerID)
+        public IActionResult GetRunnerByID(long orderDetailsID)
         {
             try
             {
-                var getrunner = services.GetRunnernByID(RunnerID);
+                var getrunner = services.GetRunnernByID(orderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
                 if (getrunner != null)
                     return View(getrunner);
 
@@ -90,7 +90,7 @@ namespace Cars.Controllers
                 return View("_CustomError");
             }
         }
-        [HttpPost]
+       /* [HttpPost]
         public IActionResult AddRunner([FromForm]RunnerViewModel model)
         {
             try
@@ -176,6 +176,6 @@ namespace Cars.Controllers
             {
                 return View("_CustomError");
             }
-        }
+        }*/
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Cars.Controllers
@@ -35,7 +36,7 @@ namespace Cars.Controllers
                 else
                     TempData["lastsearch"] = "";
 
-                var model = services.getOrderLines(currentPage, search);
+                var model = services.getOrderLines(currentPage, search, User.FindFirstValue(ClaimTypes.NameIdentifier));
                 return View(model);
             }
             catch (Exception)
@@ -49,7 +50,7 @@ namespace Cars.Controllers
         {
             try
             {
-                return View("GetOrderLines", services.getOrderLinesWithChangelength(1, length));
+                return View("GetOrderLines", services.getOrderLinesWithChangelength(1, length, User.FindFirstValue(ClaimTypes.NameIdentifier)));
             }
             catch (Exception)
             {

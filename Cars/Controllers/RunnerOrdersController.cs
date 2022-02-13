@@ -58,8 +58,8 @@ namespace Cars.Controllers
             {
                 if (orderDetailsID <= 0)
                     return View("_CustomError");
-
-                var orderLine = await _service.GetRunnerOrderDetialsByIDAsync(orderDetailsID);
+                var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var orderLine = await _service.GetRunnerOrderDetialsByIDAsync(orderDetailsID, userID);
                 return View("Details", orderLine);
             }
             catch (Exception)

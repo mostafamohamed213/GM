@@ -181,7 +181,7 @@ namespace Cars.Service
                 Active = true,
                 Details = $"Release Order Details from User at Inventory, "
                 + ((orderDetailsModel.UserBranchID == orderDetailsModel.VendorLocationID) ? "Move Order Details to sales with WorkFlow = 1" :
-                "Move Order To Delevey Work FLow = 9"),
+                "Move Order To Delivrey Work FLow = 9"),
                 DTsCreate = DateTime.UtcNow,
                 OrderDetailsID = orderDetailsModel.OrderDetailsID,
                 SystemUserID = userID,

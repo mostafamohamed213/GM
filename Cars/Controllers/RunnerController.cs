@@ -33,6 +33,7 @@ namespace Cars.Controllers
         {
             try
             {
+                var UserID = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var allRunners = services.getAllRunners(currentPage, search);
 
                 if (search != null)

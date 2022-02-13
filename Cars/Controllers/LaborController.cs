@@ -148,17 +148,6 @@ namespace Cars.Controllers
             }
 
         }
-     /*   public IActionResult typeserch(string type ,int currentPage,decimal from ,decimal to)
-        {
-            try
-            {
-                var model = services.getByType(currentPage,type,from ,to);
-                return RedirectToAction("GetOrderLines", new { currentPage = 1 });
-            }
-            catch (Exception)
-            {
-                return View("_CustomError");
-            }
-        }*/
+ 
     }
 }

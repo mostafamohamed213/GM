@@ -23,7 +23,7 @@ namespace Cars.Service
         }
         public PagingViewModel<Runner> getAllRunners(int currentPage,string? search)
         {
-            List<Runner> allRunners = db.Runners.Where(r=>r.Enable).Skip((currentPage - 1) * TablesMaxRows.IndexRunnerMaxRows).Take(TablesMaxRows.IndexRunnerMaxRows).ToList();
+            List<Runner> allRunners = db.Runners.Where(r=>r.Enable ).Skip((currentPage - 1) * TablesMaxRows.IndexRunnerMaxRows).Take(TablesMaxRows.IndexRunnerMaxRows).ToList();
 
             if(search!=null)
             {

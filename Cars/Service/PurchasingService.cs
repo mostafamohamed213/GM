@@ -22,7 +22,7 @@ namespace Cars.Service
         }
         public PagingViewModel<OrderDetails> getOrderDetails(int currentPage)
         {
-            var orderDetails = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 6).Include(c => c.UserBranch.Branch).Include(c=>c.OrderDetailsType).Include(c=>c.VendorLocation).Skip((currentPage - 1) * TablesMaxRows.IndexPurchasingMaxRows).Take(TablesMaxRows.IndexPurchasingMaxRows).ToList();
+            var orderDetails = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 6).Include(c=>c.OrderDetailsType).Include(c=>c.VendorLocation).Skip((currentPage - 1) * TablesMaxRows.IndexPurchasingMaxRows).Take(TablesMaxRows.IndexPurchasingMaxRows).ToList();
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             viewModel.items = orderDetails.ToList();
             var itemsCount = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 6).Where(c => c.StatusID == 2).Count();
@@ -36,7 +36,7 @@ namespace Cars.Service
         internal PagingViewModel<OrderDetails> SearchOrderLines(string search)
         {
             var orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 6 && c.Items.Trim().ToLower().Contains(search.Trim().ToLower())).
-              Include(c => c.OrderDetailsType).Include(c => c.VendorLocation).Include(c => c.UserBranch.Branch).Take(100).ToList();
+              Include(c => c.OrderDetailsType).Include(c => c.VendorLocation).Take(100).ToList();
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             viewModel.items = orders.ToList();
             var itemsCount = orders.Count;
@@ -62,7 +62,7 @@ namespace Cars.Service
 
         internal OrderDetails getOrderDetailsByID(long orderDetailsID)
         {
-          return db.OrderDetails.Include(c => c.UserBranch.Branch).Include(c => c.OrderDetailsType).Include(c => c.VendorLocation).FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
+          return db.OrderDetails.Include(c => c.OrderDetailsType).Include(c => c.VendorLocation).FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
         }
 
         public PagingViewModel<OrderDetails> getOrdersWithChangelength(int currentPageIndex, int length)
@@ -78,6 +78,7 @@ namespace Cars.Service
             {
                 orderDetails.RunnerID = runnerID;
                 orderDetails.WorkflowID = 7;
+                orderDetails.DTsWorflowEnter = DateTime.Now;
                 db.WorkflowOrderDetailsLogs.Add(new WorkflowOrderDetailsLog
                 {
                     DTsCreate = DateTime.Now,

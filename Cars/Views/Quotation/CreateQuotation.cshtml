@@ -67,7 +67,7 @@
                                         @foreach (var order in Model)
                                         {
                                             <tr>
-                                                <td>@(order.UserBranch is not null ? order.UserBranch.Branch.BranchIP : "00"):@order.OrderID:@order.OrderDetailsID</td>
+                                                <td>@order.Prefix</td>
                                                 <td>@order.Items</td>
                                                 <td>@order.Quantity</td>
                                                 <td>@order.Price</td>

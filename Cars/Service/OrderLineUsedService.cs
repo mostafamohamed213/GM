@@ -210,6 +210,17 @@ namespace Cars.Service
                 return null;
             }
         }
-     
+
+        internal void ChangeDTsWorkflowEnter(long orderDetailsID)
+        {
+            OrderDetails orderDetails = db.OrderDetails.FirstOrDefault(c=>c.OrderDetailsID == orderDetailsID);
+            if (orderDetails.Price.HasValue && orderDetails.Labor_Hours.HasValue && orderDetails.Labor_Value.HasValue)
+            {
+                orderDetails.DTsWorflowEnter = DateTime.Now;
+                db.SaveChanges();
+            }
+        }
+
+
     }
 }

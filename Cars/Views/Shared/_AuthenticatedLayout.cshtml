@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="~/favicon.ico">
+    <link rel="icon" href="~/Images/General_Motors_(2021).svg">
     <title>@ViewBag.Title</title>
     <!-- Simple bar CSS -->
     <link rel="stylesheet" href="~/Template/css/simplebar.css">
@@ -121,14 +121,16 @@
             <nav class="vertnav navbar navbar-light">
                 <!-- nav bar -->
                 <div class="w-100 mb-4 d-flex">
-                    <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="./index.html">
-                        <svg version="1.1" id="logo" class="navbar-brand-img brand-sm" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 120 120" xml:space="preserve">
-                        <g>
-                        <polygon class="st0" points="78,105 15,105 24,87 87,87 	" />
-                        <polygon class="st0" points="96,69 33,69 42,51 105,51 	" />
-                        <polygon class="st0" points="78,33 15,33 24,15 87,15 	" />
-                </g>
-              </svg>
+                    <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="~/">
+                        @*<svg version="1.1" id="logo" class="navbar-brand-img brand-sm" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 120 120" xml:space="preserve">
+                  <g>
+                  <polygon class="st0" points="78,105 15,105 24,87 87,87 	" />
+                  <polygon class="st0" points="96,69 33,69 42,51 105,51 	" />
+                  <polygon class="st0" points="78,33 15,33 24,15 87,15 	" />
+          </g>
+        </svg>*@
+                        <img src="~/Images/General_Motors_(2021).svg" class="img-fluid" style="width:40px"  />
+
                     </a>
                 </div>
 
@@ -427,11 +429,11 @@
 
                         <li class="nav-item w-100">
 
-                            <a class="nav-link" asp-controller="VendorLocation" asp-action="GetAllVendorsLocation" asp-route-currentPage="1" id="aVendorLocation">
-                                <i class="fe fe-24 fe-globe"></i>
-                                <span class="ml-3 item-text ">Vendor Location</span>
-                            </a>
-                        </li>
+                <a class="nav-link" asp-controller="VendorLocation" asp-action="GetAllVendorsLocation" asp-route-currentPage="1" id="aVendorLocation">
+                    <i class="fe fe-24 fe-globe"></i>
+                    <span class="ml-3 item-text">Vendor Location</span>
+                </a>
+            </li>
 
 
                     </ul>*@
@@ -675,7 +677,7 @@
         </main> <!-- main -->
     </div> <!-- .wrapper -->
     <footer>
-        <p class="text-center">&copy; @DateTime.Now.Year - GM - All rights reserved - Powered by  <a href="https://www.deqqa.net/">Deqqa</a></p>
+        @*<p class="text-center">&copy; @DateTime.Now.Year - GM - All rights reserved - Powered by  <a href="https://www.deqqa.net/">Deqqa</a></p>*@
     </footer>
     <script src="~/Template/js/jquery.min.js"></script>
     <script src="~/Template/js/popper.min.js"></script>

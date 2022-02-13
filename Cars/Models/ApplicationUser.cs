@@ -19,6 +19,5 @@ namespace Cars.Models
         public virtual ICollection<UsersLogs> UsersLogs { get; set; }
         public virtual ICollection<UserBranchModel> UserBranches { get; set; }
         public virtual ICollection<NotificationUser> UserNotifications { get; set; }
-        public virtual ICollection<OrderDetails> DeliveryOrders { get; set; }
     }
 }

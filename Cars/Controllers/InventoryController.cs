@@ -86,10 +86,12 @@ namespace Cars.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
                 var assignUserResult = await _service.AssignOrderDetailsToUserAsync(orderDetailsID, userId);
-                if (assignUserResult == null || assignUserResult.model == null)
+                if (assignUserResult == null)
                     return View("_CustomError");
                 else if (assignUserResult.Status == -1)
                     return View("InventoryUsedByUser");
+                else if (assignUserResult.model == null)
+                    return View("_CustomError");
                 else if (assignUserResult.Status <= 0)
                     return View("_CustomError");
 

@@ -94,6 +94,7 @@ namespace Cars
             services.AddTransient<Cars.Service.NotificationUserService, Cars.Service.NotificationUserService>();
             services.AddTransient<DeliveryService, DeliveryService>();
             services.AddTransient<UserService, UserService>();
+            services.AddTransient<INotificationService, Cars.Service.Hangfire.NotificationService>();
 
 
             services.AddSession();

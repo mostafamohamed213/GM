@@ -21,6 +21,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Cars.Service.Notification;
+using Hangfire;
+using Cars.Service.HangfireAuth;
+using Cars.Service.Hangfire;
+using Hangfire.MemoryStorage;
 
 namespace Cars
 {
@@ -56,6 +60,17 @@ namespace Cars
                 options.SupportedUICultures = supportedCultures;
             });
 
+            // Add Hangfire services.
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseMemoryStorage()
+                );
+
+            // Add the processing server as IHostedService
+            services.AddHangfireServer();
+
             services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
             services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
             services.AddTransient<PricingService, PricingService>();
@@ -75,9 +90,10 @@ namespace Cars
             services.AddTransient<AllOrderLinesService, AllOrderLinesService>();
             services.AddTransient<InventoryService, InventoryService>();
             services.AddTransient<RunnerOrdersService, RunnerOrdersService>();
-            services.AddTransient<NotificationService, NotificationService>();
-            services.AddTransient<NotificationUserService, NotificationUserService>();
+            services.AddTransient<Cars.Service.NotificationService, Cars.Service.NotificationService>();
+            services.AddTransient<Cars.Service.NotificationUserService, Cars.Service.NotificationUserService>();
             services.AddTransient<DeliveryService, DeliveryService>();
+            services.AddTransient<UserService, UserService>();
 
 
             services.AddSession();
@@ -125,7 +141,7 @@ namespace Cars
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IRecurringJobManager recurringJobManager, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -135,6 +151,16 @@ namespace Cars
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            // Hangfire background job every one day
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions()
+            {
+                Authorization = new[] { new CustomAuthorizeFilter() }
+            });
+            recurringJobManager.AddOrUpdate("Run every 10 min",
+            () => serviceProvider.GetService<INotificationService>().SendNotificationsAsync(),
+                 "*/10 * * * *");
+
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseRouting();

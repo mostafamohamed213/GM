@@ -49,6 +49,10 @@
                                 <label asp-for="Inventory.Quantity" class="control-label h5">Current Quantity</label>
                                 <input asp-for="Inventory.Quantity" class="form-control col-4" />
                             </div>
+                            <div class="form-group" id="deliveryList">
+                                <label asp-for="DeliveryID" class="control-label h5">Delivery</label>
+                                <select asp-for="DeliveryID" class="form-control col-4" asp-items=@ViewBag.Delivery></select>
+                            </div>
                             <div class="form-group">
                                 <a class="btn btn-primary" asp-action="Index" asp-controller="Inventory">Back</a>
                                 <input class="btn btn-primary" style="" type="submit" value="Submit" />
@@ -64,6 +68,7 @@
 @section Scripts {
     <script>
         $("#rejectwarn").hide();
+        $("#deliveryList").hide();
         ChangeColorSidebarItem("anavbarInventory", "aInventory");
         function jsFunction(value) {
             if (value != "2") { //Not WIP
@@ -78,6 +83,16 @@
             }
             else {
                 $("#rejectwarn").show();
+            }
+
+            if (value != "3") { //Not Done
+                $("#deliveryList").hide();
+            }
+            else if (@Model.UserBranchID != @Model.VendorLocationID) { //Not Same Branch
+                $("#deliveryList").show();
+            }
+            else {
+                $("#deliveryList").hide();
             }
         }
     </script>

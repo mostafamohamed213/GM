@@ -18,11 +18,13 @@ namespace Cars.Controllers
     public class InventoryController : Controller
     {
         private readonly InventoryService _service;
+        private readonly UserService _userService;
         private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
-        public InventoryController(InventoryService service)
+        public InventoryController(InventoryService service, UserService userService)
         {
             _service = service;
+            _userService = userService;
         }
         public async Task<IActionResult> Index(int currentPage, string search)
         {
@@ -91,6 +93,13 @@ namespace Cars.Controllers
                 else if (assignUserResult.Status <= 0)
                     return View("_CustomError");
 
+                //If location 
+                if (assignUserResult.model.UserBranchID != assignUserResult.model.VendorLocationID)
+                {
+                    var deliveries = await _userService.GetAllDeliveryAsync();
+                    if (deliveries != null && deliveries.Count() > 0)
+                        ViewBag.Delivery = new SelectList(deliveries, "ID", "Name", assignUserResult.model.DeliveryID);
+                }
                 List<SelectListItem> Status = new()
                 {
                     new SelectListItem { Value = "3", Text = "Done" },
@@ -155,7 +164,7 @@ namespace Cars.Controllers
                 }
                 else if (model.StatusID == 3)
                 {
-                    //Release Order Details And MAke IT Done
+                    //Release Order Details And Move IT to delivery or sales
                     var result = await _service.ReleaseDoneOrderDetailsFromUserAsync(model.OrderDetailsID, userId);
                     if (result <= 0)
                         return View("_CustomError");

@@ -166,7 +166,7 @@ namespace Cars.Service
             orderDetailsModel.UsedDateTime = null;
             orderDetailsModel.DTsWorflowEnter = DateTime.UtcNow;
             if (orderDetailsModel.UserBranchID == orderDetailsModel.VendorLocationID)
-                //Movw To Sales 
+                //Move To Sales 
                 orderDetailsModel.WorkflowID = 1;
             else
             {

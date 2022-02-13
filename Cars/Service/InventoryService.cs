@@ -164,12 +164,10 @@ namespace Cars.Service
 
             orderDetailsModel.UsedByUser = null;
             orderDetailsModel.UsedDateTime = null;
+            orderDetailsModel.DTsWorflowEnter = DateTime.UtcNow;
             if (orderDetailsModel.UserBranchID == orderDetailsModel.VendorLocationID)
-            {
-                //Make it Done
-                orderDetailsModel.StatusID = 3;
-                orderDetailsModel.WorkflowID = 8;
-            }
+                //Movw To Sales 
+                orderDetailsModel.WorkflowID = 1;
             else
             {
                 //Move to delivary 
@@ -182,7 +180,7 @@ namespace Cars.Service
             {
                 Active = true,
                 Details = $"Release Order Details from User at Inventory, "
-                + ((orderDetailsModel.UserBranchID == orderDetailsModel.VendorLocationID) ? "Make Order Details Done B make Status = 3 , WorkFlow = 8" :
+                + ((orderDetailsModel.UserBranchID == orderDetailsModel.VendorLocationID) ? "Move Order Details to sales with WorkFlow = 1" :
                 "Move Order To Delevey Work FLow = 9"),
                 DTsCreate = DateTime.UtcNow,
                 OrderDetailsID = orderDetailsModel.OrderDetailsID,
@@ -236,6 +234,7 @@ namespace Cars.Service
             orderDetailsModel.UsedDateTime = null;
             orderDetailsModel.StatusID = 6;
             orderDetailsModel.WorkflowID = 8;
+            orderDetailsModel.DTsWorflowEnter = DateTime.UtcNow;
             var result = await _orderDetailsService.UpdateAsync(orderDetailsModel);
 
             //Create Log 

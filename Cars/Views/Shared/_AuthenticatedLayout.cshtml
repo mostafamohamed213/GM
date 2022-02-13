@@ -43,12 +43,14 @@
     @*<link rel="stylesheet" href="~/Template/RTL/app-light.css" id="lightTheme"/>
         <link rel="stylesheet" href="~/Template/RTL/app-dark.css" id="darkTheme" disabled />*@
     @*<style>
-        /* Notification*/
-        #notbell {
-            visibility: hidden;
-        }
-    </style>*@
+            /* Notification*/
+            #notbell {
+                visibility: hidden;
+            }
+        </style>*@
 
+    @* Notification *@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
 </head>
 <body class="vertical  light   @(StaticValues.RTL ? "rtl" : string.Empty) ">
     <div class="wrapper">
@@ -157,12 +159,12 @@
                                     <a class="nav-link pl-3" asp-controller="Sales" asp-action="Draft" asp-route-currentPage="1" id="aDraftOrderHeader"><span class="ml-1 item-text">@localizer["Draft"]</span></a>
                                 </li>
                                 @*<li class="nav-item">
-                               <a class="nav-link pl-3" asp-controller="Sales" asp-action="GetOrderLines" asp-route-currentPage="1" id="aOrderLines"><span class="ml-1 item-text">@localizer["Draft"]</span></a>
-                        </li>*@
+                                           <a class="nav-link pl-3" asp-controller="Sales" asp-action="GetOrderLines" asp-route-currentPage="1" id="aOrderLines"><span class="ml-1 item-text">@localizer["Draft"]</span></a>
+                                    </li>*@
                                 @*<li class="nav-item active">
-                            <a class="nav-link pl-3" id="testit" asp-controller="Sales" asp-action="ViewOrder" asp-route-OrderId="10"> <span class=" ml-1 item-text"></span></a>
+                                        <a class="nav-link pl-3" id="testit" asp-controller="Sales" asp-action="ViewOrder" asp-route-OrderId="10"> <span class=" ml-1 item-text"></span></a>
 
-                        </li>*@
+                                    </li>*@
 
                             </ul>
                         </li>
@@ -197,25 +199,25 @@
 
 
                 @*<p class="text-muted nav-heading mt-4 mb-1">
-            <span>Leader</span>
-        </p>
-        <ul class="navbar-nav flex-fill w-100 mb-2">
-            <li class="nav-item dropdown">
-                <a href="#ui-OrderLinesUsed" data-toggle="collapse" aria-expanded="false" id="anavbarOrderLinesUsed" class="dropdown-toggle nav-link">
-                    <i class="fe fe-box fe-16"></i>
-                    <span class="ml-3 item-text">Order Lines</span>
-                </a>
-                <ul class="collapse list-unstyled pl-4 w-100" id="ui-OrderLinesUsed">
-                    <li class="nav-item">
-                        <a class="nav-link pl-3" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
-                            <span class="ml-1 item-text">Order lines used</span>
-                        </a>
-                    </li>
+                        <span>Leader</span>
+                    </p>
+                    <ul class="navbar-nav flex-fill w-100 mb-2">
+                        <li class="nav-item dropdown">
+                            <a href="#ui-OrderLinesUsed" data-toggle="collapse" aria-expanded="false" id="anavbarOrderLinesUsed" class="dropdown-toggle nav-link">
+                                <i class="fe fe-box fe-16"></i>
+                                <span class="ml-3 item-text">Order Lines</span>
+                            </a>
+                            <ul class="collapse list-unstyled pl-4 w-100" id="ui-OrderLinesUsed">
+                                <li class="nav-item">
+                                    <a class="nav-link pl-3" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
+                                        <span class="ml-1 item-text">Order lines used</span>
+                                    </a>
+                                </li>
 
-                </ul>
-            </li>
+                            </ul>
+                        </li>
 
-        </ul>*@
+                    </ul>*@
 
 
                 @if (AuthorizationService.AuthorizeAsync(User, Permissions.Pricing.Manage).Result.Succeeded)
@@ -391,11 +393,11 @@
 
                     @*<li class="nav-item w-100">
 
-                <a class="nav-link" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
-                    <i class="fe fe-box fe-16"></i>
-                    <span class="ml-3 item-text">Order lines used</span>
-                </a>
-            </li>*@
+                            <a class="nav-link" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
+                                <i class="fe fe-box fe-16"></i>
+                                <span class="ml-3 item-text">Order lines used</span>
+                            </a>
+                        </li>*@
 
                     <p class="text-muted nav-heading mt-4 mb-1">
                         <span>@localizer["Delivery"]</span>
@@ -419,36 +421,36 @@
 
 
                 @*<p class="text-muted nav-heading mt-4 mb-1">
-            <span>Vendor Location </span>
-        </p>
-        <ul class="navbar-nav flex-fill w-100 mb-2">
+                        <span>Vendor Location </span>
+                    </p>
+                    <ul class="navbar-nav flex-fill w-100 mb-2">
 
-            <li class="nav-item w-100">
+                        <li class="nav-item w-100">
 
-                <a class="nav-link" asp-controller="VendorLocation" asp-action="GetAllVendorsLocation" asp-route-currentPage="1" id="aVendorLocation">
-                    <i class="fe fe-24 fe-globe"></i>
-                    <span class="ml-3 item-text ">Vendor Location</span>
-                </a>
-            </li>
+                            <a class="nav-link" asp-controller="VendorLocation" asp-action="GetAllVendorsLocation" asp-route-currentPage="1" id="aVendorLocation">
+                                <i class="fe fe-24 fe-globe"></i>
+                                <span class="ml-3 item-text ">Vendor Location</span>
+                            </a>
+                        </li>
 
 
-        </ul>*@
+                    </ul>*@
 
                 @*<p class="text-muted nav-heading mt-4 mb-1">
-            <span>Runners </span>
-        </p>
-        <ul class="navbar-nav flex-fill w-100 mb-2">
+                        <span>Runners </span>
+                    </p>
+                    <ul class="navbar-nav flex-fill w-100 mb-2">
 
-            <li class="nav-item w-100">
+                        <li class="nav-item w-100">
 
-                <a class="nav-link" asp-controller="Runner" asp-action="GetAllRunners" asp-route-currentPage="1" id="aRunners">
-                    <i class="fe fe-24 fe-truck"></i>
-                    <span class="ml-3 item-text ">Runners</span>
-                </a>
-            </li>
+                            <a class="nav-link" asp-controller="Runner" asp-action="GetAllRunners" asp-route-currentPage="1" id="aRunners">
+                                <i class="fe fe-24 fe-truck"></i>
+                                <span class="ml-3 item-text ">Runners</span>
+                            </a>
+                        </li>
 
 
-        </ul>*@
+                    </ul>*@
 
                 <p class="text-muted nav-heading mt-4 mb-1">
                     <span>All Order Lines  </span>
@@ -469,6 +471,7 @@
             </nav>
         </aside>
         <main role="main" class="main-content">
+            <a class="btn btn-primary" asp-action="Index" asp-controller="Notification">Add Notification</a>
             <div class="container-fluid">
                 @RenderBody()
             </div> <!-- .container-fluid -->
@@ -710,7 +713,8 @@
     @* SignalR *@
     <script src="~/lib/signalr/signalr.js"></script>
     <script src="~/js/usernotification.js"></script>
-
+    @* Notification *@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
         $('.select2').select2(
             {

@@ -17,13 +17,11 @@ namespace Cars.Controllers
     public class FinanceController : Controller
     {
         private readonly FinanceService _service;
-        private readonly NotificationService _notificationService;
         private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
-        public FinanceController(FinanceService service, NotificationService notificationService)
+        public FinanceController(FinanceService service )
         {
             _service = service;
-            _notificationService = notificationService;
         }
 
         public async Task<IActionResult> Index(int currentPage, string search)
@@ -33,11 +31,9 @@ namespace Cars.Controllers
                 ViewData["CurrentFilter"] = search;
                 currentPage = (currentPage <= 0) ? 1 : currentPage;
                 var result = await _service.GetFinanceOrderDetialsAsync(currentPage, search);
-                await _notificationService.AddAndSendNotificationAsnc(new List<string>() { "42bc920c-9361-4bef-8356-0c208322a16a" }, "new Notification", "Add addaulkfgsal");
-
                 return View(result);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return View("_CustomError");
             }

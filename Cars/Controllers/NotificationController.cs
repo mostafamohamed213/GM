@@ -18,17 +18,15 @@ namespace Cars.Controllers
             _notificationUserService = notificationUserService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task Index()
         {
             try
             {
-                await _service.AddAndSendNotificationAsnc(new List<string>() { "42bc920c-9361-4bef-8356-0c208322a16a" }, "new Notification", "Add addaulkfgsal");
-                return RedirectToAction("Index", "Finance");
+                await _service.AddAndSendNotificationAsnc(new List<string>() { "a5acd440-f240-49b4-8954-f9bab39921c2" }, "Add New Order", "Add Order");
             }
             catch (Exception)
             {
-
-                throw;
+                return;
             }
         }
 

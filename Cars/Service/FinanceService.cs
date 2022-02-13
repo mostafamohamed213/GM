@@ -130,6 +130,7 @@ namespace Cars.Service
             orderDetailsModel.UsedByUser = null;
             orderDetailsModel.UsedDateTime = null;
             orderDetailsModel.WorkflowID = 6;
+            orderDetailsModel.DTsWorflowEnter = DateTime.UtcNow;
             var result = await _orderDetailsService.UpdateAsync(orderDetailsModel);
 
             //Create Log 

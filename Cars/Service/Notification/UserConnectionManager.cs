@@ -42,12 +42,19 @@ namespace Cars.Service.Notification
         }
         public List<string> GetUserConnections(string userId)
         {
-            var conn = new List<string>();
-            lock (userConnectionMapLocker)
+            try
             {
-                conn = userConnectionMap[userId];
+                var conn = new List<string>();
+                lock (userConnectionMapLocker)
+                {
+                    conn = userConnectionMap[userId];
+                }
+                return conn;
             }
-            return conn;
+            catch (Exception)
+            {
+                return new List<string>();
+            }
         }
     }
 }

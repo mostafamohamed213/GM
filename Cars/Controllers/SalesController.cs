@@ -299,6 +299,9 @@ namespace Cars.Controllers
                 {
                     var orderDetails = orderServices.GetOrderDetailsByOrderId(orderId, User.FindFirstValue(ClaimTypes.NameIdentifier));
                     return Json(new { status = 1, @object = orderDetails });
+
+                    //var orderDetails = orderServices.GetOrderDetailsById(orderId, User.FindFirstValue(ClaimTypes.NameIdentifier));
+                    //return PartialView(new SalesOrderDetailsViewModel {status =1,orderDetails=orderDetails });
                 }
                 catch (Exception)
                 {
@@ -495,6 +498,73 @@ namespace Cars.Controllers
             }
 
         }
+        [HttpGet]
+        public IActionResult OperationOrderDetails(long OrderDetailsID)
+        {
+            try
+            {
+                OrderDetails orderDetails = orderServices.GetOrderDetailsByOrderDetailsID(OrderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
+                if (orderDetails is null)
+                {
+                    return View("_CustomError");
+                }
+                if (orderDetails is not null)
+                {
+                    ViewBag.types = orderServices.GetSelectListOrderDetailsType();
 
+                    return View("OperationOrderDetails", orderDetails);
+                }
+                return View("_CustomError");
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+
+        }
+        [HttpGet]
+        public IActionResult Reject(long OrderDetailsID,string Reason)
+        {
+            try
+            {
+                OrderDetails orderDetails = orderServices.Reject(OrderDetailsID, Reason, User.FindFirstValue(ClaimTypes.NameIdentifier));
+                if (orderDetails is null)
+                {
+                    return Json(0);
+                }
+                if (orderDetails is not null)
+                {
+                    return Json(1);
+                }
+                return Json(0);
+            }
+            catch (Exception)
+            {
+                return Json(0);
+            }
+
+        }
+        [HttpGet]
+        public IActionResult Issued(long OrderDetailsID)
+        {
+            try
+            {
+                OrderDetails orderDetails = orderServices.Issued(OrderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
+                if (orderDetails is null)
+                {
+                    return View("_CustomError");
+                }
+                if (orderDetails is not null)
+                {
+                    return RedirectToAction("ViewOrder", new { OrderId = orderDetails.OrderID });
+                }
+                return View("_CustomError");
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+
+        }
     }
 }

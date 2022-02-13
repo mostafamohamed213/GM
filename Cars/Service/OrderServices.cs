@@ -407,7 +407,48 @@ namespace Cars.Service
                 return -1;
             }        
         }
-       
+
+        internal OrderDetails Reject(long orderDetailsID, string reason, string user)
+        {
+            var orderDetails = db.OrderDetails.FirstOrDefault(c => c.OrderDetailsID == orderDetailsID && c.SystemUserCreate ==user);
+            if (orderDetails is not null)
+            {
+                orderDetails.StatusID = 6;
+                OrderDetailsStatusLog statusLog = new OrderDetailsStatusLog()
+                {
+                    WorkflowID = orderDetails.WorkflowID,
+                    StatusID = 6,
+                    Reason = reason,
+                    DTsCreate = DateTime.Now,
+                    SystemUserID = user,
+                    Detatils = "Reject From sales Team",
+                    OrderDetailsID = orderDetails.OrderDetailsID,
+                };
+                db.OrderDetailsStatusLogs.Add(statusLog);
+                db.SaveChanges();
+            }
+            return orderDetails;
+        }
+
+        internal OrderDetails Issued(long orderDetailsID, string user)
+        {
+            var orderDetails = db.OrderDetails.FirstOrDefault(c => c.OrderDetailsID == orderDetailsID && c.SystemUserCreate == user);
+            if (orderDetails is not null)
+            {
+                orderDetails.StatusID = 3;
+                OrderDetailsStatusLog statusLog = new OrderDetailsStatusLog()
+                {
+                    WorkflowID = orderDetails.WorkflowID,
+                    StatusID = 3,                  
+                    DTsCreate = DateTime.Now,
+                    SystemUserID = user,
+                    OrderDetailsID = orderDetails.OrderDetailsID,
+                };
+                db.OrderDetailsStatusLogs.Add(statusLog);
+                db.SaveChanges();
+            }
+            return orderDetails;
+        }
 
         internal List<OrderDetailsViewModel> GetOrderDetailsByOrderId(long orderid ,string userId)
         {
@@ -418,12 +459,18 @@ namespace Cars.Service
                 foreach (var item in List)
                 {
                     //model.Add(new OrderDetailsViewModel() { Enabled = item.Enabled.HasValue ? item.Enabled.Value : false, OrderID = item.OrderID, IsApproved = item.IsApproved, Items = item.Items, OrderDetailsID = item.OrderDetailsID, Quantity = item.Quantity, type = item.OrderDetailsType.NameEn, Price = item.Price, PartNumber = item.PartNumber, BranchID = item.BranchID, Comments = item.Comments, CanceledByUserID = item.c });
-                    model.Add(new OrderDetailsViewModel() {workflowID=item.WorkflowID,statusID = item.StatusID,prefix=item.Prefix,OrderID = item.OrderID, IsApproved = item.IsApproved, Items = item.Items, OrderDetailsID = item.OrderDetailsID, Quantity = item.Quantity, type = item.OrderDetailsType.NameEn, Price = item.Price, PartNumber = item.PartNumber, Comments = item.Comments});
+                    model.Add(new OrderDetailsViewModel() {workflowID=item.WorkflowID,statusID = item.StatusID,prefix=item.Prefix,OrderID = item.OrderID, IsApproved = item.IsApproved, Items = item.Items, OrderDetailsID = item.OrderDetailsID, Quantity = item.Quantity, type = item.OrderDetailsType.NameEn, Price = item.Price, PartNumber = item.PartNumber, Comments = item.Comments,deliveryID= string.IsNullOrEmpty(item.DeliveryID)?0:1,inventoryID=item.InventoryID.HasValue ? item.InventoryID.Value:0});
 
                 }
                 return model;
             }
             return null;
+        }
+        internal List<OrderDetails> GetOrderDetailsById(long orderid, string userId)
+        {
+            var List = db.OrderDetails.Where(c => c.SystemUserCreate == userId && c.OrderID == orderid && c.StatusID != 5).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").OrderByDescending(C => C.DTsCreate).ToList();
+            
+            return List;
         }
 
         internal int AddOrderDetails(string items, int quantity, int type, bool approved,long orderID,string user)

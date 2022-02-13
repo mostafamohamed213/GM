@@ -1,0 +1,190 @@
+﻿
+@model Cars.Models.OrderDetails
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer localizer
+@{
+    ViewData["Title"] = "Order Line";
+
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header">
+        <strong class="card-title">@localizer["Order Line"]</strong>    
+    </div>
+    <br /><br />
+    <div class="col-12 mb-4">
+        <div class="card shadow">
+            <div class="card-header">
+                <strong class="card-title h4">Order Header Details</strong>
+            </div>
+            <div class="card-body">
+                <div class="row h5">
+                    <div class="col-md-3">
+                        @localizer["Chases"] : @Model.Order.Vehicle.Chases
+                    </div>
+                    <div class="col-md-3 border-left border-right">
+                        @localizer["CarName"] : @Model.Order.Vehicle.Name
+                    </div>
+                    <div class="col-md-3 border-left border-right">
+                        @localizer["Phone"] : @Model.Order.Customer.CustomerContacts.FirstOrDefault().Phone
+                    </div>
+                    <div class="col-md-3">
+                        @localizer["Maintenance"] : @if (Model.Order.WithMaintenance.HasValue && Model.Order.WithMaintenance.Value)
+                        {
+                            <span class="fe fe-24 fe-check"></span>
+                        }
+                        else
+                        {
+                            <span class="fe fe-24 fe-x"></span>
+                        }
+                    </div>
+
+                </div>
+                <div class="row h5">
+
+                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Brand))
+                    {
+                        <div class="col-md-3">
+                            @localizer["Brand"] : @Model.Order.Vehicle.Brand
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Model))
+                    {
+                        <div class="col-md-3 border-left border-right">
+                            @localizer["Model"] : @Model.Order.Vehicle.Model
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Year))
+                    {
+                        <div class="col-md-3">
+                            @localizer["Year"] : @Model.Order.Vehicle.Year
+                        </div>
+                    }
+
+
+                </div>
+                <div class="row h5">
+                    <div class="col-md-4">
+                        @if (Model.StatusID != 1)
+                        {
+                            <span> ID: @(Model.Order.UserBranch is not null ? Model.Order.UserBranch.BranchID : "00"):@Model.OrderID</span>
+                        }
+
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        @if (Model.StatusID != 1)
+        {
+            <h3> ID : @Model.Prefix</h3>
+        }
+
+        <div class="row">
+            <input asp-for="OrderDetailsID" style="display:none" />
+            <input asp-for="OrderID" style="display:none" />
+            <input asp-for="SystemUserCreate" style="display:none" />
+
+            <div class="col-md-6">
+                <div class="form-group mb-4">
+                    <label for="simpleinput">@localizer["Items"]</label>
+                    <input asp-for="Items" class="form-control" required disabled />
+                    <span asp-validation-for="Items" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="example-password">@localizer["Type"]</label>
+                    <select disabled name="OrderDetailsTypeID" asp-for="OrderDetailsTypeID" asp-items="@ViewBag.types" class="form-control"></select>
+                    <span asp-validation-for="OrderDetailsTypeID" class="text-danger"></span>
+                </div>
+
+
+            </div> <!-- /.col -->
+            <div class="col-md-6">
+
+                <div class="form-group mb-3">
+                    <label for="example-email">@localizer["Quantity"]</label>
+                    <input asp-for="Quantity" class="form-control" required disabled />
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="example-helping">
+                        @localizer["Approved"]  :
+                        @if (Model.IsApproved.HasValue && Model.IsApproved.Value)
+                        {
+                            <input id="IsApproved" type="checkbox" value="true" name="IsApproved" checked disabled />
+                            <input type="hidden" value="false" name="IsApproved" />
+                        }
+                        else
+                        {
+                            <input id="IsApproved" type="checkbox" value="true" name="IsApproved" disabled />
+                            <input type="hidden" value="false" name="IsApproved" />
+                        }
+                    </label>
+
+
+                </div>
+
+
+
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label for="example-email">@localizer["Reason"]</label>
+                <input type="text" name="Reason" id="Reason123" class="form-control" />
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-12">
+                <button style="width : 100px" id="btnRejectOrderDetails"onclick="RejectOrderDetails()" class="btn btn-danger">Reject</button>
+                @*<button style="width : 100px" asp-action="Issued" asp-controller="Sales" asp-route-OrderDetailsID="@Model.OrderDetailsID" class="btn btn-success">Issued</button>*@
+                <a style="width:100px" asp-action="Issued" asp-controller="Sales" asp-route-OrderDetailsID="@Model.OrderDetailsID" class="btn btn-success">Issued</a>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        ChangeColorSidebarItem("anavbarOrders", "aOrderLines");
+        window.addEventListener('beforeunload', function (e) {
+           OpenOrderDetails("@Model.OrderDetailsID");
+        });
+
+        function RejectOrderDetails() {
+            if (confirm("are you sure!")) {
+                $.ajax({
+                    type: "Get",
+                    url: "/Sales/Reject",
+                    data: { "OrderDetailsID": '@Model.OrderDetailsID', "Reason": $("#Reason123").val() },
+                    success: function (response) {
+                        if (response == 1) {
+                            window.location.href = '@Url.Action("ViewOrder", "Sales",new { OrderId=Model.OrderID})';
+                        } else {
+                            alert("An error occurred while processing your request");
+
+                        }
+                    },
+                    failure: function (response) {
+                        console.log(response);
+                    },
+                    error: function (response) {
+                        console.log(response);
+                    }
+                });
+            } else {
+
+            }
+
+        }
+    </script>
+}
+
+

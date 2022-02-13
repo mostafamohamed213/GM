@@ -20,6 +20,8 @@ namespace Cars.ViewModels
         public int workflowID { get; set; }
         public int statusID { get; set; }
         public string prefix { get; set; }
+        public long inventoryID { get; set; }
+        public int deliveryID { get; set; }
 
     }
 }

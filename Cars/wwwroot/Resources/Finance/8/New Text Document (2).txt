@@ -1,0 +1,343 @@
+  <div role="tabpanel" class="tab-pane active" id="divBalances">
+            @using (Html.BeginForm("Index", "Costs", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                <section class="container-fluid searchControls">
+                    <div class="row">
+                        <div class="col-md-2 @(rtl?"col-md-push-10":string.Empty)">
+                            <div class="form-group row" style="@(rtl?"margin-left: 0px;margin-right: -15px;":string.Empty)">
+                                <div class="input-group @(rtl?"input-group-rtl":string.Empty)">
+                                    <div class="input-group-addon">@unit</div>
+                                    <input class="form-control" type="text" placeholder="@unit" value="@ViewBag.UnitID" name="Unit" id="Unit" data-toggle="tooltip" data-placement="top" title="@ViewBag.UnitStr" disabled>
+                                    <input type="hidden" value="@ViewBag.UnitStr" name="UnitStr" id="UnitStr">
+                                    <input type="hidden" value="@ViewBag.UnitID" name="UnitID" id="UnitID">
+                                    <div class="input-group-addon" id="btnSearchUnitCancel"><span class="glyphicon glyphicon-remove " aria-hidden="true"></span></div>
+                                    <div class="input-group-addon" id="btnSearchUnit" data-toggle="modal" data-target="#modalUnits"><span class="glyphicon glyphicon-search " aria-hidden="true"></span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 @(rtl?"col-md-push-5":string.Empty)">
+                            <div class="form-group row" style="@(rtl?"margin-left: 0px;margin-right: -15px;":string.Empty)">
+                                <div class="input-group @(rtl?"input-group-rtl":string.Empty)">
+                                    <div class="input-group-addon">@balanceRange</div>
+                                    <input class="form-control" type="number" placeholder="@Helper.GetString("From")" value="@ViewBag.BalanceFrom" name="BalanceFrom" id="BalanceFrom">
+                                    <span class="input-group-btn" style="width:0px;"></span>
+                                    <input class="form-control" type="number" placeholder="@Helper.GetString("To")" value="@ViewBag.BalanceTo" name="BalanceTo" id="BalanceTo">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3  @(rtl?"col-md-pull-1":string.Empty)">
+                            <div class="form-group row" style="@(rtl?"margin-left: 0px;margin-right: -15px;":string.Empty)">
+                                <div class="input-group @(rtl?"input-group-rtl":string.Empty)">
+                                    <div class="input-group-addon">@individual</div>
+                                    <input class="form-control" type="text" placeholder="@individual" value="@ViewBag.IndividualStr" name="Individual" id="Individual" disabled>
+                                    <input type="hidden" value="@ViewBag.IndividualID" name="IndividualStr" id="IndividualStr">
+                                    <input type="hidden" value="@ViewBag.IndividualID" name="IndividualID" id="IndividualID">
+                                    <input type="hidden" value="@ViewBag.BillingAccountIDs" name="BillingAccountIDs" id="BillingAccountIDs">
+
+                                    <div class="input-group-addon" id="btnSearchIndividualCancel"><span class="glyphicon glyphicon-remove " aria-hidden="true"></span></div>
+                                    <div class="input-group-addon" id="btnSearchIndividual" data-toggle="modal" data-target="#modalIndividuals"><span class="glyphicon glyphicon-search " aria-hidden="true"></span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 @(rtl?"col-md-pull-6":string.Empty)">
+                            <div class="form-group row">
+                                @Html.DropDownList("InvoiceStatusID", null, htmlAttributes: new { @class = "form-control", style = (rtl ? "margin-right: -15px; " : string.Empty) })
+                            </div>
+                        </div>
+                        <div class="col-md-1 @(rtl?"col-md-pull-9":string.Empty)">
+                            <div class="form-group row" style="margin-right: -15px;">
+                                <input class="btn btn-success form-control" type="submit" value="@Helper.GetString("Search")" id="btnSearch">
+                            </div>
+                        </div>
+                        <div class="col-md-1 @(rtl?"col-md-pull-11":string.Empty)">
+                            <a style="margin-right: -6px;" href='@Url.Action("DownloadReport", "Costs", null, Request.Url.Scheme)' class="btn btn-success form-control" id="btnExportToFile" data-toggle="tooltip" data-placement="top" title="@Helper.GetString("ExportToFile")">
+                                <span class="glyphicon glyphicon-export" aria-hidden="true"></span>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <input type="hidden" value="@ViewBag.SortedBy" name="SortedBy" id="SortedBy">
+                <input type="hidden" value="@ViewBag.SortedByAsc" name="SortedByAsc" id="SortedByAsc">
+
+            }
+
+            @if (Model != null)
+            {
+                <div style="margin-top:15px"><input class="form-control text-box single-line txtSearch" placeholder="@($"{Helper.GetString("SearchFor")} {balances}...")" id="search" type="text" /></div>
+
+                <!--Billing-->
+                <div class="col-md-12 col">
+                    <div class="table-responsive">
+                        <table id="costs" class="table text-center">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>
+                                        @Helper.GetString("InvoiceNumber")
+                                    </th>
+                                    <th>
+                                        @Helper.GetString("IndividualID")
+                                    </th>
+                                    <th>
+                                        @Helper.GetString("FullName")
+                                    </th>
+                                    <th>
+                                        @Helper.GetString("Unit")
+                                    </th>
+                                    <th>
+                                        @Helper.GetString("UnitNumber")
+                                    </th>
+                                    <th>
+                                        @Helper.GetString("BuildingNumber")
+                                    </th>
+                                    <th>
+                                        @Helper.GetString("BuildingType")
+                                    </th>
+                                    <th>
+                                        @Helper.GetString("Type")
+                                    </th>
+                                    <th style="min-width:100px" class="sortable" id="InvoiceDate" data-sortedby="InvoiceDate" data-sortedbyasc="False">
+                                        @Helper.GetString("InvoiceDate")
+                                    </th>
+                                    <th class="sortable" id="NetAmount" data-sortedby="NetAmount" data-sortedbyasc="False">
+                                        @Helper.GetString("DueAmount")
+                                    </th>
+                                    <th class="sortable" id="PaidAmount" data-sortedby="PaidAmount" data-sortedbyasc="False">
+                                        @Helper.GetString("PaidAmount")
+                                    </th>
+                                    <th class="sortable" id="Remaining" data-sortedby="Remaining" data-sortedbyasc="False">
+                                        @Helper.GetString("Remaining")
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var i in Model)
+                                {
+                                    <tr class="invoice">
+                                        <td>
+                                            <span data-toggle="tooltip" data-placement="top" title="@details" style="cursor:pointer;font-size:20px" class="glyphicon glyphicon-eye-open text-success btnInvoiceItems" data-invoicenumber="@i.InvoiceNumber" aria-hidden="true"></span>
+                                        </td>
+                                        <td>
+                                            @i.InvoiceNumber
+                                        </td>
+                                        <td>
+                                            @i.IndividualID
+                                        </td>
+                                        <td>
+                                            @i.IndividualName
+                                        </td>
+                                        <td>
+                                            @i.UnitID
+                                        </td>
+                                        <td>
+                                            @i.UnitNumber
+                                        </td>
+                                        <td>
+                                            @i.BuildingNumber
+                                        </td>
+                                        <td>
+                                            @i.BuildingTypeName
+                                        </td>
+                                        <td>
+                                            @Helper.GetString(i.InvoiceTypeName)
+                                        </td>
+                                        <td>
+                                            @i.InvoiceDate.ToString("yyyy-MM-dd")
+                                        </td>
+                                        <td class="amount">
+                                            @i.DueAmount
+                                        </td>
+                                        <td class="paid-amount">
+                                            @i.PaidAmount
+                                        </td>
+                                        <td class="remaining-amount">
+                                            @(i.DueAmount - i.PaidAmount)
+                                        </td>
+                                        <td>
+                                            @if (i.PaidAmount < i.DueAmount)
+                                            {
+                                                <!--   long InvoiceItemID, decimal Amount-->
+                                                <div class="row" style="margin-left: 0px;margin-right: 0px;">
+                                                    <input data-href="@Url.Action("PayInvoice","Costs",null, Request.Url.Scheme)"
+                                                           data-action="costs"
+                                                           data-invoicenumber="@i.InvoiceNumber"
+                                                           data-individualid="@i.IndividualID"
+                                                           data-unitid="@i.UnitID"
+                                                           data-billingaccountid="@i.BillingAccountID"
+                                                           @*data-invoiceitemid="@i.InvoiceItemID"*@
+                                                           data-amount="@(i.DueAmount-i.PaidAmount)"
+                                                           class="btn btn-warning form-control btnMarkPaid" type="submit" value="@markPaid">
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+
+                                    <tr id="invoice-items-@i.InvoiceNumber" style="display:none" class="invoice-items border-less">
+                                        <td></td>
+                                        <td colspan="13" style="padding-left:30px">
+                                            <div class="table-responsive">
+                                                <table class="table text-center" style="background-color:#dff0d8">
+                                                    <thead style="color:#fff;background-color:rgba(00,80,00,0.5)">
+                                                        <tr>
+                                                            <th>
+                                                                @Helper.GetString("InvoiceItemID")
+                                                            </th>
+                                                            <th>
+                                                                @Helper.GetString("TheProduct")
+                                                            </th>
+                                                            <th>
+                                                                @Helper.GetString("Description")
+                                                            </th>
+                                                            <th>
+                                                                @Helper.GetString("StartDate")
+                                                            </th>
+                                                            <th>
+                                                                @Helper.GetString("EndDate")
+                                                            </th>
+                                                            <th>
+                                                                @Helper.GetString("DueAmount")
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var ii in i.vw_InvoiceReceiptItems)
+                                                        {
+                                                            <tr class="item">
+                                                                <td>
+                                                                    @ii.InvoiceItemID
+                                                                </td>
+                                                                <td>
+                                                                    @ii.ProductName
+                                                                </td>
+                                                                <td>
+                                                                    @ii.ProductDescription
+                                                                </td>
+                                                                <td>
+                                                                    @ii.StartDate.ToString("yyyy-MM-dd")
+                                                                </td>
+                                                                <td>
+                                                                    @ii.EndDate.ToString("yyyy-MM-dd")
+                                                                </td>
+                                                                <td class="amount">
+                                                                    @ii.DueAmount
+                                                                </td>
+                                                            </tr>
+                                                        }
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                }
+
+                                <!--Total-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <div class="alert alert-danger" style="font-weight:bold" id="total">
+                                            @Model.Sum(i => i.DueAmount)
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="alert alert-success" style="font-weight:bold" id="totalPaid">
+                                            @Model.Sum(i => i.PaidAmount)
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="alert alert-warning text-center" style="font-weight:bold" id="remaining">
+                                            @(Model.Sum(i => i.DueAmount) - Model.Sum(i => i.PaidAmount))
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="divUploadNotes">
+            <div class="row">
+                <div class="col-sm-6  @(rtl?"col-sm-push-6":string.Empty)">
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-2  @(rtl?"col-sm-push-10":string.Empty) col-form-label">@file</label>
+                        <div class="col-sm-10 @(rtl?"col-sm-pull-2":string.Empty)">
+                            <form id="uploader">
+                                <input type="file" class="" id="txtFile" placeholder="@file" accept=".csv">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3  @(rtl?"col-sm-pull-3":string.Empty)">
+                    <button class="btn btn-warning form-control" id="btnApply" disabled>
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        @Helper.GetString("Apply")
+                    </button>
+                </div>
+                <div class="col-sm-3  @(rtl?"col-sm-pull-9":string.Empty)">
+
+                    <a href='@Url.Action("DownloadNotesTemplate", "Costs", null, Request.Url.Scheme)' class="btn btn-success form-control" id="btnDownloadTemplate">
+                        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+                        @Helper.GetString("DownloadTemplate")
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="ImportedDataTable" class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Helper.GetString("Unit")
+                                    </th>
+                                    <th>
+                                        @Helper.GetString("BuildingType")
+                                    </th>
+                                    <th>
+                                        @Helper.GetString("BuildingNumber")
+                                    </th>
+                                    <th>
+                                        @Helper.GetString("UnitNumber")
+                                    </th>
+                                    <th>
+                                        @Helper.GetString("ProductID")
+                                    </th>
+                                    <th>
+                                        @Helper.GetString("NetAmount")
+                                    </th>
+                                    <th>
+                                        @Helper.GetString("BillDate")
+                                    </th>
+                                    <th>
+                                        @Helper.GetString("IndividualID")
+                                    </th>
+                                    <th>
+                                        @Helper.GetString("FullName")
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="ImportedData"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>

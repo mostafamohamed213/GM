@@ -1,0 +1,156 @@
+﻿@model Cars.ViewModels.SalesOrderDetailsViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer localizer
+@{
+    Layout = null;
+    int counter = 1;
+}
+
+@foreach (var item in Model.orderDetails)
+{
+    <tr>
+        <td>@counter</td>
+        @if (item.StatusID != 1)
+        {
+
+            <td>@item.Prefix</td>
+        }
+        else
+        {
+            <td></td>
+        }
+
+        <td>@item.Items</td>
+        <td>@item.Quantity</td>
+        <td>@item.OrderDetailsType.NameEn</td>
+        <td>
+            @if (item.IsApproved.HasValue)
+            {
+                if (item.IsApproved.Value)
+                {
+                    <span class="fe fe-24 fe-check"></span>
+                }
+                else
+                {
+                    <span class="fe fe-24 fe-x"></span>
+                }
+            }
+        </td>
+        <td>
+            @if (item.WorkflowID == 1) //Sales & Pricing & Labor
+            {
+                @if (item.StatusID == 2)
+                {
+                    @if (item.InventoryID.HasValue)
+                    {
+                        if (string.IsNullOrEmpty(item.DeliveryID))
+                        {
+                            <span>Awaiting approval</span>
+                        }
+                        else
+                        {
+                            <span>Pending Delivery</span>
+                        }
+                    }
+                    else
+                    {
+                        <span>Pricing & Labor</span>
+                    }
+
+                }
+                else if (item.StatusID == 1)
+                {
+                    <span>Draft</span>
+                }
+                else if (item.StatusID == 3)
+                {
+                    <span>Issued</span>
+                }
+                else if (item.StatusID == 5)
+                {
+                    <span>Deleted</span>
+                }
+                else if (item.StatusID == 6)
+                {
+                    <span>Rejected</span>
+                }
+
+
+            }
+            else if (item.WorkflowID == 4)
+            {
+                <span>Quotation</span>
+
+            }
+            else if (item.WorkflowID == 5)
+            {
+                <span>Finance</span>
+            }
+            else if (item.WorkflowID == 6)
+            {
+                if (item.StatusID == 5)
+                {
+                    <span>Deleted</span>
+                }
+                else if (item.StatusID == 6)
+                {
+                    <span>Rejected</span>
+                }
+                else if (item.StatusID == 4)
+                {
+                    <span>Canceled</span>
+                }
+                else
+                {
+                    <span>Purchasing</span>
+                }
+            }
+            else if (item.WorkflowID == 7)
+            {
+                if (item.StatusID == 6)
+                {
+                    <span>Rejected</span>
+                }
+                else
+                {
+                    <span>Inventory</span>
+
+                }
+            }
+        </td>
+
+        @if ((!item.Price.HasValue || item.Price.Value <= 0))
+        {
+
+            @if (item.StatusID != 4)
+            {
+
+                <td>
+                    <a title="@localizer["Display"]" asp-action="DisplayOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-file-text  text-primary"></span></span></a>
+                    <a title="@localizer["Edit"]" asp-action="EditOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-success"></span></span></a>
+                    <a title="@localizer["Cancel"]" asp-action="CancelOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-x text-warning"></span></span></a>
+                </td>
+            }
+            else
+            {
+                <td>
+                    <span class="text-warning">Canceled</span>
+                </td>
+            }
+            <td>
+                <a title="@localizer["Delete"]" asp-action="DeleteOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class=" fe fe-24 fe-x-circle text-danger"></span></span></a>
+            </td>
+        }
+        else
+        {
+            <td>
+                <a title="@localizer["Display"]" asp-action="DisplayOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-file-text  text-primary"></span></span></a>
+            </td>
+        }
+
+
+
+
+    </tr>
+    counter++;
+}

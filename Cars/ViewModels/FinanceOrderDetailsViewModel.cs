@@ -11,4 +11,9 @@ namespace Cars.ViewModels
         public OrderDetails model { get; set; }
         public int Status { get; set; }
     }
+    public class SalesOrderDetailsViewModel
+    {
+        public List<OrderDetails> orderDetails { get; set; }
+        public int status { get; set; }
+    }
 }

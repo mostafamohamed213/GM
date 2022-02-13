@@ -119,9 +119,10 @@
                         <th>@localizer["Quantity"]</th>
                         <th>@localizer["Type"]</th>
                         <th>@localizer["Approved"]</th>
+                        <th>@localizer["Status"]</th>
                         <th></th>
                         <th></th>
-                        
+
 
                     </tr>
                 </thead>
@@ -156,6 +157,88 @@
                                 }
                             }
                         </td>
+                        <td>
+                            @if (item.WorkflowID == 1) //Sales & Pricing & Labor
+                            {
+                                @if (item.StatusID == 2)
+                                {
+                                    @if (item.InventoryID.HasValue)
+                                    {
+                                        if (string.IsNullOrEmpty(item.DeliveryID))
+                                        {
+                                            <span>Awaiting approval</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Pending Delivery</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span>Pricing & Labor</span>
+                                    }
+
+                                }
+                                else if (item.StatusID == 1)
+                                {
+                                    <span>Draft</span>
+                                }
+                                else if (item.StatusID == 3)
+                                {
+                                    <span>Issued</span>
+                                }
+                                else if (item.StatusID == 5)
+                                {
+                                    <span>Deleted</span>
+                                }
+                                else if (item.StatusID == 6)
+                                {
+                                    <span>Rejected</span>
+                                }
+
+
+                            }
+                            else if (item.WorkflowID == 4)
+                            {
+                                <span>Quotation</span>
+
+                            }
+                            else if (item.WorkflowID == 5)
+                            {
+                                <span>Finance</span>
+                            }
+                            else if (item.WorkflowID == 6)
+                            {
+                                if (item.StatusID == 5)
+                                {
+                                    <span>Deleted</span>
+                                }
+                                else if (item.StatusID == 6)
+                                {
+                                    <span>Rejected</span>
+                                }
+                                else if (item.StatusID == 4)
+                                {
+                                    <span>Canceled</span>
+                                }
+                                else
+                                {
+                                    <span>Purchasing</span>
+                                }
+                            }
+                            else if (item.WorkflowID == 7)
+                            {
+                                if (item.StatusID == 6)
+                                {
+                                    <span>Rejected</span>
+                                }
+                                else
+                                {
+                                    <span>Inventory</span>
+
+                                }
+                            }
+                        </td>
 
                         @if ((!item.Price.HasValue || item.Price.Value <= 0))
                         {
@@ -183,6 +266,12 @@
                         {
                             <td>
                                 <a title="@localizer["Display"]" asp-action="DisplayOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-file-text  text-primary"></span></span></a>
+
+                                @if (true && item.WorkflowID == 1 && item.StatusID == 2 && item.InventoryID.HasValue)
+                                {
+                                    <a title="@localizer["Edit"]" asp-action="OperationOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-success"></span></span></a>
+                                }
+
                             </td>
                         }
 
@@ -263,7 +352,7 @@
                 url: "/Sales/AddOrderDetails",
                 data: { "orderId": OrderID.value, "Items": OrderDetailsItems.value, "Quantity": OrderDetailsQuantity.value, "Type": OrderDetailsType.value, "Approved": OrderDetailsApproved.checked },
                 success: function (response) {
-                  /*  console.log(response);*/
+                    console.log(response);
                     document.getElementById("btnCloseOrderDetails").disabled = true;
                     document.getElementById("btnSaveOrderDetails").disabled = true;
                     if (response.status == 1) {
@@ -278,9 +367,9 @@
                                 row_data_0.innerHTML = counter;
                                 var row_data_1 = document.createElement('td');
                                 if (value.statusID != 1 && value.statusID != '1')
-                                {                                    
+                                {
                                     if (value.branchIP != "0" ) {
-                                       
+
                                         row_data_1.innerHTML = value.prefix;
 
                                         } else {
@@ -310,13 +399,94 @@
                                     }
                                 }
 
+                                var row_data_10 = document.createElement('td');
+                                if (value.workflowID == 1) //Sales & Pricing & Labor
+                                    {
+                                        if (value.statusID == 2)
+                                        {
+                                            if (value.inventoryID > 0)
+                                            {
+                                                if (value.deliveryID == 0 )
+                                                {
+                                                    row_data_10.innerHTML = '<span>Awaiting approval</span>';
+                                                }
+                                                else
+                                                {
+                                                    row_data_10.innerHTML = '<span>Pending Delivery</span>';
+                                                }
+                                            }
+                                            else
+                                            {
+                                                row_data_10.innerHTML = '<span>Pricing & Labor</span>';
+                                            }
+
+                                            }
+                                           else if (value.statusID == 1)
+                                            {
+                                                row_data_10.innerHTML = '<span>Draft</span>';
+                                            }
+                                        else if (value.statusID == 3)
+                                        {
+                                            row_data_10.innerHTML = '<span>Issued</span>';
+                                        }
+                                        else if (value.statusID == 5)
+                                        {
+                                            row_data_10.innerHTML = '<span>Deleted</span>';
+                                        }
+                                        else if (value.statusID == 6)
+                                        {
+                                            row_data_10.innerHTML = '<span>Rejected</span>';
+                                        }
+
+
+                                }
+                                else if (value.workflowID == 4)
+                                {
+                                  row_data_10.innerHTML = '<span>Quotation</span>';
+                                }
+                                else if (value.workflowID == 5)
+                                {
+                                  row_data_10.innerHTML = '<span>Finance</span>';
+                                }
+                                else if (value.workflowID == 6)
+                                {
+                                    if (value.statusID == 5)
+                                    {
+                                        row_data_10.innerHTML = '<span>Deleted</span>';
+                                    }
+                                    else if (value.statusID == 6)
+                                    {
+                                        row_data_10.innerHTML = '<span>Rejected</span>';
+                                    }
+                                    else if (value.statusID == 4)
+                                    {
+                                        row_data_10.innerHTML = '<span>Canceled</span>';
+                                    }
+                                    else
+                                    {
+                                        row_data_10.innerHTML = '<span>Purchasing</span>';
+                                    }
+                                }
+                                else if (value.workflowID == 7)
+                                {
+                                    if (value.statusID == 6)
+                                    {
+                                        row_data_10.innerHTML = '<span>Rejected</span>';
+                                    }
+                                    else
+                                    {
+
+                                        row_data_10.innerHTML = '<span>Inventory</span>';
+
+                                    }
+                                }
                                 row_1.append(row_data_0);
                                 row_1.append(row_data_1);
                                 row_1.append(row_data_2);
                                 row_1.append(row_data_3);
                                 row_1.append(row_data_4);
                                 row_1.append(row_data_5);
-
+                                row_1.append(row_data_10);
                                 if (value.price == null || value.price <= 0) {
                                     if (value.statusID != 4) {
                                         var row_data_6 = document.createElement('td');
@@ -335,6 +505,11 @@
                                 } else {
                                     var row_data_6 = document.createElement('td');
                                     row_data_6.innerHTML = '<a title="Display" href="/Sales/DisplayOrderDetails?OrderDetailsID=' + value.orderDetailsID + '" > <span class="small text-muted"><span class="fe fe-24 fe-file-text text-primary"></span></span></a>';
+
+                                    if (item.workflowID == 1 && item.statusID == 2 && item.inventoryID > 0)
+                                    {
+                                        row_data_6.innerHTML += '<a title="Edit" href="/Sales/OperationOrderDetails?OrderDetailsID=' + value.orderDetailsID + '" > <span class="small text-muted"><span class="fe fe-24 fe-edit text-success"></span></span></a>';
+                                    }
                                     row_1.append(row_data_6);
 
                                 }
@@ -345,6 +520,7 @@
                             });
 
                         }
+
                         clearModalAddOrderLine();
                         document.getElementById("btnCloseOrderDetails").disabled = false;
                         document.getElementById("btnSaveOrderDetails").disabled = false;

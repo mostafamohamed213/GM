@@ -138,6 +138,17 @@ namespace Cars.Models
 
             };
 
+
+            }
+            else if (module == "Delivery")
+            {
+                return new List<string>()
+            {
+                $"Permissions.{module}.Manage",
+
+            };
+
+
             }
             else if (module == "Finance")
             {
@@ -294,7 +305,11 @@ namespace Cars.Models
             public const string Manage = "Permissions.Lockups.Manage";
 
         }
- 
+        public static class Delivery
+        {
+            public const string Manage = "Permissions.Delivery.Manage";
+
+        }
 
 
     }
@@ -312,7 +327,8 @@ namespace Cars.Models
         Purchasing,
         Inventory,
         Runner,
-        Lockups
-       
+        Lockups,
+        Delivery
+
     }
 }

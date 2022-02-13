@@ -48,16 +48,16 @@ namespace Cars.Service
             int itemsCount = 0;
             if (string.IsNullOrEmpty(search))
             {
-                orderDetails = await _context.OrderDetails.Where(c => c.StatusID == 2 && (c.WorkflowID == 6 || c.WorkflowID == 7)).Include(x => x.UserBranch).ThenInclude(x => x.Branch).Include(x => x.Workflow)
+                orderDetails = await _context.OrderDetails.Where(c => c.RunnerID == userID && c.RunnerID==userID&& c.StatusID == 2 && (c.WorkflowID == 6 || c.WorkflowID == 7)).Include(x => x.UserBranch).ThenInclude(x => x.Branch).Include(x => x.Workflow)
                     .Skip((currentPage - 1) * maxRows).Take(maxRows).ToListAsync();
-                itemsCount = _context.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 5).Count();
+                itemsCount = _context.OrderDetails.Where(c => c.RunnerID == userID && c.RunnerID == userID && c.StatusID == 2 && c.WorkflowID == 5).Count();
             }
             else
             {
-                orderDetails = await _context.OrderDetails.Where(c => c.StatusID == 2 && (c.WorkflowID == 6 || c.WorkflowID == 7)
+                orderDetails = await _context.OrderDetails.Where(c => c.RunnerID == userID && c.RunnerID == userID && c.StatusID == 2 && (c.WorkflowID == 6 || c.WorkflowID == 7)
                         && (c.Items.ToLower().Trim().Contains(search.ToLower().Trim()) || c.Quantity.ToString().Contains(search.ToLower().Trim()) || ("01:" + c.OrderID + ':' + c.OrderDetailsID).Contains(search.ToLower().Trim())))
                         .Skip((currentPage - 1) * maxRows).Take(maxRows).Include(x => x.UserBranch).ThenInclude(x => x.Branch).Include(x => x.Workflow).ToListAsync();
-                itemsCount = _context.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 5
+                itemsCount = _context.OrderDetails.Where(c => c.RunnerID == userID && c.RunnerID == userID && c.StatusID == 2 && c.WorkflowID == 5
                         && (c.Items.ToLower().Trim().Contains(search.ToLower().Trim()) || c.Quantity.ToString().Contains(search.ToLower().Trim()) || ("01:" + c.OrderID + ':' + c.OrderDetailsID).Contains(search.ToLower().Trim()))).Count();
             }
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
@@ -70,9 +70,9 @@ namespace Cars.Service
             return viewModel;
         }
 
-        public async Task<OrderDetails> GetByIDAsync(long orderDetailsID)
+        public async Task<OrderDetails> GetByIDAsync(long orderDetailsID, string userID)
         {
-            var result = await _context.OrderDetails.Where(x => x.OrderDetailsID == orderDetailsID).Include(x => x.UserBranch).ThenInclude(x => x.Branch).Include(x => x.Workflow).FirstOrDefaultAsync();
+            var result = await _context.OrderDetails.Where(x => x.RunnerID==userID && x.OrderDetailsID == orderDetailsID).Include(x => x.UserBranch).ThenInclude(x => x.Branch).Include(x => x.Workflow).FirstOrDefaultAsync();
             return result;
         }
 

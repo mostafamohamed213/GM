@@ -27,9 +27,9 @@ namespace Cars.Service
             return await GetRunnerOrderDetialsAsync(userID, currentPageIndex, "");
         }
 
-        public async Task<OrderDetails> GetRunnerOrderDetialsByIDAsync(long orderDetailsID)
+        public async Task<OrderDetails> GetRunnerOrderDetialsByIDAsync(long orderDetailsID,string userID)
         {
-            var result = await _orderDetailsService.GetByIDAsync(orderDetailsID);
+            var result = await _orderDetailsService.GetByIDAsync(orderDetailsID, userID);
             return result;
         }
     }

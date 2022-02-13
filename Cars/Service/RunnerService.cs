@@ -16,18 +16,18 @@ namespace Cars.Service
             db = carsContext;
         }
 
-        public PagingViewModel<Runner> getOrderLinesWithChangelength(int currentPageIndex, int length)
+        public PagingViewModel<OrderDetails> getOrderLinesWithChangelength(int currentPageIndex, int length,string runnerID)
         {
             TablesMaxRows.IndexRunnerMaxRows = length;
-            return getAllRunners(currentPageIndex,null);
+            return getAllRunners(currentPageIndex,null,runnerID);
         }
-        public PagingViewModel<Runner> getAllRunners(int currentPage,string? search)
+        public PagingViewModel<OrderDetails> getAllRunners(int currentPage,string? search,string runnerID)
         {
-            List<Runner> allRunners = db.Runners.Where(r=>r.Enable ).Skip((currentPage - 1) * TablesMaxRows.IndexRunnerMaxRows).Take(TablesMaxRows.IndexRunnerMaxRows).ToList();
+            List<OrderDetails> allRunners = db.OrderDetails.Where(r=>r.RunnerID== runnerID).Skip((currentPage - 1) * TablesMaxRows.IndexRunnerMaxRows).Take(TablesMaxRows.IndexRunnerMaxRows).ToList();
 
             if(search!=null)
             {
-                allRunners= db.Runners.Where(r => r.Enable && r.Name.Contains(search)).Skip((currentPage - 1) * TablesMaxRows.IndexRunnerMaxRows).Take(TablesMaxRows.IndexRunnerMaxRows).ToList();
+                allRunners= db.OrderDetails.Where(r => r.RunnerID == runnerID && r.Items.Contains(search)).Skip((currentPage - 1) * TablesMaxRows.IndexRunnerMaxRows).Take(TablesMaxRows.IndexRunnerMaxRows).ToList();
             }
             try
             {
@@ -35,30 +35,30 @@ namespace Cars.Service
                 {
                     if (search != null)
                     {
-                        var result = paginate(allRunners, currentPage);
-                        result.itemsCount= db.Runners.Where(r => r.Enable && r.Name.Contains(search)).Skip((currentPage - 1) * TablesMaxRows.IndexRunnerMaxRows).Take(TablesMaxRows.IndexRunnerMaxRows).Count();
+                        var result = paginate(allRunners, currentPage,runnerID);
+                        result.itemsCount= db.OrderDetails.Where(r => r.RunnerID == runnerID && r.Items.Contains(search)).Skip((currentPage - 1) * TablesMaxRows.IndexRunnerMaxRows).Take(TablesMaxRows.IndexRunnerMaxRows).Count();
                         double pageCount = (double)(result.itemsCount / Convert.ToDecimal(TablesMaxRows.IndexRunnerMaxRows));
                         result.PageCount = (int)Math.Ceiling(pageCount);
                         result.CurrentPageIndex = currentPage;
                         result.itemsCount = result.itemsCount;
                         return result;
                     }
-                 return paginate(allRunners, currentPage);
+                 return paginate(allRunners, currentPage,runnerID);
                 }
-                return paginate(null, currentPage);
+                return paginate(null, currentPage,runnerID);
             }
             catch (Exception)
             {
-                return paginate(null, currentPage);
+                return paginate(null, currentPage,runnerID);
             }
         }
 
      
-        private PagingViewModel<Runner> paginate(List<Runner> runners, int currentPage)
+        private PagingViewModel<OrderDetails> paginate(List<OrderDetails> runners, int currentPage,string runnerID)
         {
-            PagingViewModel<Runner> viewModel = new PagingViewModel<Runner>();
+            PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             viewModel.items = runners.ToList();
-            var itemsCount = db.Runners.Where(r => r.Enable).Count();
+            var itemsCount = db.OrderDetails.Where(r => r.RunnerID == runnerID).Count();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexRunnerMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
@@ -67,88 +67,12 @@ namespace Cars.Service
 
             return viewModel;
         }
-        public long AddRunner(RunnerViewModel model)
+
+        public OrderDetails GetRunnernByID(long orderID, string RunnerId)
         {
             try
             {
-                if (model is not null)
-                {
-                    Runner addRunner = new Runner()
-                    {
-                        SystemUserCreate=model.SystemUserCreate,
-                        Name = model.Name,
-                        Details = model.Details,
-                        Enable = true,
-                    };
-                    db.Runners.Add(addRunner);
-                    db.SaveChanges();
-                    return addRunner.RunnerID;
-                }
-                return 0;
-            }
-            catch (Exception)
-            {
-                return -1;
-            }
-
-        }
-
-        public long DeleteRunner(long RunnerID)
-        {
-            try
-            {
-                Runner runner = db.Runners.FirstOrDefault(r => r.RunnerID == RunnerID && r.Enable);
-                if (runner != null)
-                {
-                    //var orderlines = db.OrderDetails.Where(or => or.RunnerID == runner.RunnerID).FirstOrDefault();
-                    //if (orderlines != null)
-                    //{
-                    //    return -1;
-                    //}
-                    //runner.Enable = false;
-                    //db.SaveChanges();
-                    return runner.RunnerID;
-                }
-
-                return 0;
-            }
-            catch (Exception)
-            {
-
-                return -1;
-            }
-
-        }
-
-
-        internal long EditRunner(long RunnerID, Runner model)
-        {
-            try
-            {
-                Runner EditRunner = db.Runners.Where(r => r.Enable).FirstOrDefault(r =>r.RunnerID == RunnerID);
-                if (EditRunner is null)
-                {
-                    return 0;
-                }
-
-                EditRunner.Name = model.Name;
-                EditRunner.Details = model.Details;
-                EditRunner.SystemUserUpdate = model.SystemUserUpdate;
-                EditRunner.DTsUpdate= DateTime.Now;
-                db.SaveChanges();
-                return RunnerID;
-            }
-            catch (Exception)
-            {
-                return -1;
-            }
-        }
-
-        public Runner GetRunnernByID(long RunnerId)
-        {
-            try
-            {
-               Runner runner = db.Runners.Where(r => r.RunnerID == RunnerId && r.Enable).FirstOrDefault();
+                OrderDetails runner = db.OrderDetails.Where(r => r.OrderDetailsID==orderID && r.RunnerID == RunnerId).FirstOrDefault();
                 if (runner is not null)
                 {
                     return runner;
@@ -161,5 +85,83 @@ namespace Cars.Service
             }
 
         }
+        /*  public long AddRunner(RunnerViewModel model)
+          {
+              try
+              {
+                  if (model is not null)
+                  {
+                      OrderDetails addRunner = new OrderDetails()
+                      {
+                          SystemUserCreate=model.SystemUserCreate,
+                          Name = model.Name,
+                          Details = model.Details,
+                          Enable = true,
+                      };
+                      db.OrderDetails.Add(addRunner);
+                      db.SaveChanges();
+                      return addRunner.RunnerID;
+                  }
+                  return 0;
+              }
+              catch (Exception)
+              {
+                  return -1;
+              }
+
+          }
+
+          public long DeleteRunner(long RunnerID)
+          {
+              try
+              {
+                  Runner runner = db.Runners.FirstOrDefault(r => r.RunnerID == RunnerID && r.Enable);
+                  if (runner != null)
+                  {
+                      //var orderlines = db.OrderDetails.Where(or => or.RunnerID == runner.RunnerID).FirstOrDefault();
+                      //if (orderlines != null)
+                      //{
+                      //    return -1;
+                      //}
+                      //runner.Enable = false;
+                      //db.SaveChanges();
+                      return runner.RunnerID;
+                  }
+
+                  return 0;
+              }
+              catch (Exception)
+              {
+
+                  return -1;
+              }
+
+          }
+
+
+          internal long EditRunner(long RunnerID, Runner model)
+          {
+              try
+              {
+                  Runner EditRunner = db.Runners.Where(r => r.Enable).FirstOrDefault(r =>r.RunnerID == RunnerID);
+                  if (EditRunner is null)
+                  {
+                      return 0;
+                  }
+
+                  EditRunner.Name = model.Name;
+                  EditRunner.Details = model.Details;
+                  EditRunner.SystemUserUpdate = model.SystemUserUpdate;
+                  EditRunner.DTsUpdate= DateTime.Now;
+                  db.SaveChanges();
+                  return RunnerID;
+              }
+              catch (Exception)
+              {
+                  return -1;
+              }
+          }*/
+
+
     }
 }

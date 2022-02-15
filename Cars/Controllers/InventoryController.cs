@@ -19,12 +19,14 @@ namespace Cars.Controllers
     {
         private readonly InventoryService _service;
         private readonly UserService _userService;
+        private readonly NotificationService _notificationService;
         private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
-        public InventoryController(InventoryService service, UserService userService)
+        public InventoryController(InventoryService service, UserService userService,NotificationService notificationService)
         {
             _service = service;
             _userService = userService;
+            _notificationService = notificationService;
         }
         public async Task<IActionResult> Index(int currentPage, string search)
         {
@@ -98,7 +100,7 @@ namespace Cars.Controllers
                 //If location 
                 if (assignUserResult.model.UserBranchID != assignUserResult.model.VendorLocationID)
                 {
-                    var deliveries = await _userService.GetAllDeliveryAsync();
+                    var deliveries = await _userService.GetAllByRoleAsync("delivery");
                     if (deliveries != null && deliveries.Count() > 0)
                         ViewBag.Delivery = new SelectList(deliveries, "ID", "Name", assignUserResult.model.DeliveryID);
                 }
@@ -167,7 +169,7 @@ namespace Cars.Controllers
                 else if (model.StatusID == 3)
                 {
                     //Release Order Details And Move IT to delivery or sales
-                    var result = await _service.ReleaseDoneOrderDetailsFromUserAsync(model.OrderDetailsID, userId);
+                    var result = await _service.ReleaseDoneOrderDetailsFromUserAsync(model, userId);
                     if (result <= 0)
                         return View("_CustomError");
                 }
@@ -219,6 +221,9 @@ namespace Cars.Controllers
                 var orderDetailsModel = await _service.ReleaseOrderDetailsFromUserAndRejectAsync(orderDetailsID, userId);
                 if (orderDetailsModel <= 0)
                     return View("_CustomError");
+
+                //Add Notification to Pricing Team 
+                var users = await _userService.GetByRoleAsync("pricing");
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)

@@ -24,21 +24,29 @@ namespace Cars.Service
         public async Task<Cars.Models.Notification> AddAndSendNotificationAsnc(List<string> userIDs, string notificationTitle, string notificationBody)
         {
             //Add Notification and User Notification 
-            var notification = await AddAsync(new Models.Notification()
+            //var notification = await AddAsync(new Models.Notification()
+            //{
+            //    Title = notificationTitle,
+            //    Description = notificationBody,
+            //    DTsCreate = DateTime.UtcNow,
+            //    NotificationUser = userIDs.Select(x => new NotificationUser()
+            //    {
+            //        DTsCreate = DateTime.UtcNow,
+            //        UserID = x,
+            //        IsRead = false
+            //    }).ToList()
+            //});
+
+            //if (notification == null || notification.NotificationID <= 0)
+            //    return null;
+
+            var notification = new Models.Notification()
             {
                 Title = notificationTitle,
                 Description = notificationBody,
-                DTsCreate = DateTime.UtcNow,
-                NotificationUser = userIDs.Select(x => new NotificationUser()
-                {
-                    DTsCreate = DateTime.UtcNow,
-                    UserID = x,
-                    IsRead = false
-                }).ToList()
-            });
-            if (notification == null || notification.NotificationID <= 0)
-                return null;
-
+                DTsCreate = DateTime.UtcNow
+            };
+            
             //Get Users Connections
             List<string> connections = new List<string>();
             foreach (var userID in userIDs)

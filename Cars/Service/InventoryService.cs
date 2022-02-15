@@ -156,23 +156,20 @@ namespace Cars.Service
         /// <param name="orderDetailsID"></param>
         /// <param name="userID"></param>
         /// <returns></returns>
-        public async Task<int> ReleaseDoneOrderDetailsFromUserAsync(long orderDetailsID, string userID)
+        public async Task<int> ReleaseDoneOrderDetailsFromUserAsync(OrderDetails orderDetails, string userID)
         {
-            var orderDetailsModel = await GetInventoryOrderDetialsByIDAsync(orderDetailsID);
+            var orderDetailsModel = await GetInventoryOrderDetialsByIDAsync(orderDetails.OrderDetailsID);
             if (orderDetailsModel == null)
                 return 0;
 
             orderDetailsModel.UsedByUser = null;
             orderDetailsModel.UsedDateTime = null;
             orderDetailsModel.DTsWorflowEnter = DateTime.UtcNow;
-            if (orderDetailsModel.UserBranchID == orderDetailsModel.VendorLocationID)
-                //Move To Sales 
-                orderDetailsModel.WorkflowID = 1;
-            else
-            {
-                //Move to delivary 
-                orderDetailsModel.WorkflowID = 9;
-            }
+            orderDetailsModel.DeliveryID = orderDetails.DeliveryID;
+
+            //Move To Sales 
+            orderDetailsModel.WorkflowID = 1;
+            
             var result = await _orderDetailsService.UpdateAsync(orderDetailsModel);
 
             //Create Log 

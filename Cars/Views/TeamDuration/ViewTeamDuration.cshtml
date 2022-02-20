@@ -1,0 +1,62 @@
+﻿
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer localizer
+@{
+    ViewData["Title"] = "Team Duration";
+    int counter = 1;
+}
+<h4>Team Duration</h4>
+<div class="card shadow">
+    <div class="card-body">
+    
+        <!-- table -->
+        <table class="table table-borderless table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>@localizer["TeamName"]</th>
+
+
+                    <th>@localizer["Duration"]</th>
+                   
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                
+                    <tr>
+                        <td>
+                            @counter
+                        </td>
+                        <td>
+                          
+                        </td>
+                        <td>
+                           
+                        </td>
+                        
+                  
+                        <td>
+                            <a title="@localizer["Edit TeamDuration"]" asp-action="" asp-controller="" asp-route-TeamDurationID=""> <span class="small text-muted"><span class="fe fe-24 fe-clipboard text-success"></span></span></a>
+                        </td>
+
+
+                    </tr>
+                    
+               
+
+            </tbody>
+        </table>
+     
+    </div>
+</div>
+@section Scripts {
+    <script>
+
+        ChangeColorSidebarItem("", "aAllOrderLines");
+
+    </script>
+
+}

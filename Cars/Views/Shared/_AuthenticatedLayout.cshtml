@@ -310,6 +310,29 @@
                     </ul>
                 }
 
+                
+                
+                    <p class="text-muted nav-heading mt-4 mb-1">
+                        <span>@localizer["Team Duration"]</span>
+                    </p>
+                    <ul class="navbar-nav flex-fill w-100 mb-2">
+                        <li class="nav-item dropdown">
+                            <a href="#ui-elements-Purchasing" data-toggle="collapse" aria-expanded="false" id="anavbarPurchasing" class="dropdown-toggle nav-link">
+                                <i class="fe fe-box fe-16"></i>
+                                <span class="ml-3 item-text">@localizer["Team Duration"]</span>
+                            </a>
+                            <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements-Purchasing">
+                                <li class="nav-item">
+                                    <a class="nav-link pl-3" asp-action="ViewTeamDuration" asp-controller="TeamDuration" id="aPurchasing">
+                                        <span class="ml-1 item-text">Team Duration</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                    </ul>
+          
+
                 @if (AuthorizationService.AuthorizeAsync(User, Permissions.Inventory.Manage).Result.Succeeded)
                 {<p class="text-muted nav-heading mt-4 mb-1">
                         <span>@localizer["Inventory"]</span>
@@ -335,7 +358,7 @@
                     <p class="text-muted nav-heading mt-4 mb-1">
                         <span>@localizer["Runner"]</span>
                     </p>
-                  
+
                     <ul class="navbar-nav flex-fill w-100 mb-2">
                         <li class="nav-item dropdown">
                             <a href="#ui-elements-Runner" data-toggle="collapse" aria-expanded="false" id="anavbarRunner" class="dropdown-toggle nav-link">

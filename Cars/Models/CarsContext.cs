@@ -39,6 +39,10 @@ namespace Cars.Models
         public virtual DbSet<NotificationUser> NotificationUser { get; set; }
         public virtual DbSet<Notification> Notification { get; set; }
 
+        public virtual DbSet<TeamDuration> TeamDurations { get; set; }
+
+        public virtual DbSet<TeamMemberAllowed> TeamMemberAlloweds { get; set; }
+
         public virtual DbSet<UsersLogs> UsersLogs { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

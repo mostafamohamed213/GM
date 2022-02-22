@@ -153,14 +153,14 @@ namespace Cars
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            // Hangfire background job every one day
+            // Hangfire background job every 30 min
             app.UseHangfireDashboard("/hangfire", new DashboardOptions()
             {
                 Authorization = new[] { new CustomAuthorizeFilter() }
             });
-            recurringJobManager.AddOrUpdate("Run every 10 min",
+            recurringJobManager.AddOrUpdate("Run every 30 min",
             () => serviceProvider.GetService<INotificationService>().SendNotificationsAsync(),
-                 "*/10 * * * *");
+                 "*/30 * * * *");
 
             app.UseStaticFiles();
             app.UseAuthentication();

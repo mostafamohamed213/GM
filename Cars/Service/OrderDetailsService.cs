@@ -52,7 +52,8 @@ namespace Cars.Service
         public async Task<IEnumerable<OrderDetails>> GetOrderDetailsAsync(int statusID, int workflowID, string duration)
         {
             var orderDetails = await _context.OrderDetails.Where(c => c.StatusID == statusID && c.WorkflowID == workflowID
-                                                                    && c.DTsWorflowEnter).ToListAsync();
+                                                                    && c.DTsWorflowEnter >= DateTime.UtcNow.AddHours(double.Parse(duration))
+                                                                    && c.NotificationSent != true).ToListAsync();
             return orderDetails;
         }
 

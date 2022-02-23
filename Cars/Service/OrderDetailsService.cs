@@ -42,21 +42,6 @@ namespace Cars.Service
             return viewModel;
         }
 
-        /// <summary>
-        /// Get All Orders Which Added to workflow after spesific duration 
-        /// </summary>
-        /// <param name="statusID"></param>
-        /// <param name="workflowID"></param>
-        /// <param name="duration">In Hours</param>
-        /// <returns></returns>
-        public async Task<IEnumerable<OrderDetails>> GetOrderDetailsAsync(int statusID, int workflowID, string duration)
-        {
-            var orderDetails = await _context.OrderDetails.Where(c => c.StatusID == statusID && c.WorkflowID == workflowID
-                                                                    && c.DTsWorflowEnter >= DateTime.UtcNow.AddHours(double.Parse(duration))
-                                                                    && c.NotificationSent != true).ToListAsync();
-            return orderDetails;
-        }
-
         public async Task<PagingViewModel<OrderDetails>> GetRunnerOrderDetailsAsync(string userID, int maxRows, int currentPage, string search)
         {
             List<OrderDetails> orderDetails = null;

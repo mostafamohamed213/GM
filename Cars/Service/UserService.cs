@@ -43,10 +43,16 @@ namespace Cars.Service
             var usersId = await _context.UserRoles.Where(c => c.RoleId == _context.Roles.FirstOrDefault(a => a.Name.ToLower() == role).Id).Select(c => c.UserId).ToListAsync();
             if (usersId != null && usersId.Count() > 0)
             {
-                var users = await _context.Users.Where(c => usersId.Contains(c.Id)).Include(x=>x.Id).Include(x => x.Email).ToListAsync();
+                var users = await _context.Users.Where(c => usersId.Contains(c.Id)).Include(x => x.Id).Include(x => x.Email).ToListAsync();
                 return users;
             }
             return null;
+        }
+
+        public async Task<ApplicationUser> GetByIDAsync(string userID)
+        {
+            var user = await _context.Users.Where(c => c.Id == userID).FirstOrDefaultAsync();
+            return user;
         }
     }
 }

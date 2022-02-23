@@ -25,6 +25,7 @@ using Hangfire;
 using Cars.Service.HangfireAuth;
 using Cars.Service.Hangfire;
 using Hangfire.MemoryStorage;
+using Cars.Service.Email;
 
 namespace Cars
 {
@@ -95,6 +96,7 @@ namespace Cars
             services.AddTransient<DeliveryService, DeliveryService>();
             services.AddTransient<UserService, UserService>();
             services.AddTransient<INotificationService, Cars.Service.Hangfire.NotificationService>();
+            services.AddTransient<IEmailService,EmailService>();
 
 
             services.AddSession();

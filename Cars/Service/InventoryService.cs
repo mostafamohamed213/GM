@@ -191,11 +191,11 @@ namespace Cars.Service
                 return 1;
         }
 
-        public async Task<int> ReleaseOrderDetailsFromUserAndRejectAsync(long orderDetailsID, string userID)
+        public async Task<OrderDetails> ReleaseOrderDetailsFromUserAndRejectAsync(long orderDetailsID, string userID)
         {
             var orderDetailsModel = await GetInventoryOrderDetialsByIDAsync(orderDetailsID);
             if (orderDetailsModel == null)
-                return 0; 
+                return null; 
             
             OrderDetails newOrder = new OrderDetails()
             {
@@ -225,7 +225,7 @@ namespace Cars.Service
 
             var addNewOrderResult = await _orderDetailsService.AddAsync(newOrder);
             if (addNewOrderResult == null)
-                return 0;
+                return null;
 
             orderDetailsModel.UsedByUser = null;
             orderDetailsModel.UsedDateTime = null;
@@ -246,9 +246,9 @@ namespace Cars.Service
             };
             await _workflowOrderDetailsLogsService.AddAsync(log);
             if (result == null)
-                return -1;
+                return  null;
             else
-                return 1;
+                return orderDetailsModel;
         }
 
         public async Task AddFilesAsync(IEnumerable<InventoryDocument> filePaths)

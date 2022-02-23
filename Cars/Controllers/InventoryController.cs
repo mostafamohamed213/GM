@@ -219,11 +219,14 @@ namespace Cars.Controllers
 
                 //Reject Order Details, Create new One ,And Add WorkFlow Details 
                 var orderDetailsModel = await _service.ReleaseOrderDetailsFromUserAndRejectAsync(orderDetailsID, userId);
-                if (orderDetailsModel <= 0)
+                if (orderDetailsModel == null)
                     return View("_CustomError");
 
                 //Add Notification to Pricing Team 
                 var users = await _userService.GetByRoleAsync("pricing");
+                if (users != null && users.Count() > 0)
+                    await _notificationService.SendNotificationAndEmailForRejectedOrderAsnc(users, "Rejected Order", "There is a Rejected order with ID : " + orderDetailsModel.Prefix, orderDetailsModel.Prefix, "Inventory");
+                
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)

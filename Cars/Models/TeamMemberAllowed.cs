@@ -17,7 +17,7 @@ namespace Cars.Models
         public string Roleid { get; set; }
         [ForeignKey("Userid")]
         public string Userid { get; set; }
-        public virtual List<ApplicationUser> Users { get; set; }
+        public virtual ApplicationUser User { get; set; }
 
 
         [ForeignKey("TeamDurationID")]

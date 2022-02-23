@@ -154,7 +154,7 @@ namespace Cars.Service.Hangfire
             try
             {
                 var orderDetails = await _context.OrderDetails.Where(c => c.StatusID == statusID && c.WorkflowID == workflowID
-                                                                            && c.DTsWorflowEnter >= DateTime.UtcNow.AddHours(-1 * duration)
+                                                                            && c.DTsWorflowEnter <= DateTime.UtcNow.AddHours(-1 * duration)
                                                                             && c.NotificationSent != true).ToListAsync();
                 return orderDetails;
             }
@@ -176,7 +176,7 @@ namespace Cars.Service.Hangfire
             try
             {
                 var orderDetails = await _context.OrderDetails.Where(c => c.StatusID != 1 && c.StatusID != 5 && c.WorkflowID == workflowID
-                                                                            && c.DTsWorflowEnter >= DateTime.UtcNow.AddHours(-1 * duration)
+                                                                            && c.DTsWorflowEnter <= DateTime.UtcNow.AddHours(-1 * duration)
                                                                             && c.NotificationSent != true).ToListAsync();
                 return orderDetails;
             }
@@ -198,7 +198,7 @@ namespace Cars.Service.Hangfire
             try
             {
                 var orderDetails = await _context.OrderDetails.Where(c => c.StatusID == statusID && c.WorkflowID == workflowID && !c.Price.HasValue
-                                                                            && c.DTsWorflowEnter >= DateTime.UtcNow.AddHours(-1 * duration)
+                                                                            && c.DTsWorflowEnter <= DateTime.UtcNow.AddHours(-1 * duration)
                                                                             && c.NotificationSent != true).ToListAsync();
                 return orderDetails;
             }
@@ -220,7 +220,7 @@ namespace Cars.Service.Hangfire
             try
             {
                 var orderDetails = await _context.OrderDetails.Where(c => c.StatusID == statusID && c.WorkflowID == workflowID && c.Order.WithMaintenance.HasValue && c.Order.WithMaintenance.Value
-                                                                            && c.DTsWorflowEnter >= DateTime.UtcNow.AddHours(-1 * duration)
+                                                                            && c.DTsWorflowEnter <= DateTime.UtcNow.AddHours(-1 * duration)
                                                                             && c.NotificationSent != true).ToListAsync();
                 return orderDetails;
             }
@@ -240,7 +240,7 @@ namespace Cars.Service.Hangfire
             try
             {
                 var orderDetails = await _context.OrderDetails.Where(c => (c.RunnerID != null && !string.IsNullOrEmpty(c.RunnerID))
-                                                                            && c.DTsWorflowEnter >= DateTime.UtcNow.AddHours(-1 * duration)
+                                                                            && c.DTsWorflowEnter <= DateTime.UtcNow.AddHours(-1 * duration)
                                                                             && c.NotificationSent != true).ToListAsync();
                 return orderDetails;
             }

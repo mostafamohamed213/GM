@@ -10,10 +10,11 @@ namespace Cars.ViewModels
     {
         public int OrderID { get; set; }
         [Required]
+        [StringLength(14, MinimumLength = 1, ErrorMessage = "The field must be no more than 14 characters")] 
         public string Chases { get; set; }
         [Required]
         public string VehicleName { get; set; }
-        [Required]
+        [StringLength(11, MinimumLength = 11, ErrorMessage = "field must be 11 number")]
         public string CustomerPhone { get; set; }
         public bool WithMaintenance { get; set; }
         public string Brand { get; set; }

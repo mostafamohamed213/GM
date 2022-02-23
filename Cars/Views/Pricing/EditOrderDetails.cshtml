@@ -86,11 +86,11 @@
                     </div>
 
                     <div cclass="col-md-2">
-                        @if (Model.OrderDetailsType.NameEn.Contains("Any") && (Model.Children is null || Model.Children.Count < 4))
+                        @if ((Model.Children is null || Model.Children.Count < 4)&& !Model.ParentOrderDetailsID.HasValue)
                         {
                             <small class="badge badge-pill text-white ">
                                 <a class="btn btn-success" asp-action="AddOrderLine" asp-controller="Pricing" asp-route-orderDetailsID="@Model.OrderDetailsID">
-                                    Duplication
+                                    Alternative
                                 </a>
                             </small>
                         }

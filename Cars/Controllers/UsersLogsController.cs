@@ -6,9 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Cars.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Cars.Controllers
 {
+
+    [Authorize(Permissions.HR.Manage)]
     public class UsersLogsController : Controller
     {
         private readonly CarsContext _context;

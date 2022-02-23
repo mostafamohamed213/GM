@@ -215,7 +215,7 @@ namespace Cars.Service
 
         internal SelectList GetSelectListOrderDetailsType()
         {
-            var OrderDetailsTypes = db.OrderDetailsType.Where(c => !c.NameEn.Contains("Any")).ToList();
+            var OrderDetailsTypes = db.OrderDetailsType.ToList();
             if (OrderDetailsTypes.Count() > 0)
             {
                 return new SelectList(OrderDetailsTypes, "OrderDetailsTypeID", "NameEn");

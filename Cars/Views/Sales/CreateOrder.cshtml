@@ -118,17 +118,24 @@
         document.getElementById("btnRemoveDetails").style.display = "none";
         _OpenDetails = false;
         document.getElementById("carDetails").style.display = "none";
-        document.getElementById("Year").value = null;
-        document.getElementById("Model").value = null;
-        document.getElementById("Brand").value = null;
+        document.getElementById("Year").value = "";
+        document.getElementById("Model").value = "";
+        document.getElementById("Brand").value = "";
     }
 
     function checkChases(value) {
-        console.log(_OpenDetails);
+       /* console.log(_OpenDetails);*/
+        //if (document.getElementById("Chases").value < 14) {
+        //    _OpenDetails = true;
+        //    document.getElementById("btnOpenDetails").style.display = "none";
+        //    document.getElementById("btnRemoveDetails").style.display = "block";
+        //} else {
+        //    RemoveDetails();
+        //}
         if (_OpenDetails) {
             document.getElementById("carDetails").style.display = "block";
         } else {
-            if (value.trim().length < 7) {
+            if (value.length < 14) {
                 document.getElementById("carDetails").style.display = "block";
                 document.getElementById("btnRemoveDetails").style.display = "block";
                 document.getElementById("btnOpenDetails").style.display = "none";

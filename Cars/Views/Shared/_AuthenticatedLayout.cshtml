@@ -2,6 +2,9 @@
 @inject IViewLocalizer localizer
 @using Cars.ViewModels
 @inject IAuthorizationService AuthorizationService
+@inject SignInManager<ApplicationUser> SignInManager
+
+
 
 <!doctype html>
 <html lang="en">
@@ -50,7 +53,7 @@
         </style>*@
 
     @* Notification *@
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 </head>
 <body class="vertical  light   @(StaticValues.RTL ? "rtl" : string.Empty) ">
     <div class="wrapper">
@@ -70,25 +73,32 @@
                         <i class="fe fe-sun fe-16"></i>
                     </a>
                 </li>
-
+                <li class="nav-item">
+                    <a class="nav-link text-muted my-2" href="#" style="color:cornflowerblue">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            @User.Identity.Name
+                        }
+                    </a>
+                </li>
                 @*<li class="nav-item">
-                    <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-shortcut">
-                        <span class="fe fe-grid fe-16"></span>
-                    </a>
-                </li>*@
+                        <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-shortcut">
+                            <span class="fe fe-grid fe-16"></span>
+                        </a>
+                    </li>*@
                 @*<li class="nav-item nav-notif">
-                    <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-onlineuser">
-                        <span class="fe fe-users fe-16"></span>
-                        <span class="dot dot-md bg-success"></span>
-                    </a>
-                </li>*@
+                        <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-onlineuser">
+                            <span class="fe fe-users fe-16"></span>
+                            <span class="dot dot-md bg-success"></span>
+                        </a>
+                    </li>*@
                 @*Notifications*@
                 @*<li class="nav-item nav-notif">
-                    <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-notif">
-                        <span class="fe fe-bell fe-16"></span>
-                        <span class="dot dot-md bg-success" id="notbell"></span>
-                    </a>
-                </li>*@
+                        <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-notif">
+                            <span class="fe fe-bell fe-16"></span>
+                            <span class="dot dot-md bg-success" id="notbell"></span>
+                        </a>
+                    </li>*@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-muted pr-0" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="avatar avatar-sm mt-2">
@@ -97,9 +107,9 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                         @*<a class="dropdown-item" href="#">Profile</a>
-        <a class="dropdown-item" href="#">Settings</a>
-        <a class="dropdown-item" href="#">Activities</a>*@
-                    
+                            <a class="dropdown-item" href="#">Settings</a>
+                            <a class="dropdown-item" href="#">Activities</a>*@
+
 
 
                         <form method="post" asp-controller="Accounts" asp-action="logout">
@@ -124,18 +134,18 @@
                 <div class="w-100 mb-4 d-flex">
                     <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="~/">
                         @*<svg version="1.1" id="logo" class="navbar-brand-img brand-sm" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 120 120" xml:space="preserve">
-                          <g>
-                          <polygon class="st0" points="78,105 15,105 24,87 87,87 	" />
-                          <polygon class="st0" points="96,69 33,69 42,51 105,51 	" />
-                          <polygon class="st0" points="78,33 15,33 24,15 87,15 	" />
-                  </g>
-                </svg>*@
+                                      <g>
+                                      <polygon class="st0" points="78,105 15,105 24,87 87,87 	" />
+                                      <polygon class="st0" points="96,69 33,69 42,51 105,51 	" />
+                                      <polygon class="st0" points="78,33 15,33 24,15 87,15 	" />
+                              </g>
+                            </svg>*@
                         <img src="~/Images/General_Motors_(2021).svg" class="img-fluid" style="width:40px" />
 
                     </a>
                 </div>
 
-                @if (AuthorizationService.AuthorizeAsync(User, Permissions.Sales.Manage).Result.Succeeded)
+                @if (AuthorizationService.AuthorizeAsync(User, Permissions.Sales.Manage).Result.Succeeded && !AuthorizationService.AuthorizeAsync(User, Permissions.Users.Create).Result.Succeeded)
                 {
                     <p class="text-muted nav-heading mt-4 mb-1">
                         <span>@localizer["Sales"]</span>
@@ -152,24 +162,27 @@
                                         <span class="ml-1 item-text">Orders</span>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link pl-3" asp-controller="Sales" asp-action="CreateOrder" id="aAddOrderHeader"><span class="ml-1 item-text">Add Order</span></a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link pl-3" asp-controller="Sales" asp-action="GetOrderLines" asp-route-currentPage="1" id="aOrderLines"><span class="ml-1 item-text">Order lines</span></a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link pl-3" asp-controller="Sales" asp-action="Draft" asp-route-currentPage="1" id="aDraftOrderHeader"><span class="ml-1 item-text">@localizer["Draft"]</span></a>
-                                </li>
-                                @*<li class="nav-item">
-                               <a class="nav-link pl-3" asp-controller="Sales" asp-action="GetOrderLines" asp-route-currentPage="1" id="aOrderLines"><span class="ml-1 item-text">@localizer["Draft"]</span></a>
-                        </li>*@
-                                @*<li class="nav-item active">
-                            <a class="nav-link pl-3" id="testit" asp-controller="Sales" asp-action="ViewOrder" asp-route-OrderId="10"> <span class=" ml-1 item-text"></span></a>
+                                
+                                    <li class="nav-item">
+                                        <a class="nav-link pl-3" asp-controller="Sales" asp-action="CreateOrder" id="aAddOrderHeader"><span class="ml-1 item-text">Add Order</span></a>
+                                    </li>
+                                  
+                                    
+                                    <li class="nav-item">
+                                        <a class="nav-link pl-3" asp-controller="Sales" asp-action="GetOrderLines" asp-route-currentPage="1" id="aOrderLines"><span class="ml-1 item-text">Order lines</span></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link pl-3" asp-controller="Sales" asp-action="Draft" asp-route-currentPage="1" id="aDraftOrderHeader"><span class="ml-1 item-text">@localizer["Draft"]</span></a>
+                                    </li>
+                                    @*<li class="nav-item">
+                   <a class="nav-link pl-3" asp-controller="Sales" asp-action="GetOrderLines" asp-route-currentPage="1" id="aOrderLines"><span class="ml-1 item-text">@localizer["Draft"]</span></a>
+            </li>*@
+                                    @*<li class="nav-item active">
+                <a class="nav-link pl-3" id="testit" asp-controller="Sales" asp-action="ViewOrder" asp-route-OrderId="10"> <span class=" ml-1 item-text"></span></a>
 
-                        </li>*@
+            </li>*@
 
-                            </ul>
+                                </ul>
                         </li>
 
                     </ul>
@@ -202,28 +215,28 @@
 
 
                 @*<p class="text-muted nav-heading mt-4 mb-1">
-            <span>Leader</span>
-        </p>
-        <ul class="navbar-nav flex-fill w-100 mb-2">
-            <li class="nav-item dropdown">
-                <a href="#ui-OrderLinesUsed" data-toggle="collapse" aria-expanded="false" id="anavbarOrderLinesUsed" class="dropdown-toggle nav-link">
-                    <i class="fe fe-box fe-16"></i>
-                    <span class="ml-3 item-text">Order Lines</span>
-                </a>
-                <ul class="collapse list-unstyled pl-4 w-100" id="ui-OrderLinesUsed">
-                    <li class="nav-item">
-                        <a class="nav-link pl-3" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
-                            <span class="ml-1 item-text">Order lines used</span>
-                        </a>
-                    </li>
+                        <span>Leader</span>
+                    </p>
+                    <ul class="navbar-nav flex-fill w-100 mb-2">
+                        <li class="nav-item dropdown">
+                            <a href="#ui-OrderLinesUsed" data-toggle="collapse" aria-expanded="false" id="anavbarOrderLinesUsed" class="dropdown-toggle nav-link">
+                                <i class="fe fe-box fe-16"></i>
+                                <span class="ml-3 item-text">Order Lines</span>
+                            </a>
+                            <ul class="collapse list-unstyled pl-4 w-100" id="ui-OrderLinesUsed">
+                                <li class="nav-item">
+                                    <a class="nav-link pl-3" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
+                                        <span class="ml-1 item-text">Order lines used</span>
+                                    </a>
+                                </li>
 
-                </ul>
-            </li>
+                            </ul>
+                        </li>
 
-        </ul>*@
+                    </ul>*@
 
 
-                @if (AuthorizationService.AuthorizeAsync(User, Permissions.Pricing.Manage).Result.Succeeded)
+                @if (AuthorizationService.AuthorizeAsync(User, Permissions.Pricing.Manage).Result.Succeeded && !AuthorizationService.AuthorizeAsync(User, Permissions.Users.Create).Result.Succeeded)
                 {
                     <p class="text-muted nav-heading mt-4 mb-1">
                         <span>@localizer["Pricing"]</span>
@@ -245,7 +258,7 @@
 
                     </ul>
                 }
-                @if (AuthorizationService.AuthorizeAsync(User, Permissions.Labor.Manage).Result.Succeeded)
+                @if (AuthorizationService.AuthorizeAsync(User, Permissions.Labor.Manage).Result.Succeeded && !AuthorizationService.AuthorizeAsync(User, Permissions.Users.Create).Result.Succeeded)
                 {
                     <p class="text-muted nav-heading mt-4 mb-1">
                         <span>Labor</span>
@@ -266,7 +279,7 @@
 
 
 
-                @if (AuthorizationService.AuthorizeAsync(User, Permissions.Finance.Manage).Result.Succeeded)
+                @if (AuthorizationService.AuthorizeAsync(User, Permissions.Finance.Manage).Result.Succeeded && !AuthorizationService.AuthorizeAsync(User, Permissions.Users.Create).Result.Succeeded)
                 {
                     <p class="text-muted nav-heading mt-4 mb-1">
                         <span>@localizer["Finance"]</span>
@@ -287,7 +300,7 @@
                         </li>
                     </ul>
                 }
-                @if (AuthorizationService.AuthorizeAsync(User, Permissions.Purchasing.Manage).Result.Succeeded)
+                @if (AuthorizationService.AuthorizeAsync(User, Permissions.Purchasing.Manage).Result.Succeeded && !AuthorizationService.AuthorizeAsync(User, Permissions.Users.Create).Result.Succeeded)
                 {
                     <p class="text-muted nav-heading mt-4 mb-1">
                         <span>@localizer["Purchasing"]</span>
@@ -353,7 +366,7 @@
                         </li>
                     </ul>
                 }
-                @if (AuthorizationService.AuthorizeAsync(User, Permissions.Runner.Manage).Result.Succeeded)
+                @if (AuthorizationService.AuthorizeAsync(User, Permissions.Runner.Manage).Result.Succeeded && !AuthorizationService.AuthorizeAsync(User, Permissions.Users.Create).Result.Succeeded)
                 {
                     <p class="text-muted nav-heading mt-4 mb-1">
                         <span>@localizer["Runner"]</span>
@@ -376,7 +389,7 @@
                         </li>
                     </ul>
                 }
-                @if (AuthorizationService.AuthorizeAsync(User, Permissions.Delivery.Manage).Result.Succeeded)
+                @if (AuthorizationService.AuthorizeAsync(User, Permissions.Delivery.Manage).Result.Succeeded && !AuthorizationService.AuthorizeAsync(User, Permissions.Users.Create).Result.Succeeded)
                 {
                     <p class="text-muted nav-heading mt-4 mb-1">
                         <span>@localizer["Delivery"]</span>
@@ -397,6 +410,42 @@
                         </li>
                     </ul>
                 }
+                @if (AuthorizationService.AuthorizeAsync(User, Permissions.HR.Manage).Result.Succeeded && !AuthorizationService.AuthorizeAsync(User, Permissions.Users.Create).Result.Succeeded)
+                {
+
+                    <p class="text-muted nav-heading mt-4 mb-1">
+                        <span>@localizer["Hr"]</span>
+                    </p>
+
+                    <ul class="navbar-nav flex-fill w-100 mb-2">
+                        <li class="nav-item dropdown">
+                            <a href="#branches" data-toggle="collapse" aria-expanded="false" id="linkbranches" class="dropdown-toggle nav-link">
+                                <i class="fe fe-map-pin fe-16"></i>
+                                <span class="ml-3 item-text">Branches</span>
+                            </a>
+                            <ul class="collapse list-unstyled pl-4 w-100" id="branches">
+                                <li class="nav-item w-100">
+                                    <a class="nav-link" asp-controller="Branch" asp-action="Index" id="abranches">
+                                        <span class="ml-3 item-text ">Branches</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item w-100">
+                                    <a class="nav-link" asp-controller="UserBranch" asp-action="Index" id="auserbranches">
+                                        <span class="ml-3 item-text ">User Branches</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a class="nav-link" asp-controller="UsersLogs" asp-action="Index" id="">
+                                <i class="fe fe-user fe-16"></i>
+                                <span class="ml-3 item-text ">Users Logs</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                }
+
                 @if (AuthorizationService.AuthorizeAsync(User, Permissions.Lockups.Manage).Result.Succeeded)
                 {
                     <p class="text-muted nav-heading mt-4 mb-1">
@@ -429,38 +478,15 @@
                             </a>
                         </li>
 
-                        <li class="nav-item w-100">
-                            <a class="nav-link" asp-controller="UsersLogs" asp-action="Index" id="">
-                                <i class="fe fe-user fe-16"></i>
-                                <span class="ml-3 item-text ">Users Logs</span>
-                            </a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a href="#branches" data-toggle="collapse" aria-expanded="false" id="linkbranches" class="dropdown-toggle nav-link">
-                                <i class="fe fe-map-pin fe-16"></i>
-                                <span class="ml-3 item-text">Branches</span>
-                            </a>
-                            <ul class="collapse list-unstyled pl-4 w-100" id="branches">
-                                <li class="nav-item w-100">
-                                    <a class="nav-link" asp-controller="Branch" asp-action="Index" id="abranches">
-                                        <span class="ml-3 item-text ">Branches</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item w-100">
-                                    <a class="nav-link" asp-controller="UserBranch" asp-action="Index" id="auserbranches">
-                                        <span class="ml-3 item-text ">User Branches</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+
 
                         @*<li class="nav-item w-100">
 
-                    <a class="nav-link" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
-                        <i class="fe fe-box fe-16"></i>
-                        <span class="ml-3 item-text">Order lines used</span>
-                    </a>
-                </li>*@
+                                <a class="nav-link" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
+                                    <i class="fe fe-box fe-16"></i>
+                                    <span class="ml-3 item-text">Order lines used</span>
+                                </a>
+                            </li>*@
 
 
                     </ul>
@@ -486,36 +512,36 @@
 
 
                 @*<p class="text-muted nav-heading mt-4 mb-1">
-                    <span>Vendor Location </span>
-                </p>
-                <ul class="navbar-nav flex-fill w-100 mb-2">
+                                <span>Vendor Location </span>
+                            </p>
+                            <ul class="navbar-nav flex-fill w-100 mb-2">
 
-                    <li class="nav-item w-100">
+                                <li class="nav-item w-100">
 
-            <a class="nav-link" asp-controller="VendorLocation" asp-action="GetAllVendorsLocation" asp-route-currentPage="1" id="aVendorLocation">
-                <i class="fe fe-24 fe-globe"></i>
-                <span class="ml-3 item-text">Vendor Location</span>
-            </a>
-        </li>
+                        <a class="nav-link" asp-controller="VendorLocation" asp-action="GetAllVendorsLocation" asp-route-currentPage="1" id="aVendorLocation">
+                            <i class="fe fe-24 fe-globe"></i>
+                            <span class="ml-3 item-text">Vendor Location</span>
+                        </a>
+                    </li>
 
 
-                </ul>*@
+                            </ul>*@
 
                 @*<p class="text-muted nav-heading mt-4 mb-1">
-            <span>Runners </span>
-        </p>
-        <ul class="navbar-nav flex-fill w-100 mb-2">
+                        <span>Runners </span>
+                    </p>
+                    <ul class="navbar-nav flex-fill w-100 mb-2">
 
-            <li class="nav-item w-100">
+                        <li class="nav-item w-100">
 
-                <a class="nav-link" asp-controller="Runner" asp-action="GetAllRunners" asp-route-currentPage="1" id="aRunners">
-                    <i class="fe fe-24 fe-truck"></i>
-                    <span class="ml-3 item-text ">Runners</span>
-                </a>
-            </li>
+                            <a class="nav-link" asp-controller="Runner" asp-action="GetAllRunners" asp-route-currentPage="1" id="aRunners">
+                                <i class="fe fe-24 fe-truck"></i>
+                                <span class="ml-3 item-text ">Runners</span>
+                            </a>
+                        </li>
 
 
-        </ul>*@
+                    </ul>*@
 
 
 
@@ -541,54 +567,54 @@
                         <div class="modal-body">
                             <div class="list-group list-group-flush my-n3">
                                 <!--<div class="list-group-item bg-transparent">
-                            <div class="row align-items-center">
-                                <div class="col-auto">
-                                    <span class="fe fe-box fe-24"></span>
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <span class="fe fe-box fe-24"></span>
+                                        </div>
+                                        <div class="col">
+                                            <small><strong>Package has uploaded successfull</strong></small>
+                                            <div class="my-0 text-muted small">Package is zipped and uploaded</div>
+                                            <small class="badge badge-pill badge-light text-muted">1m ago</small>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col">
-                                    <small><strong>Package has uploaded successfull</strong></small>
-                                    <div class="my-0 text-muted small">Package is zipped and uploaded</div>
-                                    <small class="badge badge-pill badge-light text-muted">1m ago</small>
+                                <div class="list-group-item bg-transparent">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <span class="fe fe-download fe-24"></span>
+                                        </div>
+                                        <div class="col">
+                                            <small><strong>Widgets are updated successfull</strong></small>
+                                            <div class="my-0 text-muted small">Just create new layout Index, form, table</div>
+                                            <small class="badge badge-pill badge-light text-muted">2m ago</small>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="list-group-item bg-transparent">
-                            <div class="row align-items-center">
-                                <div class="col-auto">
-                                    <span class="fe fe-download fe-24"></span>
-                                </div>
-                                <div class="col">
-                                    <small><strong>Widgets are updated successfull</strong></small>
-                                    <div class="my-0 text-muted small">Just create new layout Index, form, table</div>
-                                    <small class="badge badge-pill badge-light text-muted">2m ago</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="list-group-item bg-transparent">
-                            <div class="row align-items-center">
-                                <div class="col-auto">
-                                    <span class="fe fe-inbox fe-24"></span>
-                                </div>
-                                <div class="col">
-                                    <small><strong>Notifications have been sent</strong></small>
-                                    <div class="my-0 text-muted small">Fusce dapibus, tellus ac cursus commodo</div>
-                                    <small class="badge badge-pill badge-light text-muted">30m ago</small>
-                                </div>
-                            </div>-->
+                                <div class="list-group-item bg-transparent">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <span class="fe fe-inbox fe-24"></span>
+                                        </div>
+                                        <div class="col">
+                                            <small><strong>Notifications have been sent</strong></small>
+                                            <div class="my-0 text-muted small">Fusce dapibus, tellus ac cursus commodo</div>
+                                            <small class="badge badge-pill badge-light text-muted">30m ago</small>
+                                        </div>
+                                    </div>-->
                                 <!-- / .row -->
                                 <!--</div>
-                        <div class="list-group-item bg-transparent">
-                            <div class="row align-items-center">
-                                <div class="col-auto">
-                                    <span class="fe fe-link fe-24"></span>
-                                </div>
-                                <div class="col">
-                                    <small><strong>Link was attached to menu</strong></small>
-                                    <div class="my-0 text-muted small">New layout has been attached to the menu</div>
-                                    <small class="badge badge-pill badge-light text-muted">1h ago</small>
-                                </div>
-                            </div>
-                        </div>-->
+                                <div class="list-group-item bg-transparent">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <span class="fe fe-link fe-24"></span>
+                                        </div>
+                                        <div class="col">
+                                            <small><strong>Link was attached to menu</strong></small>
+                                            <div class="my-0 text-muted small">New layout has been attached to the menu</div>
+                                            <small class="badge badge-pill badge-light text-muted">1h ago</small>
+                                        </div>
+                                    </div>
+                                </div>-->
                             </div> <!-- / .list-group -->
                         </div>
                         <div class="modal-footer">
@@ -677,33 +703,33 @@
                         </div>
                         <div class="modal-body px-5">
                             @*<div class="row align-items-center">
-                            <div class="col-6 text-center">
-                                <div class="squircle bg-success justify-content-center">
-                                    <i class="fe fe-cpu fe-32 align-self-center text-white"></i>
+                                    <div class="col-6 text-center">
+                                        <div class="squircle bg-success justify-content-center">
+                                            <i class="fe fe-cpu fe-32 align-self-center text-white"></i>
+                                        </div>
+                                        <p>Control area</p>
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <div class="squircle bg-primary justify-content-center">
+                                            <i class="fe fe-activity fe-32 align-self-center text-white"></i>
+                                        </div>
+                                        <p>Activity</p>
+                                    </div>
                                 </div>
-                                <p>Control area</p>
-                            </div>
-                            <div class="col-6 text-center">
-                                <div class="squircle bg-primary justify-content-center">
-                                    <i class="fe fe-activity fe-32 align-self-center text-white"></i>
-                                </div>
-                                <p>Activity</p>
-                            </div>
-                        </div>
-                        <div class="row align-items-center">
-                            <div class="col-6 text-center">
-                                <div class="squircle bg-primary justify-content-center">
-                                    <i class="fe fe-droplet fe-32 align-self-center text-white"></i>
-                                </div>
-                                <p>Droplet</p>
-                            </div>
-                            <div class="col-6 text-center">
-                                <div class="squircle bg-primary justify-content-center">
-                                    <i class="fe fe-upload-cloud fe-32 align-self-center text-white"></i>
-                                </div>
-                                <p>Upload</p>
-                            </div>
-                        </div>*@
+                                <div class="row align-items-center">
+                                    <div class="col-6 text-center">
+                                        <div class="squircle bg-primary justify-content-center">
+                                            <i class="fe fe-droplet fe-32 align-self-center text-white"></i>
+                                        </div>
+                                        <p>Droplet</p>
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <div class="squircle bg-primary justify-content-center">
+                                            <i class="fe fe-upload-cloud fe-32 align-self-center text-white"></i>
+                                        </div>
+                                        <p>Upload</p>
+                                    </div>
+                                </div>*@
                             <div class="row align-items-center">
                                 <a asp-controller="Administration" asp-action="ListUsers" class="col-6 text-center" style="text-decoration: none;">
                                     <div class="squircle bg-primary justify-content-center">

@@ -6,9 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Cars.Controllers
 {
+    [Authorize(Permissions.HR.Manage)]
     public class UserBranchController : Controller
     {
         private readonly UserBranchService _service;

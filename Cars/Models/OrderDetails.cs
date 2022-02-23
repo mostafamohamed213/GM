@@ -16,6 +16,7 @@ namespace Cars.Models
         public string Items { get; set; }
         public int Quantity { get; set; }
         public bool? IsApproved { get; set; }
+        public bool? NotificationSent { get; set; }
         public string Prefix { get; set; }       
         public string PartNumber { get; set; }
         public decimal? Price { get; set; }

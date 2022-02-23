@@ -12,8 +12,15 @@ namespace Cars.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int ID { get; set; }
+        public int TeamDurationID { get; set; }
+        public Boolean isAssigned { get; set; }
         public string Roleid { get; set; }
+        [ForeignKey("Userid")]
         public string Userid { get; set; }
-       
+        public virtual List<ApplicationUser> Users { get; set; }
+
+
+        [ForeignKey("TeamDurationID")]
+        public virtual TeamDuration TeamDuration { get; set; }
     }
 }

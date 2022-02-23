@@ -23,5 +23,6 @@ namespace Cars.Models
 
         [ForeignKey("Roleid")]
         public virtual IdentityRole IdentityRole { get; set; }
+        public virtual List<TeamMemberAllowed> TeamMembersAllowed { get; set; }
     }
 }

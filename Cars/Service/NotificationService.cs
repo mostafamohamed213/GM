@@ -21,7 +21,7 @@ namespace Cars.Service
             _notificationHubContext = notificationHubContext;
         }
         
-        public async Task<Cars.Models.Notification> AddAndSendNotificationAsnc(List<string> userIDs, string notificationTitle, string notificationBody)
+        public async Task<Cars.Models.Notification> AddAndSendNotificationAsnc(List<ApplicationUser> users, string notificationTitle, string notificationBody)
         {
             //Add Notification and User Notification 
             //var notification = await AddAsync(new Models.Notification()
@@ -36,7 +36,6 @@ namespace Cars.Service
             //        IsRead = false
             //    }).ToList()
             //});
-
             //if (notification == null || notification.NotificationID <= 0)
             //    return null;
 
@@ -49,9 +48,9 @@ namespace Cars.Service
             
             //Get Users Connections
             List<string> connections = new List<string>();
-            foreach (var userID in userIDs)
+            foreach (var user in users)
             {
-                connections.AddRange(_userConnectionManager.GetUserConnections(userID));
+                connections.AddRange(_userConnectionManager.GetUserConnections(user.Id));
             }
 
             //Send To Users Connections 

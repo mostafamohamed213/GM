@@ -3,15 +3,17 @@ using System;
 using Cars.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Cars.Migrations
 {
     [DbContext(typeof(CarsContext))]
-    partial class CarsContextModelSnapshot : ModelSnapshot
+    [Migration("20220220213327_add_TeamDuration_and_teamdurationallowed")]
+    partial class add_TeamDuration_and_teamdurationallowed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,9 +78,6 @@ namespace Cars.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
-                    b.Property<int?>("TeamMemberAllowedID")
-                        .HasColumnType("integer");
-
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
 
@@ -97,8 +96,6 @@ namespace Cars.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
-
-                    b.HasIndex("TeamMemberAllowedID");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -549,9 +546,6 @@ namespace Cars.Migrations
 
                     b.Property<double?>("Labor_Value")
                         .HasColumnType("double precision");
-
-                    b.Property<bool?>("NotificationSent")
-                        .HasColumnType("boolean");
 
                     b.Property<int>("OrderDetailsTypeID")
                         .HasColumnType("integer");
@@ -1287,13 +1281,6 @@ namespace Cars.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Cars.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("Cars.Models.TeamMemberAllowed", null)
-                        .WithMany("Users")
-                        .HasForeignKey("TeamMemberAllowedID");
-                });
-
             modelBuilder.Entity("Cars.Models.CustomerContact", b =>
                 {
                     b.HasOne("Cars.Models.Customer", "Customer")
@@ -1560,7 +1547,7 @@ namespace Cars.Migrations
             modelBuilder.Entity("Cars.Models.TeamMemberAllowed", b =>
                 {
                     b.HasOne("Cars.Models.TeamDuration", "TeamDuration")
-                        .WithMany("TeamMembersAllowed")
+                        .WithMany()
                         .HasForeignKey("TeamDurationID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1742,16 +1729,6 @@ namespace Cars.Migrations
                     b.Navigation("OrderDetails");
 
                     b.Navigation("Quotation");
-                });
-
-            modelBuilder.Entity("Cars.Models.TeamDuration", b =>
-                {
-                    b.Navigation("TeamMembersAllowed");
-                });
-
-            modelBuilder.Entity("Cars.Models.TeamMemberAllowed", b =>
-                {
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Cars.Models.Vehicle", b =>

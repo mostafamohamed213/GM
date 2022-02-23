@@ -17,15 +17,16 @@ namespace Cars.Service
             db = carsContext;
         }
 
-        public PagingViewModel<OrderDetails> GetOrderLinesUsed(int currentPage)
+        public PagingViewModel<OrderDetailsUsedByUserViewModel> GetOrderLinesUsed(int currentPage)
         {
-            var orders = db.OrderDetails.Where(c => c.StatusID != 1 && c.StatusID != 5 && !string.IsNullOrEmpty(c.UsedByUser)).Include(c=>c.UserBranch.Branch).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexOrderLinesUsedMaxRows).Take(TablesMaxRows.IndexOrderLinesUsedMaxRows).ToList();
+            var orders = db.OrderDetails.Where(c => c.StatusID != 1 && c.StatusID != 5 && (!string.IsNullOrEmpty(c.UsedByUser)|| !string.IsNullOrEmpty(c.UsedByUser2))).Include(c=>c.User).Include(c=>c.UserBranch.Branch).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexOrderLinesUsedMaxRows).Take(TablesMaxRows.IndexOrderLinesUsedMaxRows)
+                .Select(c=> new OrderDetailsUsedByUserViewModel {orderDetails = c,user=db.Users.FirstOrDefault(x => x.Id == c.UsedByUser || x.Id == c.UsedByUser2) }).ToList();
 
-            PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
+            PagingViewModel<OrderDetailsUsedByUserViewModel> viewModel = new PagingViewModel<OrderDetailsUsedByUserViewModel>();
             //var Brands = unitOfWork.Brands.
             //   FindAll(null, (currentPage - 1) * TablesMaxRows.InventoryBrandIndex, TablesMaxRows.InventoryBrandIndex, d => d.Name, OrderBy.Ascending);
             viewModel.items = orders.ToList();
-            var itemsCount = db.OrderDetails.Where(c => c.StatusID != 1 && c.StatusID != 5 && !string.IsNullOrEmpty(c.UsedByUser)).Count();
+            var itemsCount = db.OrderDetails.Where(c => c.StatusID != 1 && c.StatusID != 5 && (!string.IsNullOrEmpty(c.UsedByUser) || !string.IsNullOrEmpty(c.UsedByUser2))).Count();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexOrderLinesUsedMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
@@ -34,11 +35,11 @@ namespace Cars.Service
             return viewModel;
         }
 
-        internal PagingViewModel<OrderDetails> SearchOrderLines(string search)
+        internal PagingViewModel<OrderDetailsUsedByUserViewModel> SearchOrderLines(string search)
         {
             var orders = db.OrderDetails.Where(c => c.StatusID != 1 && c.StatusID != 5 && !string.IsNullOrEmpty(c.UsedByUser) && c.Items.Trim().ToLower().Contains(search.Trim().ToLower())).
-               Include("OrderDetailsType").Include(c => c.UserBranch.Branch).Take(100).ToList();
-            PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
+               Include("OrderDetailsType").Include(c => c.UserBranch.Branch).Take(100).Select(c => new OrderDetailsUsedByUserViewModel { orderDetails = c, user = db.Users.FirstOrDefault(x => x.Id == c.UsedByUser || x.Id == c.UsedByUser2) }).ToList();
+            PagingViewModel<OrderDetailsUsedByUserViewModel> viewModel = new PagingViewModel<OrderDetailsUsedByUserViewModel>();
             viewModel.items = orders.ToList();
             var itemsCount = orders.Count;
             double pageCount = 1;
@@ -48,7 +49,7 @@ namespace Cars.Service
             viewModel.Tablelength = 100;
             return viewModel;
         }
-        public PagingViewModel<OrderDetails> getOrderLinesUsedWithChangelength(int currentPageIndex, int length)
+        public PagingViewModel<OrderDetailsUsedByUserViewModel> getOrderLinesUsedWithChangelength(int currentPageIndex, int length)
         {
             TablesMaxRows.IndexOrderLinesUsedMaxRows = length;
             return GetOrderLinesUsed(currentPageIndex);
@@ -61,6 +62,8 @@ namespace Cars.Service
                 var orderDetails = db.OrderDetails.FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
                 orderDetails.UsedByUser = null;
                 orderDetails.UsedDateTime = null;
+                orderDetails.UsedByUser2 = null;
+                orderDetails.UsedDateTime2 = null;
                 db.SaveChanges();
                 return orderDetails.OrderDetailsID;
             }
@@ -70,9 +73,10 @@ namespace Cars.Service
                 return 0;
             }
         }
-        internal OrderDetails GetOrderDetailsByOrderDetailsID(long orderDetailsID)
+        internal OrderDetailsUsedByUserViewModel GetOrderDetailsByOrderDetailsID(long orderDetailsID)
         {
-            var orderDetails = db.OrderDetails.Where(c => c.StatusID != 5).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Include("Order").Include(c=>c.Order.UserBranch.Branch).Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
+            var orderDetails = db.OrderDetails.Where(c => c.StatusID != 5 && c.OrderDetailsID == orderDetailsID).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Include("Order").Include(c=>c.Order.UserBranch.Branch).Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts")
+                .Select(c => new OrderDetailsUsedByUserViewModel { orderDetails = c, user = db.Users.FirstOrDefault(x => x.Id == c.UsedByUser || x.Id == c.UsedByUser2) }).FirstOrDefault();
            
           
             return orderDetails;

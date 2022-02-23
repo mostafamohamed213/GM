@@ -145,7 +145,7 @@ namespace Cars.Controllers
             try
             {
                 var orderDetails = services.GetOrderDetailsByOrderDetailsID(orderDetailsID);
-                if (orderDetails is not null && orderDetails.OrderDetailsType.NameEn.Contains("Any") && (orderDetails.Children == null || orderDetails.Children.Count < 4))
+                if (orderDetails is not null && !orderDetails.ParentOrderDetailsID.HasValue && (orderDetails.Children == null || orderDetails.Children.Count < 4))
                 {
                     PricingAddOrderLineViewModel model =  new PricingAddOrderLineViewModel()
                     {

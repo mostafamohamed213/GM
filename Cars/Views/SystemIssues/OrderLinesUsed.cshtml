@@ -1,4 +1,4 @@
-﻿@model Cars.ViewModels.PagingViewModel<OrderDetails>
+﻿@model Cars.ViewModels.PagingViewModel<Cars.ViewModels.OrderDetailsUsedByUserViewModel>
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer localizer
 @{
@@ -81,6 +81,7 @@
 
                     <th>@localizer["Type"]</th>
                     <th>@localizer["Approved"]</th>
+                    <th>Used by</th>
                     <th>Date</th>
                     <th></th>
                     <th></th>
@@ -94,18 +95,18 @@
                             @counter
                         </td>
                         <td>
-                            @(item.UserBranch is not null ? item.UserBranch.Branch.BranchIP : "00"):@item.OrderID:@item.OrderDetailsID
+                            @item.orderDetails.Prefix
                         </td>
                         <td>
-                            @item.Items
+                            @item.orderDetails.Items
                         </td>
                         <td>
-                            @item.OrderDetailsType.NameEn
+                            @item.orderDetails.OrderDetailsType.NameEn
                         </td>
                         <td>
-                            @if (item.IsApproved.HasValue)
+                            @if (item.orderDetails.IsApproved.HasValue)
                             {
-                                if (item.IsApproved.Value)
+                                if (item.orderDetails.IsApproved.Value)
                                 {
                                     <span class="fe fe-24 fe-check"></span>
                                 }
@@ -115,10 +116,11 @@
                                 }
                             }
                         </td>
+                        <td>@item.user.UserName</td>
                         <td>
-                            @if (item.UsedDateTime.HasValue)
+                            @if (item.orderDetails.UsedDateTime.HasValue)
                             {
-                                TimeSpan span = (DateTime.Now - item.UsedDateTime.Value);
+                                TimeSpan span = (DateTime.Now - item.orderDetails.UsedDateTime.Value);
 
                                string s= String.Format("{0} days, {1} hours, {2} minutes",
                                     span.Days, span.Hours, span.Minutes);
@@ -126,7 +128,7 @@
                             }
                         </td>
                         <td>
-                            <a  asp-action="ViewOrderDetails" asp-controller="SystemIssues" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="text-primary">View</span></a>
+                            <a  asp-action="ViewOrderDetails" asp-controller="SystemIssues" asp-route-orderDetailsID="@item.orderDetails.OrderDetailsID"> <span class="text-primary">View</span></a>
 
                         </td>
 

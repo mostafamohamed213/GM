@@ -75,7 +75,7 @@ namespace Cars.Controllers
         {
             try
             {
-                OrderDetails orderDetails = services.GetOrderDetailsByOrderDetailsID(OrderDetailsID);               
+                OrderDetailsUsedByUserViewModel orderDetails = services.GetOrderDetailsByOrderDetailsID(OrderDetailsID);               
                 if (orderDetails is not null )
                 {
                     return View("ViewOrderDetails", orderDetails);

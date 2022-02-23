@@ -45,12 +45,12 @@ namespace Cars.Service
         }
         internal long getCountOrderLines(string UserId)
         {
-          return db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 4 && !c.QuotationID.HasValue && c.SystemUserCreate == UserId).Count();
+          return db.OrderDetails.Include(c=>c.Order).Where(c => c.StatusID == 2 && c.WorkflowID == 4 && !c.QuotationID.HasValue && c.Order.SystemUserCreate == UserId).Count();
         }
 
         internal List<OrderDetails> getOrderLines(string UserId)
         {
-           return db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 4 && !c.QuotationID.HasValue && c.SystemUserCreate == UserId).Include(c=>c.UserBranch.Branch).Include(c=>c.Order).Include(c => c.Order.Customer).Include(c => c.Order.Customer.CustomerContacts).ToList();
+           return db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 4 && !c.QuotationID.HasValue && c.Order.SystemUserCreate == UserId).Include(c=>c.UserBranch.Branch).Include(c=>c.Order).Include(c => c.Order.Customer).Include(c => c.Order.Customer.CustomerContacts).ToList();
 
         }
 
@@ -150,7 +150,7 @@ namespace Cars.Service
 
         internal Quotation getQuotationByQuotationID(long quotationID ,string userId)
         {
-          return db.Quotations.Include(c=>c.QuotationDocument).Include(c=>c.OrderDetails).Include("OrderDetails.UserBranch.Branch").FirstOrDefault(c => c.QuotationID == quotationID && c.SystemUserCreate== userId);
+         return db.Quotations.Include(c=>c.QuotationDocument).Include(c => c.OrderDetails).Include("OrderDetails.Order.Vehicle").Include("OrderDetails.UserBranch.Branch").FirstOrDefault(c => c.QuotationID == quotationID && c.SystemUserCreate== userId);       
         }
 
         internal void CreateFilePath(string path ,long quotationID,string filename,string User)

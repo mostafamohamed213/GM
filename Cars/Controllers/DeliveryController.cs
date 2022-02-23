@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Cars.Controllers
 {
-    [Authorize(Permissions.Inventory.Manage) ]
+    [Authorize(Permissions.Delivery.Manage) ]
     public class DeliveryController : Controller
     {
         public DeliveryService services { get; set; }

@@ -1,5 +1,5 @@
 ﻿
-@model Cars.Models.OrderDetails
+@model Cars.ViewModels.OrderDetailsUsedByUserViewModel
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer localizer
 @{
@@ -12,7 +12,9 @@
         <strong class="card-title">@localizer["Order Line"]</strong>
 
     </div>
-    <br /><br />
+
+    <h3 style=" margin: 12px 0px 0px 15px;"> Used By : @Model.user.FirstName @Model.user.SeconedName - Username : @Model.user.UserName</h3>
+    <br />
     <div class="col-12 mb-4">
         <div class="card shadow">
             <div class="card-header">
@@ -21,52 +23,52 @@
             <div class="card-body">
                 <div class="row h5">
                     <div class="col-md-3">
-                        @localizer["Chases"] : @Model.Order.Vehicle.Chases
+                        @localizer["Chases"] : @Model.orderDetails.Order.Vehicle.Chases
                     </div>
                     <div class="col-md-3 border-left border-right">
-                        @localizer["CarName"] : @Model.Order.Vehicle.Name
+                        @localizer["CarName"] : @Model.orderDetails.Order.Vehicle.Name
                     </div>
                     <div class="col-md-3 border-left border-right">
-                        @localizer["Phone"] : @Model.Order.Customer.CustomerContacts.FirstOrDefault().Phone
+                        @localizer["Phone"] : @Model.orderDetails.Order.Customer.CustomerContacts.FirstOrDefault().Phone
                     </div>
                     <div class="col-md-3">
-                        @localizer["Maintenance"] : @if (Model.Order.WithMaintenance.HasValue && Model.Order.WithMaintenance.Value)
+                        @localizer["Maintenance"] : @if (Model.orderDetails.Order.WithMaintenance.HasValue && Model.orderDetails.Order.WithMaintenance.Value)
                         {
-                        <span class="fe fe-24 fe-check"></span>
+                            <span class="fe fe-24 fe-check"></span>
                         }
                         else
                         {
-                        <span class="fe fe-24 fe-x"></span>
+                            <span class="fe fe-24 fe-x"></span>
                         }
                     </div>
 
                 </div>
                 <div class="row h5">
 
-                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Brand))
+                    @if (!string.IsNullOrEmpty(@Model.orderDetails.Order.Vehicle.Brand))
                     {
-                    <div class="col-md-3">
-                        @localizer["Brand"] : @Model.Order.Vehicle.Brand
-                    </div>
+                        <div class="col-md-3">
+                            @localizer["Brand"] : @Model.orderDetails.Order.Vehicle.Brand
+                        </div>
                     }
-                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Model))
+                    @if (!string.IsNullOrEmpty(@Model.orderDetails.Order.Vehicle.Model))
                     {
-                    <div class="col-md-3 border-left border-right">
-                        @localizer["Model"] : @Model.Order.Vehicle.Model
-                    </div>
+                        <div class="col-md-3 border-left border-right">
+                            @localizer["Model"] : @Model.orderDetails.Order.Vehicle.Model
+                        </div>
                     }
-                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Year))
+                    @if (!string.IsNullOrEmpty(@Model.orderDetails.Order.Vehicle.Year))
                     {
-                    <div class="col-md-3">
-                        @localizer["Year"] : @Model.Order.Vehicle.Year
-                    </div>
+                        <div class="col-md-3">
+                            @localizer["Year"] : @Model.orderDetails.Order.Vehicle.Year
+                        </div>
                     }
 
 
                 </div>
                 <div class="row h5">
                     <div class="col-md-4">
-                        ID :   @(Model.Order.UserBranch is not null ? Model.Order.UserBranch.Branch.BranchIP : "00"):@Model.OrderID
+                        ID :   @(Model.orderDetails.Order.UserBranch is not null ? Model.orderDetails.Order.UserBranch.Branch.BranchIP : "00"):@Model.orderDetails.OrderID
                     </div>
                     <div class="col-md-4">
                     </div>
@@ -77,33 +79,33 @@
         </div>
     </div>
     <div class="card-body">
-        <h3> ID : @(Model.UserBranch is not null ? Model.UserBranch.Branch.BranchIP : "00"):@Model.OrderID:@Model.OrderDetailsID</h3>
+        <h3> ID : @Model.orderDetails.Prefix</h3>
         <div class="row">
-            <input asp-for="OrderDetailsID" style="display:none" />
-            <input asp-for="OrderID" style="display:none" />
-            <input asp-for="SystemUserCreate" style="display:none" />
+            <input asp-for="orderDetails.OrderDetailsID" style="display:none" />
+            <input asp-for="orderDetails.OrderID" style="display:none" />
+            <input asp-for="orderDetails.SystemUserCreate" style="display:none" />
 
             <div class="col-md-6">
                 <div class="form-group mb-4">
                     <label for="simpleinput">@localizer["Items"]</label>
-                    <input asp-for="Items" class="form-control" required disabled />
-                    <span asp-validation-for="Items" class="text-danger"></span>
+                    <input asp-for="orderDetails.Items" class="form-control" required disabled />
+                    <span asp-validation-for="orderDetails.Items" class="text-danger"></span>
                 </div>
 
                 <div class="form-group mb-3">
                     <label for="example-password">@localizer["Type"]</label>
 
-                    <input asp-for="OrderDetailsType.NameEn" class="form-control" required disabled />
+                    <input asp-for="orderDetails.OrderDetailsType.NameEn" class="form-control" required disabled />
 
                     @*<select disabled name="OrderDetailsTypeID" asp-for="OrderDetailsTypeID" asp-items="@ViewBag.types" class="form-control"></select>
-                    <span asp-validation-for="OrderDetailsTypeID" class="text-danger"></span>*@
+                        <span asp-validation-for="OrderDetailsTypeID" class="text-danger"></span>*@
                 </div>
 
                 <div class="form-group mb-3">
                     <div class="row">
                         <div class="col-md-12">
                             <a class="btn btn-light" href="javascript:void(0);" onclick="history.go(-1);">Back </a>
-                            <a class="btn btn-success" asp-controller="SystemIssues" asp-action="OpenOrderDetails" asp-route-orderDetailsID="@Model.OrderDetailsID" style="width: 100px;">Open</a>
+                            <a class="btn btn-success" asp-controller="SystemIssues" asp-action="OpenOrderDetails" asp-route-orderDetailsID="@Model.orderDetails.OrderDetailsID" style="width: 100px;">Open</a>
                         </div>
                     </div>
                 </div>
@@ -112,13 +114,13 @@
 
                 <div class="form-group mb-3">
                     <label for="example-email">@localizer["Quantity"]</label>
-                    <input asp-for="Quantity" class="form-control" required disabled />
-                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                    <input asp-for="orderDetails.Quantity" class="form-control" required disabled />
+                    <span asp-validation-for="orderDetails.Quantity" class="text-danger"></span>
                 </div>
                 <div class="form-group mb-3">
                     <label for="example-helping">
                         @localizer["Approved"]  :
-                        @if (Model.IsApproved.HasValue && Model.IsApproved.Value)
+                        @if (Model.orderDetails.IsApproved.HasValue && Model.orderDetails.IsApproved.Value)
                         {
                             <input id="IsApproved" type="checkbox" value="true" name="IsApproved" checked disabled />
                             <input type="hidden" value="false" name="IsApproved" />

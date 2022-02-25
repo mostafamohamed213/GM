@@ -1,0 +1,71 @@
+﻿@model Cars.Models.TeamDuration
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer localizer
+
+@{
+    ViewData["Title"] = "Edit TeamDuration";
+
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header">
+        <strong class="card-title">@ViewData["TeamName"]</strong>
+    </div>
+    <br /><br />
+   
+    <div class="card-body">
+      
+        <form class="needs-validation" asp-action="" asp-controller="TeamDuration" method="post">
+            <div class="row">
+                <input asp-for="TeamDurationID" style="display:none" />
+                
+                
+
+                <div class="col-md-12">
+                    <div class="form-group mb-4">
+                        <label for="simpleinput">@localizer["Duration"]</label>
+                        <input type="number" step=".01" asp-for="Duration"  value="@Model.Duration" class="form-control" required />
+                        <span asp-validation-for="Duration" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="simpleinput">@localizer["Assign Users"]</label>
+                        <select>
+
+                        </select>
+                        
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="example-password">@localizer["Assign One"]</label>
+                        <select>
+                        </select>
+                    </div>
+
+
+
+
+
+
+                </div> <!-- /.col -->
+          
+
+                <div class="row">
+
+                    <div class="col-md-1"></div>
+                    <div class="col-md-11">
+                        <a class="btn btn-danger" onclick="" style=" width: 100px;" href="~/"> @localizer["Cancel"]</a>
+                        <input class="btn btn-success" style=" width: 100px;" type="submit" value="@localizer["Save"]" />
+                    </div>
+
+
+                </div>
+
+
+
+            </div>
+        </form>
+    </div>
+</div>
+
+

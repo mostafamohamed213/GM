@@ -162,16 +162,18 @@ namespace Cars.Service
                     VendorLocationID = model.VendorLocationID,
                     OrderDetailsTypeID = model.TypeID,
                     Price = model.Price,
-                    PartNumber = model.PartNumber,                   
+                    PartNumber = model.PartNumber,
                     Quantity = parent.Quantity,
                     OrderID = parent.OrderID,
                     Items = parent.Items,
-                    IsApproved = parent.IsApproved,                   
+                    IsApproved = parent.IsApproved,
                     ParentOrderDetailsID = parent.OrderDetailsID,
                     DTsCreate = DateTime.Now,
                     SystemUserCreate = user,
                     StatusID = 2,
-                   
+                    UserBranch = parent.UserBranch,
+                    Maintenance = parent.Order.WithMaintenance.HasValue ? parent.Order.WithMaintenance.Value : false
+
                 };
                 if (parent.Order.WithMaintenance.HasValue && parent.Order.WithMaintenance.Value)
                 {

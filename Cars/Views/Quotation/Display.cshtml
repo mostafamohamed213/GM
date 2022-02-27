@@ -51,8 +51,9 @@
                                             <th>Car</th>
                                             <th>Quantity</th>
                                             <th>Price</th>
-                                            <th>Labor Value</th>
-                                            <th>Labor Hours</th>
+                                            <th>Value</th>
+                                            <th>Hours</th>
+                                            <th>Maintenance</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -63,13 +64,23 @@
                                             {
                                         <tr>
                                             <td>@order.Prefix</td>
-                                            <td>@order.UserBranch.Branch.Name</td>
+                                            <td>@(order.UserBranch != null ? order.UserBranch.Branch.Name : "--" ) </td>
                                             <td>@order.Items</td>
                                             <td>@order.Order.Vehicle.Name</td>
                                             <td>@order.Quantity</td>
                                             <td>@order.Price</td>
                                             <td>@order.Labor_Value</td>
                                             <td>@order.Labor_Hours</td>
+                                            <td>
+                                                @if (order.Maintenance)
+                                                 {
+                                                   <span class="text-success">Yes</span>
+                                                 }
+                                                 else
+                                                 {
+                                                   <span class="text-danger">No</span>
+                                                 }
+                                            </td>
                                         </tr>
                                             }
                                         }

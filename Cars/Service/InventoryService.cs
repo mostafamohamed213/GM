@@ -220,7 +220,9 @@ namespace Cars.Service
                 SystemUserCreate = userID,
                 UserBranchID = orderDetailsModel.UserBranchID,
                 VendorLocationID = orderDetailsModel.VendorLocationID,
-                WorkflowID = orderDetailsModel.WorkflowID
+                WorkflowID = orderDetailsModel.WorkflowID,
+                Maintenance=orderDetailsModel.Maintenance
+                
             };
 
             var addNewOrderResult = await _orderDetailsService.AddAsync(newOrder);

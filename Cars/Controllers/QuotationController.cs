@@ -109,57 +109,57 @@ namespace Cars.Controllers
                 return View("_CustomError");
             }
         }
+        //[HttpPost]
+        //public IActionResult CreateQuotation(string orderLinesIdList)
+        //{
+        //    List<OrderMaintenanceViewModel> ids = JsonSerializer.Deserialize<List<OrderMaintenanceViewModel>>(orderLinesIdList);
+        //    return View();
+        //}
         [HttpPost]
         public IActionResult CreateQuotation(string orderLinesIdList)
         {
-            List<OrderMaintenanceViewModel> ids = JsonSerializer.Deserialize<List<OrderMaintenanceViewModel>>(orderLinesIdList);
-            return View();
+            try
+            {
+                long orderId = 0;
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                List<OrderMaintenanceViewModel> models = JsonSerializer.Deserialize<List<OrderMaintenanceViewModel>>(orderLinesIdList);
+                
+                if (models.Count > 0)
+                {
+                    CreateQuotationViewModel model = services.CreateQuotation(models, userId);
+                    orderId = model.OrderId;
+                    if (model.status == -2)
+                    {
+                        string val = "Order Lines -> ";
+                        foreach (var item in model.orderDetails)
+                        {
+                            val += item.Prefix;
+                        }
+                        val += "Not available now";
+                        ViewBag.ErrorMessage = val;
+                        return View("CreateQuotation", services.getOrderLines(userId, model.OrderId));
+                    }
+                    if (model.status == -1)
+                    {
+                        //ViewBag.ErrorMessage = "Something went wrong";
+                        //return View("CreateQuotation", services.getOrderLines(userId));
+                        return View("_CustomError");
+                    }
+                    if (model.status == 1)
+                    {
+                        return View("UploadFiles", model);
+                    }
+                }
+                ViewBag.ErrorMessage = "Please Select Order Lines";
+                return View("CreateQuotation", services.getOrderLines(userId, orderId));
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
         }
-            //[HttpPost]
-            //public IActionResult CreateQuotation(string orderLinesIdList)
-            //{
-            //    try
-            //    {
-            //        string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            //        List<long> ids = JsonSerializer.Deserialize<List<long>>(orderLinesIdList);
-            //        if (ids.Count > 0)
-            //        {
 
-            //            CreateQuotationViewModel model = services.CreateQuotation(ids, userId);
-            //            if (model.status == -2)
-            //            {
-            //                string val = "Order Lines -> ";
-            //                foreach (var item in model.orderDetails)
-            //                {
-            //                    val += item.Prefix;
-            //                }
-            //                val += "Not available now";
-            //                ViewBag.ErrorMessage = val;
-            //                return View("CreateQuotation", services.getOrderLines(userId));
-            //            }
-            //            if (model.status == -1)
-            //            {                       
-            //                ViewBag.ErrorMessage = "Something went wrong";
-            //                return View("CreateQuotation", services.getOrderLines(userId));
-            //            }
-            //            if (model.status == 1)
-            //            {
-            //                return View("UploadFiles", model);
-            //            }
-            //        }
-
-
-
-            //        ViewBag.ErrorMessage = "Please Select Order Lines";
-            //        return View("CreateQuotation", services.getOrderLines(userId));
-            //    }
-            //    catch (Exception)
-            //    {
-            //        return View("_CustomError");
-            //    }
-            //}
-
-            [HttpPost]
+        [HttpPost]
         public IActionResult UploadFiles(IFormFile[] FormFiles,long QuotationId)
         {
             try

@@ -18,7 +18,7 @@ namespace Cars.Service
         }
         public PagingViewModel<Quotation> getQuotations(int currentPage ,string userId)
         {
-            var quotations = db.Quotations.Include("Status").Where(c => c.StatusID == 2&& c.SystemUserCreate == userId).Skip((currentPage - 1) * TablesMaxRows.IndexQuotationMaxRows).Take(TablesMaxRows.IndexQuotationMaxRows).ToList();
+            var quotations = db.Quotations.Include("Status").Where(c => c.StatusID == 2&& c.SystemUserCreate == userId).Skip((currentPage - 1) * TablesMaxRows.IndexQuotationMaxRows).Take(TablesMaxRows.IndexQuotationMaxRows).OrderByDescending(c=>c.DTsCreate).ToList();
             PagingViewModel<Quotation> viewModel = new PagingViewModel<Quotation>();
             viewModel.items = quotations.ToList();
             var itemsCount = db.Quotations.Where(c => c.StatusID == 2).Count();
@@ -32,7 +32,7 @@ namespace Cars.Service
         }
         internal PagingViewModel<Quotation> SearchQuotations(string search,string UserId)
         {
-            var quotations = db.Quotations.Where(c => c.StatusID == 2&&c.SystemUserCreate == UserId && c.QuotationID == long.Parse(search)).Include("Status").Take(100).ToList();
+            var quotations = db.Quotations.Where(c => c.StatusID == 2&&c.SystemUserCreate == UserId && c.QuotationID == long.Parse(search)).Include("Status").Take(100).OrderByDescending(c => c.DTsCreate).ToList();
             PagingViewModel<Quotation> viewModel = new PagingViewModel<Quotation>();
             viewModel.items = quotations.ToList();
             var itemsCount = quotations.Count;
@@ -115,12 +115,15 @@ namespace Cars.Service
         }
 
         readonly object _object = new object();
-        internal CreateQuotationViewModel CreateQuotation(List<long> ids ,string User)
+        internal CreateQuotationViewModel CreateQuotation(List<OrderMaintenanceViewModel> models ,string User)
         {
             try
             {
-                lock (_object)
-                {
+                    List<long> ids = new List<long>();
+                    foreach (var item in models)
+                    {
+                        ids.Add(item.id);
+                    }
                     var SelectedOrderLines = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 4 && c.QuotationID.HasValue && ids.Contains(c.OrderDetailsID)).ToList();
                     if (SelectedOrderLines is not null && SelectedOrderLines.Count > 0)
                     {
@@ -128,7 +131,8 @@ namespace Cars.Service
                         {
                             status = -2,
                             orderDetails = SelectedOrderLines,
-                        };
+                            OrderId = SelectedOrderLines.FirstOrDefault().OrderID
+                         };
                         return model;
                     }
                    var OrderDetails= db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 4 && !c.QuotationID.HasValue && ids.Contains(c.OrderDetailsID)).ToList();
@@ -143,7 +147,15 @@ namespace Cars.Service
                     foreach (var item in OrderDetails)
                     {
                         item.DTsWorflowEnter = DateTime.Now;
+                        foreach (var model in models)
+                        {
+                            if (model.id==item.OrderDetailsID)
+                            {
+                                item.Maintenance = model.maintenance;
+                            }
+                        }
                     }
+               
                     db.SaveChanges();
                     QuotationStatusLogs log = new QuotationStatusLogs()
                     {
@@ -158,11 +170,13 @@ namespace Cars.Service
                     {
                         status = 1,
                         Quotation = quotation,
-                        QuotationId = quotation.QuotationID
+                        QuotationId = quotation.QuotationID,
+                        OrderId = OrderDetails.FirstOrDefault().OrderID
+
                     };
                     return model2;
 
-                }
+                
             }
             catch (Exception)
             {
@@ -204,7 +218,7 @@ namespace Cars.Service
 
         internal Quotation getQuotationByQuotationID(long quotationID ,string userId)
         {
-         return db.Quotations.Include(c=>c.QuotationDocument).Include(c => c.OrderDetails).Include("OrderDetails.Order.Vehicle").Include("OrderDetails.UserBranch.Branch").FirstOrDefault(c => c.QuotationID == quotationID && c.SystemUserCreate== userId);       
+           return db.Quotations.Include(c=>c.QuotationDocument).Include(c => c.OrderDetails).Include("OrderDetails.Order.Vehicle").Include("OrderDetails.UserBranch.Branch").FirstOrDefault(c => c.QuotationID == quotationID && c.SystemUserCreate== userId);       
         }
 
         internal void CreateFilePath(string path ,long quotationID,string filename,string User)

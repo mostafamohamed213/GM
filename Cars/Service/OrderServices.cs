@@ -491,7 +491,8 @@ namespace Cars.Service
                     OrderID = orderID,
                     UserBranchID = UserBranch != null ? UserBranch.UserBranchID : -1,
                     StatusID = order.StatusID,
-                    WorkflowID = 1 /*order.StatusID == 2 ? 2 : 1*/
+                    WorkflowID = 1,/*order.StatusID == 2 ? 2 : 1*/
+                    Maintenance=order.WithMaintenance.HasValue ? order.WithMaintenance.Value : false
                 };
                 db.OrderDetails.Add(orderDetails);               
                 db.SaveChanges();

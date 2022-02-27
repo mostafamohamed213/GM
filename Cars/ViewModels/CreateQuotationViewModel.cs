@@ -12,5 +12,6 @@ namespace Cars.ViewModels
         public Quotation Quotation { get; set; }
         public List<OrderDetails> orderDetails { get; set; }
         public int status { get; set; }
+        public long OrderId { get; set; }
     }
 }

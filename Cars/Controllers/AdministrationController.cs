@@ -79,6 +79,61 @@ namespace Cars.Controllers
             return View(query);
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> ListUsersForHR(string currentFilter,
+string searchString,
+  string currentFilter2,
+    string searchString2,
+int? pageNumber)
+        {
+
+
+            if (searchString != null || searchString2 != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+                searchString2 = currentFilter2;
+            }
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["CurrentFilter2"] = searchString2;
+
+            var users = (from s in userManager.Users
+                         where s.Id != "039e233e-da34-4bbc-aa4a-8b5ff8942e48"
+                         select s).OrderBy(a => a.UserName).ToList();
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                users = users.Where(s => s.UserName.ToLower().Trim().Contains(searchString.ToLower().Trim())).ToList();
+            }
+            if (!String.IsNullOrEmpty(searchString2))
+            {
+                users = users.Where(s => s.FirstName.ToLower().Trim().Contains(searchString2.ToLower().Trim())).ToList();
+            }
+
+            //var users = userManager.Users;
+            // return View(users);
+            int count = users.Count();
+            var query = users.Select(async xs => new Users_in_Role_ViewModel
+            {
+                Username = xs.UserName,
+                FirstName = xs.FirstName,
+                Email = xs.Email,
+                UserId = xs.Id,
+                WhatsApp = xs.Whatsapp,
+                Mobile=xs.Mobile,
+                Role = string.Join(",", await userManager.GetRolesAsync(xs))
+            });
+
+            int pageSize = 10;
+            int TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+            ViewBag.pages = TotalPages;
+            ViewBag.currentpage = pageNumber ?? 1;
+            return View(query);
+        }
+
         [Authorize(Permissions.Roles.View)]
         [HttpGet]
         public async Task<IActionResult> ListRoles(int? pageNumber)

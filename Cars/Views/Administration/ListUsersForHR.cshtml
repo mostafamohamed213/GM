@@ -1,0 +1,134 @@
+﻿@model IEnumerable<Task<Users_in_Role_ViewModel>>
+@inject IAuthorizationService AuthorizationService
+@{
+    ViewBag.Title = "All Users";
+}
+
+<link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
+<style>
+    tfoot input {
+        width: 100%;
+        padding: 3px;
+        box-sizing: border-box;
+    }
+</style>
+<div class="row mr-0">
+    <div class="col-sm-6">
+        <h3 class="ml-2">All Users</h3>
+    </div>
+
+</div>
+
+
+<hr />
+<div class="table-responsive bg-white">
+    <table id="example" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>
+                    UserName
+                </th>
+                <th>
+                    FirstName
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    WhatsApp
+                </th>
+                <th>
+                    Mobile
+                </th>
+                <th>
+                    Role
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+            <tr>
+                <td>
+                    @user.Result.Username
+                </td>
+                <td>
+                    @user.Result.FirstName
+                </td>
+                <td>
+                    @user.Result.Email
+                </td>
+                <td>
+                    @user.Result.WhatsApp
+                </td>
+                <td>
+                    @user.Result.Mobile
+                </td>
+                <td>
+                    @user.Result.Role
+
+                </td>
+            
+            </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>UserName</th>
+                <th>FirstName</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>WhatsApp</th>
+                <th>Mobile</th>
+           
+
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Setup - add a text input to each footer cell
+            $('#example tfoot th').each(function () {
+                var title = $(this).text();
+                $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+            });
+
+            // DataTable
+            var table = $('#example').DataTable({
+                initComplete: function () {
+                    var r = $('#example tfoot tr');
+                    r.find('th').each(function () {
+                        $(this).css('padding', 8);
+                    });
+                    $('#example thead').append(r);
+                    $('#search_0').css('text-align', 'center');
+                    // Apply the search
+                    this.api().columns().every(function () {
+                        var that = this;
+
+                        $('input', this.footer()).on('keyup change clear', function () {
+                            if (that.search() !== this.value) {
+                                that
+                                    .search(this.value)
+                                    .draw();
+                            }
+                        });
+                    });
+
+                }
+            });
+
+
+        });
+    </script>
+}

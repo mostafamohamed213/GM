@@ -1,0 +1,139 @@
+﻿@*@model IEnumerable<ApplicationUser>*@
+
+@*@model PaginatedList<Task<Users_in_Role_ViewModel>>*@
+@model List<OnlineUsers>
+@inject IAuthorizationService AuthorizationService
+@{
+    ViewBag.Title = "All Users";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
+<style>
+    tfoot input {
+        width: 100%;
+        padding: 3px;
+        box-sizing: border-box;
+    }
+</style>
+<div class="row mr-0">
+    <div class="col-sm-6">
+        <h3 class="ml-2">Online Users</h3>
+    </div>
+ 
+</div>
+
+
+<div id="loading" style="display:none; text-align:center;"><img src="~/Images/wait.gif" /></div>
+<div  style="text-align:right;">
+    <button id="refreshButton" class="btn btn-primary" type="button"  onclick="refresh()" ><i style="color:white;" class="fa fa-refresh" aria-hidden="true"></i> Refresh </button>
+</div>
+<hr />
+<div id="list" class="table-responsive bg-white">
+    <table id="example" class="display" style="width:100%">
+        <thead>
+            <tr>
+
+                <th>
+                  
+                    UserName
+                </th>
+                <th>
+                    Role
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+            <tr>
+
+                <td>
+                    <i class="fa fa-circle" aria-hidden="true" style="color: #22de22"></i>
+                    @user.Name
+                </td>
+                <td>
+                    @user.Role
+                </td>
+
+            </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>UserName</th>
+                <th>Role</th>
+            
+
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script>
+  
+        function refresh() {
+            $.ajax({
+                type: "Post",
+                url: "/Home/Clear",
+                success: function () {
+                    //render products to appropriate dropdown
+
+                    console.log("clear success");
+                    document.getElementById("refreshButton").style.display = "none";
+                    document.getElementById("loading").style.display = "block";
+                    document.getElementById("list").style.display = "none";
+                    setTimeout(function () {
+                        window.location.href = "/Home/ViewOnlineUsers"
+                    }, 12500);
+                },
+                error: function (error) {
+                    console.log(error);
+
+                }
+            });
+        }
+        $(document).ready(function () {
+            // Setup - add a text input to each footer cell
+            $('#example tfoot th').each(function () {
+                var title = $(this).text();
+                $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+            });
+
+         
+
+            // DataTable
+            var table = $('#example').DataTable({
+                initComplete: function () {
+                    var r = $('#example tfoot tr');
+                    r.find('th').each(function () {
+                        $(this).css('padding', 8);
+                    });
+                    $('#example thead').append(r);
+                    $('#search_0').css('text-align', 'center');
+                    // Apply the search
+                    this.api().columns().every(function () {
+                        var that = this;
+
+                        $('input', this.footer()).on('keyup change clear', function () {
+                            if (that.search() !== this.value) {
+                                that
+                                    .search(this.value)
+                                    .draw();
+                            }
+                        });
+                    });
+
+                }
+            });
+
+
+        });
+    </script>
+}

@@ -78,7 +78,9 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             @User.Identity.Name
+                            
                         }
+                        <input id="OnlineUserName" style="display:none;" value="@User.Identity.Name" />
                     </a>
                 </li>
                 @*<li class="nav-item">
@@ -410,6 +412,7 @@
                         </li>
                     </ul>
                 }
+
                 @if (AuthorizationService.AuthorizeAsync(User, Permissions.HR.Manage).Result.Succeeded && !AuthorizationService.AuthorizeAsync(User, Permissions.Users.Create).Result.Succeeded)
                 {
 
@@ -442,7 +445,18 @@
                                 <span class="ml-3 item-text ">Users Logs</span>
                             </a>
                         </li>
-
+                        <li class="nav-item w-100">
+                            <a class="nav-link" asp-controller="Administration" asp-action="ListUsersForHR" id="">
+                                <i class="fe fe-user fe-16"></i>
+                                <span class="ml-3 item-text ">List Users</span>
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a class="nav-link" asp-controller="Home" asp-action="ViewOnlineUsers" id="">
+                                <i class="fe fe-user fe-16" style="color:lawngreen;"></i>
+                                <span class="ml-3 item-text ">Online Users</span>
+                            </a>
+                        </li>
                     </ul>
                 }
 
@@ -1044,7 +1058,26 @@
             });
         }
     </script>
-
+    <script>
+     
+        setInterval(function () {
+           var name=document.getElementById("OnlineUserName").value;
+            $.ajax({
+                type: "Post",
+                url: "/Home/ou",
+                data: { 'Name': name },
+                success: function () {
+                    //render products to appropriate dropdown
+                  
+                  //  console.log("success");
+                  
+                },
+                error: function (error) {
+                    console.log(error);
+             
+                }
+            }); }, 10000);
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

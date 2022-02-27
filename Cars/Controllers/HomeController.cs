@@ -1,6 +1,7 @@
 ﻿using Cars.Models;
 using Cars.ViewModels;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,14 +18,16 @@ namespace Cars.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly UserManager<ApplicationUser> userManager;
         private readonly ILogger<HomeController> _logger;
         private readonly CarsContext _context;
-        public HomeController(ILogger<HomeController> logger, CarsContext context)
+        public HomeController(ILogger<HomeController> logger, CarsContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _logger = logger;
+            this.userManager = userManager;
         }
-
+        public static List<OnlineUsers> Online = new List<OnlineUsers>();
         public IActionResult Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -96,6 +99,38 @@ namespace Cars.Controllers
             _context.Add(userbranchModel);
             _context.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> ou(int ID,String Name)
+        {
+        
+           // Online.Clear();
+            var isexist = Online.Where(a => a.Name == Name).FirstOrDefault();
+            if ( isexist == null)
+            {
+                var currentUser =  userManager.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+                var roles = await userManager.GetRolesAsync(currentUser);
+                var role = roles.FirstOrDefault();
+                OnlineUsers on = new OnlineUsers();
+         
+                on.Name = Name;
+                on.Role = role;
+               Online.Add(on);
+            }
+            return   Json(true);
+        }
+
+        public void clear()
+        {
+
+            Online.Clear();
+        
+
+        }
+
+        public IActionResult ViewOnlineUsers()
+        {
+            return View(Online);
         }
 
         public IActionResult Privacy()

@@ -27,7 +27,7 @@ namespace Cars.Controllers
             try
             {
                 string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                ViewBag.countOrderLines = services.getCountOrderLines(userId);
+                //ViewBag.countOrderLines = services.getCountOrderLines(userId);
                 return View(services.getQuotations(currentPage, userId));
             }
             catch (Exception)
@@ -73,12 +73,36 @@ namespace Cars.Controllers
                 return View("_CustomError");
             }
         }
+        //[HttpGet]
+        //public IActionResult CreateQuotation()
+        //{
+        //    try
+        //    {               
+        //        return View("CreateQuotation", services.getOrderLines(User.FindFirstValue(ClaimTypes.NameIdentifier)));
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return View("_CustomError");
+        //    }
+        //}
         [HttpGet]
         public IActionResult CreateQuotation()
         {
             try
-            {               
-                return View("CreateQuotation", services.getOrderLines(User.FindFirstValue(ClaimTypes.NameIdentifier)));
+            {
+                return View("ViewOrders", services.getOrders(User.FindFirstValue(ClaimTypes.NameIdentifier)));
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+        }
+        [HttpGet]
+        public IActionResult CreateQuotationViewOrderDetails(long orderID)
+        {
+            try
+            {
+                return View("CreateQuotation", services.getOrderLines(User.FindFirstValue(ClaimTypes.NameIdentifier),orderID));
             }
             catch (Exception)
             {
@@ -88,48 +112,54 @@ namespace Cars.Controllers
         [HttpPost]
         public IActionResult CreateQuotation(string orderLinesIdList)
         {
-            try
-            {
-                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                List<long> ids = JsonSerializer.Deserialize<List<long>>(orderLinesIdList);
-                if (ids.Count > 0)
-                {
-                   
-                    CreateQuotationViewModel model = services.CreateQuotation(ids, userId);
-                    if (model.status == -2)
-                    {
-                        string val = "Order Lines -> ";
-                        foreach (var item in model.orderDetails)
-                        {
-                            val += item.Prefix;
-                        }
-                        val += "Not available now";
-                        ViewBag.ErrorMessage = val;
-                        return View("CreateQuotation", services.getOrderLines(userId));
-                    }
-                    if (model.status == -1)
-                    {                       
-                        ViewBag.ErrorMessage = "Something went wrong";
-                        return View("CreateQuotation", services.getOrderLines(userId));
-                    }
-                    if (model.status == 1)
-                    {
-                        return View("UploadFiles", model);
-                    }
-                }
-               
-
-
-                ViewBag.ErrorMessage = "Please Select Order Lines";
-                return View("CreateQuotation", services.getOrderLines(userId));
-            }
-            catch (Exception)
-            {
-                return View("_CustomError");
-            }
+            List<OrderMaintenanceViewModel> ids = JsonSerializer.Deserialize<List<OrderMaintenanceViewModel>>(orderLinesIdList);
+            return View();
         }
+            //[HttpPost]
+            //public IActionResult CreateQuotation(string orderLinesIdList)
+            //{
+            //    try
+            //    {
+            //        string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //        List<long> ids = JsonSerializer.Deserialize<List<long>>(orderLinesIdList);
+            //        if (ids.Count > 0)
+            //        {
 
-        [HttpPost]
+            //            CreateQuotationViewModel model = services.CreateQuotation(ids, userId);
+            //            if (model.status == -2)
+            //            {
+            //                string val = "Order Lines -> ";
+            //                foreach (var item in model.orderDetails)
+            //                {
+            //                    val += item.Prefix;
+            //                }
+            //                val += "Not available now";
+            //                ViewBag.ErrorMessage = val;
+            //                return View("CreateQuotation", services.getOrderLines(userId));
+            //            }
+            //            if (model.status == -1)
+            //            {                       
+            //                ViewBag.ErrorMessage = "Something went wrong";
+            //                return View("CreateQuotation", services.getOrderLines(userId));
+            //            }
+            //            if (model.status == 1)
+            //            {
+            //                return View("UploadFiles", model);
+            //            }
+            //        }
+
+
+
+            //        ViewBag.ErrorMessage = "Please Select Order Lines";
+            //        return View("CreateQuotation", services.getOrderLines(userId));
+            //    }
+            //    catch (Exception)
+            //    {
+            //        return View("_CustomError");
+            //    }
+            //}
+
+            [HttpPost]
         public IActionResult UploadFiles(IFormFile[] FormFiles,long QuotationId)
         {
             try

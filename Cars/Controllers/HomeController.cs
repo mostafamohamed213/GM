@@ -36,28 +36,28 @@ namespace Cars.Controllers
 
             if (isuserinbranch != null)
             {
-                var remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+                //var remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
-                string info = new WebClient().DownloadString("http://ipinfo.io/" + remoteIpAddress); //replace by remoteIpAddress
-                remotip ipinfo = JsonConvert.DeserializeObject<remotip>(info);
+                //string info = new WebClient().DownloadString("http://ipinfo.io/" + remoteIpAddress); //replace by remoteIpAddress
+                //remotip ipinfo = JsonConvert.DeserializeObject<remotip>(info);
 
-                ViewBag.city = ipinfo.City;
-                ViewBag.Region = ipinfo.Region;
-                ViewBag.IP = remoteIpAddress;
-
-
+                //ViewBag.city = ipinfo.City;
+                //ViewBag.Region = ipinfo.Region;
+                //ViewBag.IP = remoteIpAddress;
 
 
-                UsersLogs usersLogs = new UsersLogs
-                {
-                    UserIP = remoteIpAddress,
-                    UserRegion = ipinfo.Region,
-                    UserCity = ipinfo.City,
-                    UserID = userId,
-                    CreateDts = DateTime.Now
-                };
-                _context.Add(usersLogs);
-                _context.SaveChanges();
+
+
+                //UsersLogs usersLogs = new UsersLogs
+                //{
+                //    UserIP = remoteIpAddress,
+                //    UserRegion = ipinfo.Region,
+                //    UserCity = ipinfo.City,
+                //    UserID = userId,
+                //    CreateDts = DateTime.Now
+                //};
+                //_context.Add(usersLogs);
+                //_context.SaveChanges();
 
                 return View();
             }

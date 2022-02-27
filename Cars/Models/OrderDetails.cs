@@ -58,7 +58,7 @@ namespace Cars.Models
         public decimal? Labor_Hours { get; set; } 
 
         public double? Labor_Value { get; set; }
-
+        public bool Maintenance { get; set; }
         public int StatusID { get; set; }
         [ForeignKey("StatusID")]
         public Status Status { get; set; }     

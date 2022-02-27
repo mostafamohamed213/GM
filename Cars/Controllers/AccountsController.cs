@@ -192,19 +192,26 @@ namespace Cars.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var result = await signInManager.PasswordSignInAsync(
-                    model.UserName, model.Password, model.RememberMe, false);
-
-                if (result.Succeeded)
+                if (ModelState.IsValid)
                 {
-                    return RedirectToAction("index", "home");         
+                    var result = await signInManager.PasswordSignInAsync(
+                        model.UserName, model.Password, model.RememberMe, false);
+
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("index", "home");
+                    }
+
+                    ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
                 }
 
-                ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
+              
             }
-
+            catch (Exception ex) {
+            
+            }
             return View("Login1", model);
         }
     }

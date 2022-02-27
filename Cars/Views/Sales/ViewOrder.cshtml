@@ -506,7 +506,7 @@
                                     var row_data_6 = document.createElement('td');
                                     row_data_6.innerHTML = '<a title="Display" href="/Sales/DisplayOrderDetails?OrderDetailsID=' + value.orderDetailsID + '" > <span class="small text-muted"><span class="fe fe-24 fe-file-text text-primary"></span></span></a>';
 
-                                    if (item.workflowID == 1 && item.statusID == 2 && item.inventoryID > 0)
+                                    if (value.workflowID == 1 && value.statusID == 2 && value.inventoryID > 0)
                                     {
                                         row_data_6.innerHTML += '<a title="Edit" href="/Sales/OperationOrderDetails?OrderDetailsID=' + value.orderDetailsID + '" > <span class="small text-muted"><span class="fe fe-24 fe-edit text-success"></span></span></a>';
                                     }

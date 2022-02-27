@@ -47,13 +47,67 @@ namespace Cars.Service
         {
           return db.OrderDetails.Include(c=>c.Order).Where(c => c.StatusID == 2 && c.WorkflowID == 4 && !c.QuotationID.HasValue && c.Order.SystemUserCreate == UserId).Count();
         }
-
-        internal List<OrderDetails> getOrderLines(string UserId)
+        internal List<QuotationViewOrdersViewModel> getOrders(string UserId)
         {
-           return db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 4 && !c.QuotationID.HasValue && c.Order.SystemUserCreate == UserId).Include(c=>c.UserBranch.Branch).Include(c=>c.Order).Include(c => c.Order.Customer).Include(c => c.Order.Customer.CustomerContacts).ToList();
+            List<Order> orderDetailsList = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 4 && !c.QuotationID.HasValue && c.Order.SystemUserCreate == UserId).Include(c => c.Order.Vehicle).Include(c=>c.Order.UserBranch.Branch).Select(c=>c.Order).Distinct().OrderByDescending(c=>c.DTsCreate).ToList();   
+            List<QuotationViewOrdersViewModel> model = new List<QuotationViewOrdersViewModel>();
+            if (orderDetailsList.Count > 0)
+            {
+                foreach (var order in orderDetailsList)
+                {
+                    model.Add(new QuotationViewOrdersViewModel { 
+                        order =order,
+                        TotalPrice=db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 4 && !c.QuotationID.HasValue && c.Order.SystemUserCreate == UserId).Sum(c=>c.Price.HasValue ? c.Price.Value : 0 ),
+                    });
+                }
 
+            }
+            return model;
         }
+        internal Dictionary<long, List<OrderDetails>> getOrderLines(string UserId,long orderId)
+        {
+            var orderDetails = db.OrderDetails.Where(c => c.OrderID == orderId && c.StatusID == 2 && c.WorkflowID == 4 && !c.QuotationID.HasValue && c.Order.SystemUserCreate == UserId).Include(c=>c.UserBranch.Branch).Include(c=>c.Order).OrderBy(c=>c.DTsCreate).ToList();
+            Dictionary<long, List<OrderDetails>> keyValuePairs = new Dictionary<long, List<OrderDetails>>();
+            foreach (var item in orderDetails)
+            {
+                if (item.ParentOrderDetailsID.HasValue)
+                {
+                    if (keyValuePairs.ContainsKey(item.ParentOrderDetailsID.Value))
+                    {
+                        var currentOrderDetails = keyValuePairs[item.ParentOrderDetailsID.Value];
+                        currentOrderDetails.Add(item);
+                        keyValuePairs[item.ParentOrderDetailsID.Value] = currentOrderDetails;
+                    }
+                    else
+                    {
+                        var newOrderdetails = new List<OrderDetails>();
+                        newOrderdetails.Add(item);
+                        keyValuePairs.Add(item.ParentOrderDetailsID.Value, newOrderdetails);
+                    }
+                }
+                else
+                {
+                    if (keyValuePairs.ContainsKey(item.OrderDetailsID))
+                    {
+                        keyValuePairs[item.OrderDetailsID].Add(item);
+                       
+                    }
+                    else
+                    {
+                        var newOrderdetails = new List<OrderDetails>();
+                        newOrderdetails.Add(item);
+                        keyValuePairs.Add(item.OrderDetailsID, newOrderdetails);
+                    }
+                }        
+                
+            }
+            return keyValuePairs;
+        }
+        //internal List<OrderDetails> getOrderLines(string UserId, long orderId)
+        //{
+        //    return db.OrderDetails.Where(c => c.OrderID == orderId && c.StatusID == 2 && c.WorkflowID == 4 && !c.QuotationID.HasValue && c.Order.SystemUserCreate == UserId).Include(c => c.UserBranch.Branch).Include(c => c.Order).Include(c => c.Order.Customer).Include(c => c.Order.Customer.CustomerContacts).ToList();
 
+        //}
         public PagingViewModel<Quotation> getQuotationsWithChangelength(int currentPageIndex, int length,string UserId)
         {
             TablesMaxRows.IndexQuotationMaxRows = length;

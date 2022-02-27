@@ -15,31 +15,99 @@
    
     <div class="card-body">
       
-        <form class="needs-validation" asp-action="" asp-controller="TeamDuration" method="post">
+        <form class="needs-validation" asp-action="EditDuration" asp-controller="TeamDuration" method="post">
             <div class="row">
-                <input asp-for="TeamDurationID" style="display:none" />
-                
-                
+                <input asp-for="TeamDurationID" value="@Model.TeamDurationID" style="display:none" />
+                <input asp-for="Roleid" value="@Model.Roleid" style="display:none" />
+
 
                 <div class="col-md-12">
                     <div class="form-group mb-4">
                         <label for="simpleinput">@localizer["Duration"]</label>
-                        <input type="number" step=".01" asp-for="Duration"  value="@Model.Duration" class="form-control" required />
+                        <input type="number" name="duration" step=".01" asp-for="Duration" value="@Model.Duration" class="form-control" required />
                         <span asp-validation-for="Duration" class="text-danger"></span>
                     </div>
 
                     <div class="form-group mb-4">
-                        <label for="simpleinput">@localizer["Assign Users"]</label>
-                        <select>
+                        <label for="simpleinput">@localizer["UnAssigned Order Users"]</label><br />
+                        @if (ViewData["TeamAllowed"] != null)
+                        {
+                            <select name="unasign" class="form-control" multiple="multiple">
+                                @foreach (var usr in (List<ApplicationUser>)ViewData["TeamAllowed"])
+                                {
+                                    if (ViewData["UnAssign"] != null)
+                                    {
+                                        var flag = false;
+                                        foreach (var Teammem in (List<TeamMemberAllowed>)ViewData["UnAssign"])
+                                        {
+                                            if (usr.Id == Teammem.Userid)
+                                                flag = true;
+                                        }
+                                        if (flag == true)
+                                        {
+                                            <option value="@usr.Id" selected> @usr.UserName  </option>
+                                            flag = false;
+                                        }
+                                        else
+                                        {
+                                            <option value="@usr.Id"> @usr.UserName  </option>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <option value="@usr.Id"> @usr.UserName  </option>
+                                    }
 
-                        </select>
-                        
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <label for="simpleinput"> &nbsp;&nbsp;&nbsp; No Users in This Team</label>
+
+                        }
+
                     </div>
 
                     <div class="form-group mb-3">
-                        <label for="example-password">@localizer["Assign One"]</label>
-                        <select>
-                        </select>
+                        <label for="example-password">@localizer["Assigned Order Users"]</label><br />
+                        @if (ViewData["TeamAllowed"] != null)
+                        {
+                            <select name="asign" class="form-control" multiple="multiple">
+                                @foreach (var usr in (List<ApplicationUser>)ViewData["TeamAllowed"])
+                                {
+                                    if (ViewData["Assign"] != null)
+                                    {
+                                        var flag = false;
+                                        foreach (var Teammem in (List<TeamMemberAllowed>)ViewData["Assign"])
+                                        {
+                                            if (usr.Id == Teammem.Userid)
+                                                flag = true;
+                                        }
+                                        if (flag == true)
+                                        {
+                                            <option value="@usr.Id" selected> @usr.UserName  </option>
+                                            flag = false;
+                                        }
+                                        else
+                                        {
+                                            <option value="@usr.Id"> @usr.UserName  </option>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <option value="@usr.Id"> @usr.UserName  </option>
+                                    }
+
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <label for="simpleinput"> &nbsp;&nbsp;&nbsp; No Users in This Team</label>
+                            
+                        }
+
                     </div>
 
 
@@ -48,7 +116,7 @@
 
 
                 </div> <!-- /.col -->
-          
+
 
                 <div class="row">
 

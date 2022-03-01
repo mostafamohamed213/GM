@@ -119,11 +119,12 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>@localizer["ID"]</th>
-                    <th>@localizer["Items"]</th>
-                    <th>@localizer["Price"]</th>
-                    <th>@localizer["Type"]</th>
-                    <th>@localizer["Vendor"]</th>
+                    <th>ID</th>
+                    <th>Car</th>
+                    <th>Items</th>
+                    <th>Price</th>
+                    <th>Type</th>
+                    <th>Vendor</th>
                     @*
         <th>@localizer["Brand"]</th>
         <th>@localizer["Model"]</th>
@@ -142,6 +143,9 @@
                     </td>
                     <td>
                         @item.Prefix
+                    </td>
+                    <td>
+                        @item.Order.Vehicle.Name
                     </td>
                     <td>
                         @item.Items

@@ -1,6 +1,7 @@
 ﻿using Cars.Consts;
 using Cars.Models;
 using Cars.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +22,13 @@ namespace Cars.Service
             TablesMaxRows.IndexRunnerMaxRows = length;
             return getAllRunners(currentPageIndex,null,runnerID);
         }
-        public PagingViewModel<OrderDetails> getAllRunners(int currentPage,string? search,string runnerID)
+        public PagingViewModel<OrderDetails> getAllRunners(int currentPage,string search,string runnerID)
         {
-            List<OrderDetails> allRunners = db.OrderDetails.Where(r=>r.RunnerID== runnerID).Skip((currentPage - 1) * TablesMaxRows.IndexRunnerMaxRows).Take(TablesMaxRows.IndexRunnerMaxRows).ToList();
+            List<OrderDetails> allRunners = db.OrderDetails.Where(r=>r.RunnerID== runnerID).Skip((currentPage - 1) * TablesMaxRows.IndexRunnerMaxRows).Take(TablesMaxRows.IndexRunnerMaxRows).Include(c => c.Order.Vehicle).ToList();
 
             if(search!=null)
             {
-                allRunners= db.OrderDetails.Where(r => r.RunnerID == runnerID && r.Items.Contains(search)).Skip((currentPage - 1) * TablesMaxRows.IndexRunnerMaxRows).Take(TablesMaxRows.IndexRunnerMaxRows).ToList();
+                allRunners= db.OrderDetails.Where(r => r.RunnerID == runnerID && r.Items.Contains(search)).Skip((currentPage - 1) * TablesMaxRows.IndexRunnerMaxRows).Take(TablesMaxRows.IndexRunnerMaxRows).Include(c => c.Order.Vehicle).ToList();
             }
             try
             {
@@ -72,7 +73,7 @@ namespace Cars.Service
         {
             try
             {
-                OrderDetails runner = db.OrderDetails.Where(r => r.OrderDetailsID==orderID && r.RunnerID == RunnerId).FirstOrDefault();
+                OrderDetails runner = db.OrderDetails.Where(r => r.OrderDetailsID==orderID && r.RunnerID == RunnerId).Include(c => c.Order.Vehicle).FirstOrDefault();
                 if (runner is not null)
                 {
                     return runner;

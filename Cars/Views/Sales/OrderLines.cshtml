@@ -76,14 +76,15 @@
                 <tr>
                     <th>#</th>
                     <th>@localizer["ID"]</th>
+                    <th>@localizer["Car"]</th>
                     <th>@localizer["Item"]</th>
 
 
                     <th>@localizer["Type"]</th>
                     <th>@localizer["Approved"]</th>
                     @*<th>@localizer["Brand"]</th>
-                        <th>@localizer["Model"]</th>
-                        <th>@localizer["Year"]</th>*@
+        <th>@localizer["Model"]</th>
+        <th>@localizer["Year"]</th>*@
                     <th>@localizer["Date"]</th>
                     <th></th>
                     <th></th>
@@ -92,66 +93,69 @@
             <tbody>
                 @foreach (var item in Model.items)
                 {
-                    <tr>
-                        <td>
-                            @counter
-                        </td>
-                        <td>
-                            @item.Prefix
-                        </td>
-                        <td>
-                            @item.Items
-                        </td>
-                        <td>
-                            @item.OrderDetailsType.NameEn
-                        </td>
-                        <td>
-                            @if (item.IsApproved.HasValue)
-                            {
-                                if (item.IsApproved.Value)
-                                {
-                                    <span class="fe fe-24 fe-check"></span>
-                                }
-                                else
-                                {
-                                    <span class="fe fe-24 fe-x"></span>
-                                }
-                            }
-                        </td>
-                        <td>
-                            @item.DTsCreate
-                        </td>
-                        @if ((!item.Price.HasValue || item.Price.Value <= 0))
+                <tr>
+                    <td>
+                        @counter
+                    </td>
+                    <td>
+                        @item.Prefix
+                    </td>
+                    <td>
+                        @item.Order.Vehicle.Name
+                    </td>
+                    <td>
+                        @item.Items
+                    </td>
+                    <td>
+                        @item.OrderDetailsType.NameEn
+                    </td>
+                    <td>
+                        @if (item.IsApproved.HasValue)
                         {
-
-                            @if (item.StatusID != 4)
+                            if (item.IsApproved.Value)
                             {
-
-                                <td>
-                                    <a title="@localizer["Display"]" asp-action="DisplayOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-file-text  text-primary"></span></span></a>
-                                    <a title="@localizer["Edit"]" asp-action="EditOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-success"></span></span></a>
-                                    <a title="@localizer["Cancel"]" asp-action="CancelOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-x text-warning"></span></span></a>
-                                </td>
+                                <span class="fe fe-24 fe-check"></span>
                             }
                             else
                             {
-                                <td>
-                                    <span class="text-warning">Canceled</span>
-                                </td>
+                                <span class="fe fe-24 fe-x"></span>
                             }
+                        }
+                    </td>
+                    <td>
+                        @item.DTsCreate
+                    </td>
+                    @if ((!item.Price.HasValue || item.Price.Value <= 0))
+                    {
+
+                        @if (item.StatusID != 4)
+                        {
+
                             <td>
-                                <a title="@localizer["Delete"]" asp-action="DeleteOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class=" fe fe-24 fe-x-circle text-danger"></span></span></a>
+                                <a title="@localizer["Display"]" asp-action="DisplayOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-file-text  text-primary"></span></span></a>
+                                <a title="@localizer["Edit"]" asp-action="EditOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-success"></span></span></a>
+                                <a title="@localizer["Cancel"]" asp-action="CancelOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-x text-warning"></span></span></a>
                             </td>
                         }
                         else
                         {
                             <td>
-                                <a title="@localizer["Display"]" asp-action="DisplayOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-file-text  text-primary"></span></span></a>
+                                <span class="text-warning">Canceled</span>
                             </td>
                         }
+                        <td>
+                            <a title="@localizer["Delete"]" asp-action="DeleteOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class=" fe fe-24 fe-x-circle text-danger"></span></span></a>
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            <a title="@localizer["Display"]" asp-action="DisplayOrderDetails" asp-controller="Sales" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-file-text  text-primary"></span></span></a>
+                        </td>
+                    }
 
 
-                    </tr>
+                </tr>
                     counter++;
                 }
 

@@ -3,7 +3,7 @@
 @inject IViewLocalizer localizer
 @{
     ViewData["Title"] = "Order Line";
-    int counter = 1;
+   
 }
 
 <div class="card shadow mb-4">
@@ -29,24 +29,30 @@
             <div class="card-body">
                 <div class="row h5">
                     <div class="col-md-3">
-                        @localizer["ID"] : @Model.Prefix
+                       ID : @Model.Prefix
                     </div>
                     <div class="col-md-3 border-left border-right">
-                        @localizer["Item"] : @Model.Items
+                        Item : @Model.Items
                     </div>
                     <div class="col-md-3 border-left border-right">
-                        @localizer["Quantity"] : @Model.Quantity
+                       Quantity : @Model.Quantity
                     </div>
                     <div class="col-md-3">
-                        @localizer["Type"] : @Model.OrderDetailsType.NameEn
+                        Type : @Model.OrderDetailsType.NameEn
                     </div>
                 </div>
                 <div class="row h5">
                     <div class="col-md-3">
-                        @localizer["Price"] :   @Model.Price
+                        Price : @Model.Price
                     </div>
                     <div class="col-md-3 border-left border-right">
-                        @localizer["Vendor Location"] : @Model.VendorLocation.Name
+                        Vendor Location : @Model.VendorLocation.Name
+                    </div>
+                    <div class="col-md-3 border-left border-right">
+                        Car : @Model.Order.Vehicle.Name
+                    </div>
+                    <div class="col-md-3">
+                        Chases : @Model.Order.Vehicle.Chases
                     </div>
 
                 </div>

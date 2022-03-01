@@ -70,13 +70,14 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>@localizer["ID"]</th>
-                    <th>@localizer["Items"]</th>
+                    <th>ID</th>
+                    <th>Car</th>
+                    <th>Items</th>
 
 
-                    <th>@localizer["Type"]</th>
-                    <th>@localizer["Approved"]</th>
-                    <th>@localizer["Date"]</th>
+                    <th>Type</th>
+                    <th>Approved</th>
+                    <th>Date</th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -84,41 +85,44 @@
             <tbody>
                 @foreach (var item in Model.items)
                 {
-                    <tr>
-                        <td>
-                            @counter
-                        </td>
-                        <td>
-                            01:@item.OrderID:@item.OrderDetailsID
-                        </td>
-                        <td>
-                            @item.Items
-                        </td>
-                        <td>
-                            @item.OrderDetailsType.NameEn
-                        </td>
-                        <td>
-                            @if (item.IsApproved.HasValue)
+                <tr>
+                    <td>
+                        @counter
+                    </td>
+                    <td>
+                        @item.Prefix
+                    </td>
+                    <td>
+                        @item.Order.Vehicle.Name
+                    </td>
+                    <td>
+                        @item.Items
+                    </td>
+                    <td>
+                        @item.OrderDetailsType.NameEn
+                    </td>
+                    <td>
+                        @if (item.IsApproved.HasValue)
+                        {
+                            if (item.IsApproved.Value)
                             {
-                                if (item.IsApproved.Value)
-                                {
-                                    <span class="fe fe-24 fe-check"></span>
-                                }
-                                else
-                                {
-                                    <span class="fe fe-24 fe-x"></span>
-                                }
+                                <span class="fe fe-24 fe-check"></span>
                             }
-                        </td>
-                        <td>
-                            @item.DTsCreate
-                        </td>
-                        <td>
-                            <a title="@localizer["Details"]" asp-action="orderdetails" asp-controller="Delivery" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-clipboard text-success"></span></span></a>
-                        </td>
+                            else
+                            {
+                                <span class="fe fe-24 fe-x"></span>
+                            }
+                        }
+                    </td>
+                    <td>
+                        @item.DTsCreate
+                    </td>
+                    <td>
+                        <a title="@localizer["Details"]" asp-action="orderdetails" asp-controller="Delivery" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-clipboard text-success"></span></span></a>
+                    </td>
 
 
-                    </tr>
+                </tr>
                     counter++;
                 }
 
@@ -159,7 +163,7 @@
 @section Scripts {
     <script>
 
-        ChangeColorSidebarItem("", "aAllOrderLines");
+        ChangeColorSidebarItem("anavbarDelivery", "Delivery");
 
     </script>
 

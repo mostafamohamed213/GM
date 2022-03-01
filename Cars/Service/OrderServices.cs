@@ -70,7 +70,7 @@ namespace Cars.Service
         internal PagingViewModel<OrderDetails> SearchOrderLines(string search,string userid)
         {
             var orders = db.OrderDetails.Where(c => c.Order.SystemUserCreate == userid && !c.InventoryID.HasValue && c.StatusID != 1 && c.StatusID != 5 && (c.WorkflowID == 1 || c.WorkflowID == 2) && c.Items.Trim().ToLower().Contains(search.Trim().ToLower())).
-               Include("OrderDetailsType").Include(c => c.Order).Include(c => c.UserBranch.Branch).Take(100).OrderByDescending(c => c.DTsCreate).ToList();
+               Include("OrderDetailsType").Include(c => c.Order.Vehicle).Include(c => c.UserBranch.Branch).Take(100).OrderByDescending(c => c.DTsCreate).ToList();
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             viewModel.items = orders.ToList();
             var itemsCount = orders.Count;
@@ -84,7 +84,7 @@ namespace Cars.Service
 
         public PagingViewModel<OrderDetails> getOrderLines(int currentPage,string userId)
         {
-            var orders = db.OrderDetails.Where(c=> c.Order.SystemUserCreate == userId && c.StatusID != 1 && c.StatusID != 5 && !c.InventoryID.HasValue &&  (c.WorkflowID == 1 || c.WorkflowID == 2)).Include(c => c.Order).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexOrderLinesMaxRows).Take(TablesMaxRows.IndexOrderLinesMaxRows).OrderByDescending(c => c.DTsCreate).ToList();
+            var orders = db.OrderDetails.Where(c=> c.Order.SystemUserCreate == userId && c.StatusID != 1 && c.StatusID != 5 && !c.InventoryID.HasValue &&  (c.WorkflowID == 1 || c.WorkflowID == 2)).Include(c => c.Order.Vehicle).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexOrderLinesMaxRows).Take(TablesMaxRows.IndexOrderLinesMaxRows).OrderByDescending(c => c.DTsCreate).ToList();
 
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             //var Brands = unitOfWork.Brands.

@@ -70,6 +70,7 @@
                 <tr>
                     <th>#</th>
                     <th>ID</th>
+                    <th>Car</th>
                     <th>Item</th>
                     <th>Quantity</th>
                     <th>Price</th>
@@ -80,19 +81,20 @@
             <tbody>
                 @foreach (var item in Model.items)
                 {
-                    <tr>
-                        <td>@counter</td>
-                        <td>ID : @((item.UserBranch==null||item.UserBranch.Branch==null||string.IsNullOrEmpty(item.UserBranch.Branch.BranchIP))?"00":item.UserBranch.Branch.BranchIP):@item.OrderID:@item.OrderDetailsID</td>
-                        <td>@item.Items</td>
-                        <td>@item.Quantity</td>
-                        <td>@item.Price</td>
-                        <td>
-                            <a title="@localizer["View"]" asp-action="GetByID" asp-controller="Finance" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-clipboard text-success"></span></span></a>
-                        </td>
-                        <td>
-                            <a title="@localizer["Edit"]" asp-action="Edit" asp-controller="Finance" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit text-success"></span></span></a>
-                        </td>
-                    </tr>
+                <tr>
+                    <td>@counter</td>
+                    <td>@item.Prefix</td>
+                    <td>@item.Order.Vehicle.Name</td>
+                    <td>@item.Items</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.Price</td>
+                    <td>
+                        <a title="@localizer["View"]" asp-action="GetByID" asp-controller="Finance" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-clipboard text-success"></span></span></a>
+                    </td>
+                    <td>
+                        <a title="@localizer["Edit"]" asp-action="Edit" asp-controller="Finance" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit text-success"></span></span></a>
+                    </td>
+                </tr>
                     counter++;
                 }
 

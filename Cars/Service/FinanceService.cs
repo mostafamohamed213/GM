@@ -35,7 +35,7 @@ namespace Cars.Service
         public async Task<OrderDetails> GetFinanceOrderDetialsByIDAsync(long orderDetailsID)
         {
             var result = await _context.OrderDetails.Where(x => x.OrderDetailsID == orderDetailsID).Include(x => x.Finance).ThenInclude(x => x.FinanceDocument)
-                .Include(x => x.UserBranch).ThenInclude(x => x.Branch).FirstOrDefaultAsync();
+                .Include(c=>c.Order.Vehicle).Include(x => x.UserBranch).ThenInclude(x => x.Branch).FirstOrDefaultAsync();
             return result;
         }
 

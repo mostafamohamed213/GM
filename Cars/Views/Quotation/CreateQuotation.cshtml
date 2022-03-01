@@ -99,7 +99,7 @@
                                          {
                                             foreach (var item in orderDetails.Value)
                                             {
-                                        <tr class='@(item.ParentOrderDetailsID.HasValue ? "bg-danger text-white":"bg-success text-white")'>
+                                        <tr class='@(item.ParentOrderDetailsID.HasValue ? "bg-success text-white":"bg-danger text-white")'>
                                             <td>@item.Prefix</td>
                                             <td>@item.Items</td>
                                             <td>@item.Quantity</td>

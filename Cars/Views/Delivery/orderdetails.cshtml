@@ -15,7 +15,7 @@
     <div class="col-12 mb-4">
         <div class="card shadow">
             <div class="card-header">
-                <strong class="card-title h4">@localizer["OrderHeaderDetails"]</strong>
+                <strong class="card-title h4">Order Header Details</strong>
             </div>
             <div class="card-body">
                 <div class="row h5">
@@ -23,7 +23,7 @@
                         @localizer["Chases"] : @Model.Order.Vehicle.Chases
                     </div>
                     <div class="col-md-3 border-left border-right">
-                        @localizer["CarName"] : @Model.Order.Vehicle.Name
+                        @localizer["Car"] : @Model.Order.Vehicle.Name
                     </div>
                     <div class="col-md-3 border-left border-right">
                         @localizer["Phone"] : @Model.Order.Customer.CustomerContacts.FirstOrDefault().Phone
@@ -63,7 +63,7 @@
 
 
                 </div>
-                <div class="row h5">
+                @*<div class="row h5">
                     <div class="col-md-4">
                         @if (Model.StatusID != 1)
                         {
@@ -75,14 +75,14 @@
                     </div>
                     <div class="col-md-4">
                     </div>
-                </div>
+                </div>*@
             </div>
         </div>
     </div>
     <div class="card-body">
         @if (Model.StatusID != 1)
         {
-            <h3> ID :01:@Model.OrderID:@Model.OrderDetailsID</h3>
+            <h3> ID :@Model.Prefix</h3>
         }
         <form class="needs-validation" asp-action="SubmitToDone" asp-controller="Delivery" method="post">
             <div class="row">
@@ -130,65 +130,13 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label for="wf">@localizer["WorkFlow"]</label>
-                        <input id="wf" value="@TempData["workflow"].ToString()" class="form-control" required readonly="readonly" disabled />
+                        <label for="wf">Header Location</label>
+                        <input id="wf" value="@(Model.Order.UserBranch?.Branch.Name)" class="form-control" required readonly="readonly" disabled />
                     </div>
-                    <div class="form-group mb-4">
-                        <label for="example-helping">
-                            @localizer["Approved"]  :
-                            @if (Model.IsApproved.HasValue && Model.IsApproved.Value)
-                            {
-                                <input id="IsApproved" type="checkbox" value="true" name="IsApproved" checked readonly="readonly" disabled />
-                                <input type="hidden" value="false" name="IsApproved" readonly="readonly" disabled />
-
-                            }
-
-                            else
-                            {
-                                <input id="IsApproved" type="checkbox" value="true" name="IsApproved" disabled readonly="readonly" />
-                                <input type="hidden" value="false" name="IsApproved" readonly="readonly" disabled />
-
-                                @if (@TempData["Reason"] != null)
-                                {
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Reason</span>
-                                        <input id="Reason" value="@TempData["Reason"].ToString()" class="form-control" required readonly="readonly" disabled />
-                                    </div>
-
-                                }
-                                else
-                                {
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Reason</span>
-                                        <input id="Reason" value="Not mentioned " class="form-control" required readonly="readonly" disabled />
-                                    </div>
-                                }
-                            }
-                        </label>
-
-
-                    </div>
-                    @if (AuthorizationService.AuthorizeAsync(User, Permissions.Inventory.Manage).Result.Succeeded)
-                    {
-                        <div class="form-group mb-3">
-                            <div class="row">
-                                <div class="col-md-5">
-
-                                    <input class="btn btn-success" style=" width: 100px;" type="submit" value="@localizer["Done"]" />
-
-                                </div>
-                                <div class="col-md-5"></div>
-
-                                <div class="col-md-2">
-
-
-                                </div>
-                            </div>
-
-
-                        </div>
-                    }
+                  
                     <div class="form-group mb-3">
+                        <label for="wf">Location</label>
+                        <input id="wf" value="@(Model.VendorLocation?.Name)" class="form-control" required readonly="readonly" disabled />
 
                     </div>
 
@@ -200,7 +148,7 @@
 </div>
 @section Scripts {
     <script>
-               ChangeColorSidebarItem("", "aAllOrderLines");
+        ChangeColorSidebarItem("anavbarDelivery", "Delivery");
 
         window.addEventListener('beforeunload', function (e) {
            OpenOrderDetails("@Model.OrderDetailsID");

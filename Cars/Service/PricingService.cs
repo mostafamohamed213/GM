@@ -22,7 +22,7 @@ namespace Cars.Service
 
         public PagingViewModel<OrderDetails> getOrders(int currentPage)
         {
-            var orders = db.OrderDetails.Include("OrderDetailsType").Where(c => c.StatusID == 2 && c.WorkflowID == 1 && !c.Price.HasValue).Skip((currentPage - 1) * TablesMaxRows.IndexPricingMaxRows).Take(TablesMaxRows.IndexPricingMaxRows).OrderByDescending(c=>c.DTsCreate).ToList();
+            var orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 1 && !c.Price.HasValue).Include(c => c.Order.Vehicle).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexPricingMaxRows).Take(TablesMaxRows.IndexPricingMaxRows).OrderByDescending(c=>c.DTsCreate).ToList();
 
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();         
             viewModel.items = orders.ToList();
@@ -38,7 +38,7 @@ namespace Cars.Service
         internal PagingViewModel<OrderDetails> SearchOrderLines(string search)
         {
             var orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 1 && !c.Price.HasValue && c.Items.Trim().ToLower().Contains(search.Trim().ToLower()))
-               .Include("OrderDetailsType").Take(100).OrderByDescending(c => c.DTsCreate).ToList();
+               .Include(c => c.Order.Vehicle).Include("OrderDetailsType").Include("OrderDetailsType").Take(100).OrderByDescending(c => c.DTsCreate).ToList();
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             viewModel.items = orders.ToList();
             var itemsCount = orders.Count;

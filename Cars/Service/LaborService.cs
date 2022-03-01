@@ -36,11 +36,11 @@ namespace Cars.Service
         public PagingViewModel<OrderDetails> getOrderLines(int currentPage)
         {
            
-            var orders = db.OrderDetails.Include(c=>c.Order).Where(c => c.StatusID == 2 && c.WorkflowID == 1 && c.Order.WithMaintenance.HasValue && c.Order.WithMaintenance.Value ).Include(c => c.VendorLocation).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).OrderByDescending(c=>c.DTsCreate).ToList();
+            var orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 1 && c.Order.WithMaintenance.HasValue && c.Order.WithMaintenance.Value ).Include(c => c.Order.Vehicle).Include(c => c.VendorLocation).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).OrderByDescending(c=>c.DTsCreate).ToList();
 
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             viewModel.items = orders.ToList();
-            var itemsCount = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 1 && c.Order.WithMaintenance.HasValue && c.Order.WithMaintenance.Value).Include(c => c.VendorLocation).Count();
+            var itemsCount = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 1 && c.Order.WithMaintenance.HasValue && c.Order.WithMaintenance.Value).Count();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexLaborMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
@@ -51,23 +51,23 @@ namespace Cars.Service
 
         public PagingViewModel<OrderDetails> getByType(int currentPage,string? type, decimal? from ,decimal? to,int? vendor)
         {
-            var orders = db.OrderDetails.Include(c => c.Order).Where(c => c.StatusID == 2 && c.WorkflowID == 1 && c.Order.WithMaintenance.HasValue && c.Order.WithMaintenance.Value).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).OrderByDescending(c=>c.DTsCreate).ToList();
+            var orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 1 && c.Order.WithMaintenance.HasValue && c.Order.WithMaintenance.Value).Include(c => c.Order.Vehicle).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).OrderByDescending(c=>c.DTsCreate).ToList();
 
             
             if (type != "all" && type!=null)
             {
-                orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 1 && c.Order.WithMaintenance.HasValue && c.Order.WithMaintenance.Value && c.OrderDetailsType.NameEn == type ).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).OrderByDescending(c => c.DTsCreate).ToList();
+                orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 1 && c.Order.WithMaintenance.HasValue && c.Order.WithMaintenance.Value && c.OrderDetailsType.NameEn == type ).Include(c => c.Order.Vehicle).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexLaborMaxRows).Take(TablesMaxRows.IndexLaborMaxRows).OrderByDescending(c => c.DTsCreate).ToList();
             }
 
             if(from!=null || to!=null || vendor != null)
             {
                 if(from !=null)
                 {
-                    orders = orders.Where(c=> c.Price > from ).ToList();
+                    orders = orders.Where(c=> c.Price >= from ).ToList();
                 }
                 if(to!=null)
                 {
-                    orders = orders.Where(c => c.Price <to).ToList();
+                    orders = orders.Where(c => c.Price <= to).ToList();
                 }
                 if(vendor != null)
                 {

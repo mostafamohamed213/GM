@@ -25,5 +25,8 @@ namespace Cars.Models
         public DateTime DTsCreate { get; set; }
         public string SystemUserUpdate { get; set; }
         public DateTime? DTsUpdate { get; set; }
+
+        [NotMapped]
+        public string CarName { get; set; }
     }
 }

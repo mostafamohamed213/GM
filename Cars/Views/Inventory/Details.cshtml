@@ -14,7 +14,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3">
-                        <h5>ID : @((Model.UserBranch==null||Model.UserBranch.Branch==null||string.IsNullOrEmpty(Model.UserBranch.Branch.BranchIP))?"00":Model.UserBranch.Branch.BranchIP):@Model.OrderID:@Model.OrderDetailsID</h5>
+                        <h5>ID : @Model.Prefix</h5>
                     </div>
                 </div>
                 <hr />
@@ -36,6 +36,23 @@
                             <div class="col-md-2">
                                 Current Quantity  :  @((Model.StatusID==2&& Model.Inventory!=null)? Model.Inventory.Quantity:0)
                             </div>
+                        </div>
+                        <div class="row h5">
+                            <div class="col-md-2">
+                                Car  :  @Model.Order.Vehicle.Name
+                            </div>
+                            <div class="col-md-2 border-left border-right">
+                                Chases  :  @Model.Order.Vehicle.Chases
+                            </div>
+                            @*<div class="col-md-2 border-left border-right">
+                                Price  :  @Model.Price
+                            </div>
+                            <div class="col-md-2 border-left border-right">
+                                Status  :  @((Model.Status!=null)? Model.Status.Name:"")
+                            </div>
+                            <div class="col-md-2">
+                                Current Quantity  :  @((Model.StatusID==2&& Model.Inventory!=null)? Model.Inventory.Quantity:0)
+                            </div>*@
                         </div>
                     </div>
                 </div>

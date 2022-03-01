@@ -74,12 +74,13 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>@localizer["ID"]</th>
-                    <th>@localizer["Items"]</th>
-                    <th>@localizer["Quantity"]</th>
-                    <th>@localizer["Type"]</th>
-                    <th>@localizer["Price"]</th>
-                    <th>@localizer["Vendor Location"]</th>
+                    <th>ID</th>
+                    <th>Car</th>
+                    <th>Items</th>
+                    <th>Quantity</th>
+                    <th>Type</th>
+                    <th>Price</th>
+                    <th>Vendor Location</th>
 
                     <th></th>
                 </tr>
@@ -87,34 +88,37 @@
             <tbody>
                 @foreach (var item in Model.items)
                  {
-                    <tr>
-                        <td>@Counter</td>
-                        <td>
-                            @item.Prefix
-                        </td>
-                        <td>
-                            @item.Items
-                        </td>
-                        <td>
-                            @item.Quantity
-                        </td>
-                        <td>
-                            @item.OrderDetailsType.NameEn
-                        </td>
+                <tr>
+                    <td>@Counter</td>
+                    <td>
+                        @item.Prefix
+                    </td>
+                    <td>
+                        @item.Order.Vehicle.Name
+                    </td>
+                    <td>
+                        @item.Items
+                    </td>
+                    <td>
+                        @item.Quantity
+                    </td>
+                    <td>
+                        @item.OrderDetailsType.NameEn
+                    </td>
 
-                        <td>
-                            @item.Price
-                        </td>
-                        <td>
-                            @item.VendorLocation.Name
-                        </td>
-                        <td>
+                    <td>
+                        @item.Price
+                    </td>
+                    <td>
+                        @item.VendorLocation.Name
+                    </td>
+                    <td>
 
-                            <a title="@localizer["Edit"]" asp-action="AssignVendor" asp-controller="Purchasing" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-success"></span></span></a>
-                            <a title="@localizer["Cancel"]" asp-controller="Purchasing" asp-action="CancelOrderDetails" asp-route-OrderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-x-circle text-danger"></span></span></a>
+                        <a title="@localizer["Edit"]" asp-action="AssignVendor" asp-controller="Purchasing" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-success"></span></span></a>
+                        <a title="@localizer["Cancel"]" asp-controller="Purchasing" asp-action="CancelOrderDetails" asp-route-OrderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-x-circle text-danger"></span></span></a>
 
-                        </td>
-                    </tr>
+                    </td>
+                </tr>
                     Counter++;
                  }
 

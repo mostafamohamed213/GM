@@ -81,6 +81,7 @@
                 <tr>
                     <th>#</th>
                     <th>@localizer["ID"]</th>
+                    <th>Car</th>
                     <th>@localizer["Confirmed"]</th>
                     <th>@localizer["Date"]</th>
 
@@ -90,29 +91,32 @@
             <tbody>
                 @foreach (var item in Model.items)
                 {
-                    <tr>
-                        <td>
-                            @counter
-                        </td>
-                        <td>
-                            @item.QuotationID
-                        </td>
-                        <td>
-                            @if (item.Confirmed)
-                            {
-                                <span class="fe fe-24 fe-check"></span>
-                            }
-                        </td>
-                        <td>
-                            @item.DTsCreate
-                        </td>
-                        <td>
-                            <a title="@localizer["View"]" asp-action="Display" asp-controller="Quotation" asp-route-quotationID="@item.QuotationID"> <span class="small text-muted"><span class="fe fe-24 fe-clipboard text-success"></span></span></a>
+                <tr>
+                    <td>
+                        @counter
+                    </td>
+                    <td>
+                        @item.QuotationID
+                    </td>
+                    <td>
+                        @(item.CarName is not null ? item.CarName:"--")
+                   </td>
+                    <td>
+                        @if (item.Confirmed)
+                        {
+                            <span class="fe fe-24 fe-check"></span>
+                        }
+                    </td>
+                    <td>
+                        @item.DTsCreate
+                    </td>
+                    <td>
+                        <a title="@localizer["View"]" asp-action="Display" asp-controller="Quotation" asp-route-quotationID="@item.QuotationID"> <span class="small text-muted"><span class="fe fe-24 fe-clipboard text-success"></span></span></a>
 
-                        </td>
+                    </td>
 
 
-                    </tr>
+                </tr>
                     counter++;
                 }
 

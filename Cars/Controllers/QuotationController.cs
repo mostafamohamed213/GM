@@ -30,7 +30,7 @@ namespace Cars.Controllers
                 //ViewBag.countOrderLines = services.getCountOrderLines(userId);
                 return View(services.getQuotations(currentPage, userId));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return View("_CustomError");
             }

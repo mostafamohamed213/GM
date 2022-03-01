@@ -22,10 +22,10 @@ namespace Cars.Service
         }
         public PagingViewModel<OrderDetails> getOrderDetails(int currentPage)
         {
-            var orderDetails = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 6).Include(c=>c.OrderDetailsType).Include(c=>c.VendorLocation).Skip((currentPage - 1) * TablesMaxRows.IndexPurchasingMaxRows).Take(TablesMaxRows.IndexPurchasingMaxRows).ToList();
+            var orderDetails = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 6).Include(c => c.Order.Vehicle).Include(c=>c.OrderDetailsType).Include(c=>c.VendorLocation).Skip((currentPage - 1) * TablesMaxRows.IndexPurchasingMaxRows).Take(TablesMaxRows.IndexPurchasingMaxRows).ToList();
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             viewModel.items = orderDetails.ToList();
-            var itemsCount = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 6).Where(c => c.StatusID == 2).Count();
+            var itemsCount = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 6).Count();
             double pageCount = (double)(itemsCount / Convert.ToDecimal(TablesMaxRows.IndexPurchasingMaxRows));
             viewModel.PageCount = (int)Math.Ceiling(pageCount);
             viewModel.CurrentPageIndex = currentPage;
@@ -35,8 +35,8 @@ namespace Cars.Service
         }
         internal PagingViewModel<OrderDetails> SearchOrderLines(string search)
         {
-            var orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 6 && c.Items.Trim().ToLower().Contains(search.Trim().ToLower())).
-              Include(c => c.OrderDetailsType).Include(c => c.VendorLocation).Take(100).ToList();
+            var orders = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 6 && c.Items.Trim().ToLower().Contains(search.Trim().ToLower()))
+              .Include(c => c.Order.Vehicle).Include(c => c.OrderDetailsType).Include(c => c.VendorLocation).Take(100).ToList();
             PagingViewModel<OrderDetails> viewModel = new PagingViewModel<OrderDetails>();
             viewModel.items = orders.ToList();
             var itemsCount = orders.Count;
@@ -62,7 +62,7 @@ namespace Cars.Service
 
         internal OrderDetails getOrderDetailsByID(long orderDetailsID)
         {
-          return db.OrderDetails.Include(c => c.OrderDetailsType).Include(c => c.VendorLocation).FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
+          return db.OrderDetails.Where(c => c.OrderDetailsID == orderDetailsID).Include(c => c.OrderDetailsType).Include(c => c.Order.Vehicle).Include(c => c.VendorLocation).FirstOrDefault();
         }
 
         public PagingViewModel<OrderDetails> getOrdersWithChangelength(int currentPageIndex, int length)

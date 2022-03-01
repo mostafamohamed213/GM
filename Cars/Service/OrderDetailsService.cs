@@ -21,14 +21,14 @@ namespace Cars.Service
             int itemsCount = 0;
             if (string.IsNullOrEmpty(search))
             {
-                orderDetails = await _context.OrderDetails.Where(c => c.StatusID == statusID && c.WorkflowID == workflowID).Include(x => x.UserBranch).ThenInclude(x=>x.Branch).Skip((currentPage - 1) * maxRows).Take(maxRows).ToListAsync();
+                orderDetails = await _context.OrderDetails.Where(c => c.StatusID == statusID && c.WorkflowID == workflowID).Include(x => x.Order.Vehicle).Include(x => x.UserBranch).ThenInclude(x=>x.Branch).Skip((currentPage - 1) * maxRows).Take(maxRows).ToListAsync();
                 itemsCount = _context.OrderDetails.Where(c => c.StatusID == statusID && c.WorkflowID == workflowID).Count();
             }
             else
             {
                 orderDetails = await _context.OrderDetails.Where(c => c.StatusID == statusID && c.WorkflowID == workflowID
                         && (c.Items.ToLower().Trim().Contains(search.ToLower().Trim()) || c.Quantity.ToString().Contains(search.ToLower().Trim()) || (c.Prefix).Contains(search.ToLower().Trim())))
-                        .Skip((currentPage - 1) * maxRows).Take(maxRows).Include(x => x.UserBranch).ThenInclude(x => x.Branch).ToListAsync();
+                        .Skip((currentPage - 1) * maxRows).Take(maxRows).Include(x => x.Order.Vehicle).Include(x => x.UserBranch).ThenInclude(x => x.Branch).ToListAsync();
                 itemsCount = _context.OrderDetails.Where(c => c.StatusID == statusID && c.WorkflowID == workflowID
                         && (c.Items.ToLower().Trim().Contains(search.ToLower().Trim()) || c.Quantity.ToString().Contains(search.ToLower().Trim()) || (c.Prefix).Contains(search.ToLower().Trim()))).Count();
             }
@@ -48,7 +48,7 @@ namespace Cars.Service
             int itemsCount = 0;
             if (string.IsNullOrEmpty(search))
             {
-                orderDetails = await _context.OrderDetails.Where(c => c.RunnerID == userID && c.RunnerID == userID && c.StatusID == 2 && (c.WorkflowID == 6 || c.WorkflowID == 7)).Include(x => x.UserBranch).ThenInclude(x => x.Branch).Include(x => x.Workflow)
+                orderDetails = await _context.OrderDetails.Where(c => c.RunnerID == userID && c.RunnerID == userID && c.StatusID == 2 && (c.WorkflowID == 6 || c.WorkflowID == 7)).Include(c=>c.Order.Vehicle).Include(x => x.Order.UserBranch.Branch).Include(x => x.VendorLocation)
                     .Skip((currentPage - 1) * maxRows).Take(maxRows).ToListAsync();
                 itemsCount = _context.OrderDetails.Where(c => c.RunnerID == userID && c.RunnerID == userID && c.StatusID == 2 && (c.WorkflowID == 6 || c.WorkflowID == 7)).Count();
             }
@@ -56,7 +56,7 @@ namespace Cars.Service
             {
                 orderDetails = await _context.OrderDetails.Where(c => c.RunnerID == userID && c.RunnerID == userID && c.StatusID == 2 && (c.WorkflowID == 6 || c.WorkflowID == 7)
                         && (c.Items.ToLower().Trim().Contains(search.ToLower().Trim()) || c.Quantity.ToString().Contains(search.ToLower().Trim()) || (c.Prefix).Contains(search.ToLower().Trim())))
-                        .Skip((currentPage - 1) * maxRows).Take(maxRows).Include(x => x.UserBranch).ThenInclude(x => x.Branch).Include(x => x.Workflow).ToListAsync();
+                        .Skip((currentPage - 1) * maxRows).Take(maxRows).Include(c => c.Order.Vehicle).Include(x => x.Order.UserBranch.Branch).Include(x => x.VendorLocation).ToListAsync();
                 itemsCount = _context.OrderDetails.Where(c => c.RunnerID == userID && c.RunnerID == userID && c.StatusID == 2 && (c.WorkflowID == 6 || c.WorkflowID == 7)
                         && (c.Items.ToLower().Trim().Contains(search.ToLower().Trim()) || c.Quantity.ToString().Contains(search.ToLower().Trim()) || (c.Prefix).Contains(search.ToLower().Trim()))).Count();
             }
@@ -72,7 +72,7 @@ namespace Cars.Service
 
         public async Task<OrderDetails> GetByIDAsync(long orderDetailsID, string userID)
         {
-            var result = await _context.OrderDetails.Where(x => x.RunnerID==userID && x.OrderDetailsID == orderDetailsID).Include(x => x.UserBranch).ThenInclude(x => x.Branch).Include(x => x.Workflow).FirstOrDefaultAsync();
+            var result = await _context.OrderDetails.Where(x => x.RunnerID==userID && x.OrderDetailsID == orderDetailsID).Include(c => c.Order.Vehicle).Include(x => x.Order.UserBranch.Branch).Include(x => x.VendorLocation).FirstOrDefaultAsync();
             return result;
         }
 
@@ -82,7 +82,7 @@ namespace Cars.Service
             int itemsCount = 0;
             if (string.IsNullOrEmpty(search))
             {
-                orderDetails = await _context.OrderDetails.Where(c => c.StatusID == statusID && c.WorkflowID == workflowID).Include(x => x.UserBranch).ThenInclude(x => x.Branch).Include(x => x.Status).Include(x => x.Inventory)
+                orderDetails = await _context.OrderDetails.Where(c => c.StatusID == statusID && c.WorkflowID == workflowID).Include(x => x.Order.Vehicle).Include(x => x.UserBranch).ThenInclude(x => x.Branch).Include(x => x.Status).Include(x => x.Inventory)
                     .Skip((currentPage - 1) * maxRows).Take(maxRows).ToListAsync();
                 itemsCount = _context.OrderDetails.Where(c => c.StatusID == statusID && c.WorkflowID == workflowID).Count();
             }
@@ -90,7 +90,7 @@ namespace Cars.Service
             {
                 orderDetails = await _context.OrderDetails.Where(c => c.StatusID == statusID && c.WorkflowID == workflowID
                         && (c.Items.ToLower().Trim().Contains(search.ToLower().Trim()) || c.Quantity.ToString().Contains(search.ToLower().Trim()) || (c.Prefix).Contains(search.ToLower().Trim())))
-                        .Skip((currentPage - 1) * maxRows).Take(maxRows).Include(x => x.UserBranch).ThenInclude(x => x.Branch).Include(x => x.Status).Include(x => x.Inventory).ToListAsync();
+                        .Skip((currentPage - 1) * maxRows).Take(maxRows).Include(x => x.Order.Vehicle).Include(x => x.UserBranch).ThenInclude(x => x.Branch).Include(x => x.Status).Include(x => x.Inventory).ToListAsync();
                 itemsCount = _context.OrderDetails.Where(c => c.StatusID == statusID && c.WorkflowID == workflowID
                         && (c.Items.ToLower().Trim().Contains(search.ToLower().Trim()) || c.Quantity.ToString().Contains(search.ToLower().Trim()) || (c.Prefix).Contains(search.ToLower().Trim()))).Count();
             }

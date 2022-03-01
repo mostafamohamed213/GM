@@ -12,9 +12,9 @@
         <strong class="card-title">@ViewData["TeamName"]</strong>
     </div>
     <br /><br />
-   
+
     <div class="card-body">
-      
+
         <form class="needs-validation" asp-action="EditDuration" asp-controller="TeamDuration" method="post">
             <div class="row">
                 <input asp-for="TeamDurationID" value="@Model.TeamDurationID" style="display:none" />
@@ -105,7 +105,7 @@
                         else
                         {
                             <label for="simpleinput"> &nbsp;&nbsp;&nbsp; No Users in This Team</label>
-                            
+
                         }
 
                     </div>
@@ -135,5 +135,15 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+
+        ChangeColorSidebarItem("anavbarTeamDuration", "aTeamDuration");
+
+    </script>
+
+}
+
 
 

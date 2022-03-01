@@ -136,12 +136,12 @@
                 <div class="w-100 mb-4 d-flex">
                     <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="~/">
                         @*<svg version="1.1" id="logo" class="navbar-brand-img brand-sm" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 120 120" xml:space="preserve">
-                                      <g>
-                                      <polygon class="st0" points="78,105 15,105 24,87 87,87 	" />
-                                      <polygon class="st0" points="96,69 33,69 42,51 105,51 	" />
-                                      <polygon class="st0" points="78,33 15,33 24,15 87,15 	" />
-                              </g>
-                            </svg>*@
+                          <g>
+                          <polygon class="st0" points="78,105 15,105 24,87 87,87 	" />
+                          <polygon class="st0" points="96,69 33,69 42,51 105,51 	" />
+                          <polygon class="st0" points="78,33 15,33 24,15 87,15 	" />
+                  </g>
+                </svg>*@
                         <img src="~/Images/General_Motors_(2021).svg" class="img-fluid" style="width:40px" />
 
                     </a>
@@ -164,27 +164,27 @@
                                         <span class="ml-1 item-text">Orders</span>
                                     </a>
                                 </li>
-                                
-                                    <li class="nav-item">
-                                        <a class="nav-link pl-3" asp-controller="Sales" asp-action="CreateOrder" id="aAddOrderHeader"><span class="ml-1 item-text">Add Order</span></a>
-                                    </li>
-                                  
-                                    
-                                    <li class="nav-item">
-                                        <a class="nav-link pl-3" asp-controller="Sales" asp-action="GetOrderLines" asp-route-currentPage="1" id="aOrderLines"><span class="ml-1 item-text">Order lines</span></a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link pl-3" asp-controller="Sales" asp-action="Draft" asp-route-currentPage="1" id="aDraftOrderHeader"><span class="ml-1 item-text">@localizer["Draft"]</span></a>
-                                    </li>
-                                    @*<li class="nav-item">
-                   <a class="nav-link pl-3" asp-controller="Sales" asp-action="GetOrderLines" asp-route-currentPage="1" id="aOrderLines"><span class="ml-1 item-text">@localizer["Draft"]</span></a>
-            </li>*@
-                                    @*<li class="nav-item active">
-                <a class="nav-link pl-3" id="testit" asp-controller="Sales" asp-action="ViewOrder" asp-route-OrderId="10"> <span class=" ml-1 item-text"></span></a>
 
-            </li>*@
+                                <li class="nav-item">
+                                    <a class="nav-link pl-3" asp-controller="Sales" asp-action="CreateOrder" id="aAddOrderHeader"><span class="ml-1 item-text">Add Order</span></a>
+                                </li>
 
-                                </ul>
+
+                                <li class="nav-item">
+                                    <a class="nav-link pl-3" asp-controller="Sales" asp-action="GetOrderLines" asp-route-currentPage="1" id="aOrderLines"><span class="ml-1 item-text">Order lines</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link pl-3" asp-controller="Sales" asp-action="Draft" asp-route-currentPage="1" id="aDraftOrderHeader"><span class="ml-1 item-text">@localizer["Draft"]</span></a>
+                                </li>
+                                @*<li class="nav-item">
+                               <a class="nav-link pl-3" asp-controller="Sales" asp-action="GetOrderLines" asp-route-currentPage="1" id="aOrderLines"><span class="ml-1 item-text">@localizer["Draft"]</span></a>
+                        </li>*@
+                                @*<li class="nav-item active">
+                            <a class="nav-link pl-3" id="testit" asp-controller="Sales" asp-action="ViewOrder" asp-route-OrderId="10"> <span class=" ml-1 item-text"></span></a>
+
+                        </li>*@
+
+                            </ul>
                         </li>
 
                     </ul>
@@ -217,25 +217,25 @@
 
 
                 @*<p class="text-muted nav-heading mt-4 mb-1">
-                        <span>Leader</span>
-                    </p>
-                    <ul class="navbar-nav flex-fill w-100 mb-2">
-                        <li class="nav-item dropdown">
-                            <a href="#ui-OrderLinesUsed" data-toggle="collapse" aria-expanded="false" id="anavbarOrderLinesUsed" class="dropdown-toggle nav-link">
-                                <i class="fe fe-box fe-16"></i>
-                                <span class="ml-3 item-text">Order Lines</span>
-                            </a>
-                            <ul class="collapse list-unstyled pl-4 w-100" id="ui-OrderLinesUsed">
-                                <li class="nav-item">
-                                    <a class="nav-link pl-3" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
-                                        <span class="ml-1 item-text">Order lines used</span>
-                                    </a>
-                                </li>
+            <span>Leader</span>
+        </p>
+        <ul class="navbar-nav flex-fill w-100 mb-2">
+            <li class="nav-item dropdown">
+                <a href="#ui-OrderLinesUsed" data-toggle="collapse" aria-expanded="false" id="anavbarOrderLinesUsed" class="dropdown-toggle nav-link">
+                    <i class="fe fe-box fe-16"></i>
+                    <span class="ml-3 item-text">Order Lines</span>
+                </a>
+                <ul class="collapse list-unstyled pl-4 w-100" id="ui-OrderLinesUsed">
+                    <li class="nav-item">
+                        <a class="nav-link pl-3" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
+                            <span class="ml-1 item-text">Order lines used</span>
+                        </a>
+                    </li>
 
-                            </ul>
-                        </li>
+                </ul>
+            </li>
 
-                    </ul>*@
+        </ul>*@
 
 
                 @if (AuthorizationService.AuthorizeAsync(User, Permissions.Pricing.Manage).Result.Succeeded && !AuthorizationService.AuthorizeAsync(User, Permissions.Users.Create).Result.Succeeded)
@@ -324,29 +324,6 @@
 
                     </ul>
                 }
-
-                
-                
-                    <p class="text-muted nav-heading mt-4 mb-1">
-                        <span>@localizer["Team Duration"]</span>
-                    </p>
-                    <ul class="navbar-nav flex-fill w-100 mb-2">
-                        <li class="nav-item dropdown">
-                            <a href="#ui-elements-Purchasing" data-toggle="collapse" aria-expanded="false" id="anavbarPurchasing" class="dropdown-toggle nav-link">
-                                <i class="fe fe-box fe-16"></i>
-                                <span class="ml-3 item-text">@localizer["Team Duration"]</span>
-                            </a>
-                            <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements-Purchasing">
-                                <li class="nav-item">
-                                    <a class="nav-link pl-3" asp-action="ViewTeamDuration" asp-controller="TeamDuration" id="aPurchasing">
-                                        <span class="ml-1 item-text">Team Duration</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
-                    </ul>
-          
 
                 @if (AuthorizationService.AuthorizeAsync(User, Permissions.Inventory.Manage).Result.Succeeded)
                 {<p class="text-muted nav-heading mt-4 mb-1">
@@ -465,7 +442,6 @@
                     <p class="text-muted nav-heading mt-4 mb-1">
                         <span>Administration</span>
                     </p>
-
                     <ul class="navbar-nav flex-fill w-100 mb-2">
                         <li class="nav-item dropdown">
                             <a href="#administrationOrders" data-toggle="collapse" aria-expanded="false" id="linkadministrationOrders" class="dropdown-toggle nav-link">
@@ -491,19 +467,30 @@
                                 <span class="ml-3 item-text ">Users Management</span>
                             </a>
                         </li>
+                    </ul>
 
 
-
-                        @*<li class="nav-item w-100">
-
-                                <a class="nav-link" asp-action="GetOrderLinesUsed" asp-controller="SystemIssues" asp-route-currentPage="1" id="aOrderLinesUsed">
-                                    <i class="fe fe-box fe-16"></i>
-                                    <span class="ml-3 item-text">Order lines used</span>
-                                </a>
-                            </li>*@
-
+                    <p class="text-muted nav-heading mt-4 mb-1">
+                        <span>@localizer["Team Duration"]</span>
+                    </p>
+                    <ul class="navbar-nav flex-fill w-100 mb-2">
+                        <li class="nav-item dropdown">
+                            <a href="#ui-elements-TeamDuration" data-toggle="collapse" aria-expanded="false" id="anavbarTeamDuration" class="dropdown-toggle nav-link">
+                                <i class="fe fe-box fe-16"></i>
+                                <span class="ml-3 item-text">@localizer["Team Duration"]</span>
+                            </a>
+                            <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements-TeamDuration">
+                                <li class="nav-item">
+                                    <a class="nav-link pl-3" asp-action="ViewTeamDuration" asp-controller="TeamDuration" id="aTeamDuration">
+                                        <span class="ml-1 item-text">Team Duration</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
                     </ul>
+
+
                     <p class="text-muted nav-heading mt-4 mb-1">
                         <span>All Order Lines  </span>
                     </p>
@@ -516,8 +503,6 @@
                                 <span class="ml-3 item-text ">All Order Lines</span>
                             </a>
                         </li>
-
-
                     </ul>
 
                 }
@@ -526,36 +511,36 @@
 
 
                 @*<p class="text-muted nav-heading mt-4 mb-1">
-                                <span>Vendor Location </span>
-                            </p>
-                            <ul class="navbar-nav flex-fill w-100 mb-2">
+                    <span>Vendor Location </span>
+                </p>
+                <ul class="navbar-nav flex-fill w-100 mb-2">
 
-                                <li class="nav-item w-100">
+                    <li class="nav-item w-100">
 
-                        <a class="nav-link" asp-controller="VendorLocation" asp-action="GetAllVendorsLocation" asp-route-currentPage="1" id="aVendorLocation">
-                            <i class="fe fe-24 fe-globe"></i>
-                            <span class="ml-3 item-text">Vendor Location</span>
-                        </a>
-                    </li>
+            <a class="nav-link" asp-controller="VendorLocation" asp-action="GetAllVendorsLocation" asp-route-currentPage="1" id="aVendorLocation">
+                <i class="fe fe-24 fe-globe"></i>
+                <span class="ml-3 item-text">Vendor Location</span>
+            </a>
+        </li>
 
 
-                            </ul>*@
+                </ul>*@
 
                 @*<p class="text-muted nav-heading mt-4 mb-1">
-                        <span>Runners </span>
-                    </p>
-                    <ul class="navbar-nav flex-fill w-100 mb-2">
+            <span>Runners </span>
+        </p>
+        <ul class="navbar-nav flex-fill w-100 mb-2">
 
-                        <li class="nav-item w-100">
+            <li class="nav-item w-100">
 
-                            <a class="nav-link" asp-controller="Runner" asp-action="GetAllRunners" asp-route-currentPage="1" id="aRunners">
-                                <i class="fe fe-24 fe-truck"></i>
-                                <span class="ml-3 item-text ">Runners</span>
-                            </a>
-                        </li>
+                <a class="nav-link" asp-controller="Runner" asp-action="GetAllRunners" asp-route-currentPage="1" id="aRunners">
+                    <i class="fe fe-24 fe-truck"></i>
+                    <span class="ml-3 item-text ">Runners</span>
+                </a>
+            </li>
 
 
-                    </ul>*@
+        </ul>*@
 
 
 
@@ -1018,7 +1003,7 @@
                 $("#" + ParentID).click();
 
             }
-            let ItemIds = ['aOrderHeaders', 'aAddOrderHeader', 'aDraftOrderHeader', 'aOrderLines', 'aAdministration', 'aOrderLinesUsed', 'aOrderLinesForPricing', 'aQuotations', 'aAddQuotations', 'aPurchasing', 'addLabor', 'aAllOrderLines', 'aVendorLocation', 'aRunners'];
+            let ItemIds = ['aOrderHeaders', 'aAddOrderHeader', 'aDraftOrderHeader', 'aOrderLines', 'aAdministration', 'aOrderLinesUsed', 'aOrderLinesForPricing', 'aQuotations', 'aAddQuotations', 'aPurchasing', 'addLabor', 'aAllOrderLines', 'aVendorLocation', 'aRunnerOrder', 'aInventory', 'Delivery','aTeamDuration'];
             ItemIds.forEach(function (i) {
 
                 if (i == ItemID) {

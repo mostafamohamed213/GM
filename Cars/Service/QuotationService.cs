@@ -18,7 +18,9 @@ namespace Cars.Service
         }
         public PagingViewModel<Quotation> getQuotations(int currentPage ,string userId)
         {
-            var quotations = db.Quotations.Include("Status").Where(c => c.StatusID == 2&& c.SystemUserCreate == userId).Skip((currentPage - 1) * TablesMaxRows.IndexQuotationMaxRows).Take(TablesMaxRows.IndexQuotationMaxRows).OrderByDescending(c=>c.DTsCreate).ToList();
+            var quotations = db.Quotations.Include("Status").Where(c => c.StatusID == 2&& c.SystemUserCreate == userId).Skip((currentPage - 1) * TablesMaxRows.IndexQuotationMaxRows).Take(TablesMaxRows.IndexQuotationMaxRows).OrderByDescending(c=>c.DTsCreate)
+                .Select(c=> new Quotation {QuotationID =c.QuotationID ,Confirmed=c.Confirmed,DTsCreate =c.DTsCreate,CarName= db.OrderDetails.Include(c=>c.Order.Vehicle).FirstOrDefault(x=>x.QuotationID.HasValue && x.QuotationID.Value == c.QuotationID).Order.Vehicle.Name}).ToList();
+          
             PagingViewModel<Quotation> viewModel = new PagingViewModel<Quotation>();
             viewModel.items = quotations.ToList();
             var itemsCount = db.Quotations.Where(c => c.StatusID == 2).Count();
@@ -32,7 +34,8 @@ namespace Cars.Service
         }
         internal PagingViewModel<Quotation> SearchQuotations(string search,string UserId)
         {
-            var quotations = db.Quotations.Where(c => c.StatusID == 2&&c.SystemUserCreate == UserId && c.QuotationID == long.Parse(search)).Include("Status").Take(100).OrderByDescending(c => c.DTsCreate).ToList();
+            var quotations = db.Quotations.Where(c => c.StatusID == 2&&c.SystemUserCreate == UserId && c.QuotationID == long.Parse(search)).Include("Status").Take(100).OrderByDescending(c => c.DTsCreate)
+                .Select(c => new Quotation { QuotationID = c.QuotationID, Confirmed = c.Confirmed, DTsCreate = c.DTsCreate, CarName = db.OrderDetails.Include(c => c.Order.Vehicle).FirstOrDefault(x => x.QuotationID.HasValue && x.QuotationID.Value == c.QuotationID).Order.Vehicle.Name }).ToList();
             PagingViewModel<Quotation> viewModel = new PagingViewModel<Quotation>();
             viewModel.items = quotations.ToList();
             var itemsCount = quotations.Count;

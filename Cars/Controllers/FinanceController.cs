@@ -33,7 +33,7 @@ namespace Cars.Controllers
                 var result = await _service.GetFinanceOrderDetialsAsync(currentPage, search);
                 return View(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return View("_CustomError");
             }

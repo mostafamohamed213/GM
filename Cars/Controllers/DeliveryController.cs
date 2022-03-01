@@ -71,8 +71,7 @@ namespace Cars.Controllers
                     var reason = db.OrderDetailsStatusLogs.Where(r => r.OrderDetailsID == orderDetails.OrderDetailsID).FirstOrDefault();
                     ViewBag.types = services.GetSelectListOrderDetailsType();
                     var workflow = db.Workflows.Where(w => w.WorkflowID == orderDetails.WorkflowID).FirstOrDefault();
-                    var status = db.Status.Where(s => s.StatusID == orderDetails.StatusID).FirstOrDefault();
-                    TempData["workflow"] = workflow.Name;
+                    var status = db.Status.Where(s => s.StatusID == orderDetails.StatusID).FirstOrDefault();                    
                     TempData["status"] = status.Name;
                     if (reason != null)
                         TempData["Reason"] = reason.Reason;

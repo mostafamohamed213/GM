@@ -249,5 +249,20 @@ namespace Cars.Controllers
             string fileName = "myfile.ext";
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
+        [HttpGet]
+        public IActionResult ReverseOrderLine()
+        {
+            try
+            {
+                var quotation = services.ReverseOrderLine(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                return View("Display", quotation);
+            }
+            catch (Exception)
+            {
+
+                return View("_CustomError");
+            }
+
+        }
     }
 }

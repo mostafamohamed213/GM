@@ -212,6 +212,25 @@
                         </li>
 
                     </ul>
+
+                    <p class="text-muted nav-heading mt-4 mb-1">
+                        <span>@localizer["Operations"]</span>
+                    </p>
+                    <ul class="navbar-nav flex-fill w-100 mb-2">
+                        <li class="nav-item dropdown">
+                            <a href="#ui-elements-Operations" data-toggle="collapse" aria-expanded="false" id="anavbarOperations" class="dropdown-toggle nav-link">
+                                <i class="fe fe-box fe-16"></i>
+                                <span class="ml-3 item-text">@localizer["Operations"]</span>
+                            </a>
+                            <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements-Quotation">
+                                <li class="nav-item">
+                                    <a class="nav-link pl-3" asp-action="ReversOrderLine" asp-controller="Quotation" asp-route-currentPage="1" id="aOperationsQuotation">
+                                        <span class="ml-1 item-text">Reverse Order Line</span>
+                                    </a>
+                                </li>                              
+                            </ul>
+                        </li>
+                    </ul>
                 }
 
 
@@ -1003,7 +1022,7 @@
                 $("#" + ParentID).click();
 
             }
-            let ItemIds = ['aOrderHeaders', 'aAddOrderHeader', 'aDraftOrderHeader', 'aOrderLines', 'aAdministration', 'aOrderLinesUsed', 'aOrderLinesForPricing', 'aQuotations', 'aAddQuotations', 'aPurchasing', 'addLabor', 'aAllOrderLines', 'aVendorLocation', 'aRunnerOrder', 'aInventory', 'Delivery','aTeamDuration'];
+            let ItemIds = ['aOrderHeaders', 'aAddOrderHeader', 'aDraftOrderHeader', 'aOrderLines', 'aAdministration', 'aOrderLinesUsed', 'aOrderLinesForPricing', 'aQuotations', 'aAddQuotations', 'aPurchasing', 'addLabor', 'aAllOrderLines', 'aVendorLocation', 'aRunnerOrder', 'aInventory', 'Delivery', 'aTeamDuration','aOperationsQuotation'];
             ItemIds.forEach(function (i) {
 
                 if (i == ItemID) {

@@ -26,6 +26,8 @@ namespace Cars.Models
         public DateTime? UsedDateTime2 { get; set; }
         public string UsedByUser2 { get; set; }
         public long? ParentOrderDetailsID { get; set; }
+        [ForeignKey("ParentOrderDetailsID")]
+        public virtual List<OrderDetails> Alternatives { get; set; }
         public long OrderID { get; set; }
         [ForeignKey("OrderID")]
         public virtual Order Order { get; set; }

@@ -90,7 +90,7 @@
                                             <th>Price</th>
                                             <th>Hours</th>
                                             <th>Value</th>
-                                            <th>Maintenance</th>
+                                            @*<th>Maintenance</th>*@
                                             <th>Select</th>
                                         </tr>
                                     </thead>
@@ -115,7 +115,7 @@
                                                 <td>--</td>
                                             }
 
-                                            <td>
+                                            @*<td>
                                                 @if (item.Order.WithMaintenance.HasValue && item.Order.WithMaintenance.Value)
                                                 {
                                                 <div class="custom-control custom-switch">
@@ -128,7 +128,7 @@
                                                    <span>--</span>
                                                 }
                                                 
-                                            </td>
+                                            </td>*@
                                             <td>
                                                     <div class="custom-control custom-switch">
                                                         <input type="checkbox" class='custom-control-input @(item.ParentOrderDetailsID.HasValue? item.ParentOrderDetailsID.Value: item.OrderDetailsID)' onchange="addOrRemoveOrderLinesId(@(item.ParentOrderDetailsID.HasValue? item.ParentOrderDetailsID.Value: item.OrderDetailsID),@item.OrderDetailsID)" id="@item.OrderDetailsID">
@@ -138,14 +138,16 @@
                                             </tr>
 
                                             }
-                                                <tr>
-                                                    <td>---</td>
-                                                    <td>---</td>
-                                                    <td>---</td>
-                                                    <td>---</td>
-                                                    <td>---</td>
-                                                    <td>---</td>
-                                                </tr>
+                                    <tr>
+                                        <td>---</td>
+                                        <td>---</td>
+                                        <td>---</td>
+                                        <td>---</td>
+                                        <td>---</td>
+                                        <td>---</td>
+                                        @*<td>---</td>*@
+                                        <td>---</td>
+                                    </tr>
                                          }
                                     </tbody>
                                 </table>
@@ -200,8 +202,9 @@
             var element = document.getElementById(orderLineid);
 
             if (element.checked) {
-                var maintenance = document.getElementById("WithMaintenance " + orderLineid);
-                var el = { id: orderLineid, maintenance: maintenance.checked };
+                //var maintenance = document.getElementById("WithMaintenance " + orderLineid);
+                //var el = { id: orderLineid, maintenance: maintenance.checked };
+                var el = { id: orderLineid, maintenance: true };
                 orderLinesIds.push(el);
                 Array.prototype.forEach.call(els, function (el) {
                     if (el.id != orderLineid) {

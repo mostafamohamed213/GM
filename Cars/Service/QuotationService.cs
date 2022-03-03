@@ -138,7 +138,7 @@ namespace Cars.Service
                          };
                         return model;
                     }
-                   var OrderDetails= db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 4 && !c.QuotationID.HasValue && ids.Contains(c.OrderDetailsID)).ToList();
+                   var OrderDetails= db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 4 && !c.QuotationID.HasValue && ids.Contains(c.OrderDetailsID)).Include(c=>c.Order).ToList();
                     Quotation quotation = new Quotation()
                     {
                         OrderDetails = OrderDetails,
@@ -150,14 +150,15 @@ namespace Cars.Service
                     foreach (var item in OrderDetails)
                     {
                         item.DTsWorflowEnter = DateTime.Now;
-                        foreach (var model in models)
-                        {
-                            if (model.id==item.OrderDetailsID)
-                            {
-                                item.Maintenance = model.maintenance;
-                            }
-                        }
-                    }
+                        item.Maintenance = item.Order.WithMaintenance.HasValue ? item.Order.WithMaintenance.Value :false;
+                    //foreach (var model in models)
+                    //{
+                    //    if (model.id==item.OrderDetailsID)
+                    //    {
+                    //        item.Maintenance = model.maintenance;
+                    //    }
+                    //}
+                }
                
                     db.SaveChanges();
                     QuotationStatusLogs log = new QuotationStatusLogs()
@@ -192,6 +193,12 @@ namespace Cars.Service
                 return model;
             }
            
+        }
+
+        internal object ReverseOrderLine(string UserId)
+        {
+            var orderDetails = db.OrderDetails.Where(c =>  c.StatusID == 2 && c.WorkflowID == 4 && !c.ParentOrderDetailsID.HasValue && !c.QuotationID.HasValue && c.Order.SystemUserCreate == UserId).Include(c => c.UserBranch.Branch).Include(c => c.Order).OrderBy(c => c.DTsCreate).ToList();
+            return null;
         }
 
         internal int Confirmation(long quotationId,string user)

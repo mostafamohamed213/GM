@@ -44,9 +44,11 @@ namespace Cars.Models
         public virtual DbSet<TeamMemberAllowed> TeamMemberAlloweds { get; set; }
 
         public virtual DbSet<UsersLogs> UsersLogs { get; set; }
+        public virtual DbSet<Brand> Brand { get; set; }
+        public virtual DbSet<BrandModel> BrandModels { get; set; }
+        public virtual DbSet<ModelYear> ModelYears { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-           
             base.OnModelCreating(modelBuilder);
         }
     }

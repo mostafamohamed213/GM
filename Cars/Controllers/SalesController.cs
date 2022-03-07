@@ -566,5 +566,66 @@ namespace Cars.Controllers
             }
 
         }
+        [HttpGet]
+        public IActionResult OrderLinesReturned()
+        {
+            try
+            {
+                 var orderDetails = orderServices.GetReturnedOrderLine(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                 return View(orderDetails);
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+
+        }
+        [HttpGet]
+        public IActionResult EditOrderDetailsReturned(long orderDetailsID)
+        {
+            try
+            {
+                OrderDetails orderDetails = orderServices.GetOrderDetailsReturnedByID(orderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
+                if (orderDetails is not null)
+                {
+                    ViewBag.types = orderServices.GetSelectListOrderDetailsType();
+                    return View(orderDetails);
+                }
+                return View("_CustomError");
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+        }
+        [HttpPost]
+        public IActionResult EditOrderDetailsReturned(long OrderDetailsID,string Items,int OrderDetailsTypeID,int Quantity,bool IsApproved)
+        {
+            try
+            {
+                if (OrderDetailsID > 0 && !string.IsNullOrEmpty(Items) && OrderDetailsTypeID > 0 && Quantity > 0)
+                {
+                   OrderDetails model = orderServices.EditOrderDetailsReturned(OrderDetailsID, Items, OrderDetailsTypeID, Quantity, IsApproved, User.FindFirstValue(ClaimTypes.NameIdentifier));
+                 
+                    if (model is not null)
+                    {
+                        return RedirectToAction("OrderLinesReturned");
+                    }
+                }
+                OrderDetails orderDetails = orderServices.GetOrderDetailsReturnedByID(OrderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
+                if (orderDetails is not null)
+                {
+                    ViewBag.types = orderServices.GetSelectListOrderDetailsType();
+                    ViewBag.ErrorMessage = "Please check your input";
+                    return View(orderDetails);
+                }
+             return View("_CustomError");
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+
+        }
     }
 }

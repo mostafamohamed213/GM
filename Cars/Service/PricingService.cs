@@ -213,7 +213,7 @@ namespace Cars.Service
                 return null;
             }
          
-        }
+        }       
 
         internal SelectList GetSelectListOrderDetailsType()
         {
@@ -223,6 +223,55 @@ namespace Cars.Service
                 return new SelectList(OrderDetailsTypes, "OrderDetailsTypeID", "NameEn");
             }
             return null;
+        }
+        internal List<OrderDetails> GetReturnedOrderLine()
+        {
+            var orderDetails = db.OrderDetails.Where(c => (c.StatusID == 10 || c.StatusID == 9 ) && c.WorkflowID == 1 ).Include(c => c.OrderDetailsType).Include(c => c.Order.Vehicle).OrderBy(c => c.DTsCreate).ToList();
+            return orderDetails;
+        }
+        internal OrderDetails EditOrderDetailsReturned(long orderDetailsID, string partNumber, decimal price, int vendorLocationID, string comments, string UserId)
+        {
+            OrderDetails orderDetails = db.OrderDetails.FirstOrDefault(c => c.OrderDetailsID == orderDetailsID &&(c.StatusID == 9 || c.StatusID == 10)  && c.WorkflowID == 1 );
+            orderDetails.PartNumber = partNumber.Trim();
+            orderDetails.Price = price;
+            orderDetails.VendorLocationID = vendorLocationID;
+            orderDetails.Comments = comments;
+            orderDetails.UsedByUser = null;
+            orderDetails.UsedDateTime = null;
+            orderDetails.UsedByUser2 = null;
+            orderDetails.UsedDateTime2 = null;
+            OrderDetailsStatusLog statusLog = new OrderDetailsStatusLog()
+            {
+                DTsCreate = DateTime.Now,
+                OrderDetailsID = orderDetails.OrderDetailsID,
+                SystemUserID = UserId,
+                WorkflowID = 1
+            };
+            if (orderDetails.StatusID == 9)
+            {
+                orderDetails.StatusID = 11;
+                statusLog.StatusID = 11;
+                statusLog.Detatils = "change status from 9 (ReversPricingAndLabor) to 11 (ReversLabor) by Pricing team after edit order details";
+            }
+            else if (orderDetails.StatusID == 10)
+            {
+                orderDetails.StatusID = 2;
+                statusLog.StatusID = 2;
+                statusLog.Detatils = "change status from 10 (ReversPricing) to 2 (WIP) by Pricing team after edit order details";
+                orderDetails.WorkflowID = 4;
+                WorkflowOrderDetailsLog workflowOrder = new WorkflowOrderDetailsLog()
+                {
+                    DTsCreate = DateTime.Now,
+                    OrderDetailsID = orderDetails.OrderDetailsID,
+                    SystemUserID = UserId,
+                    WorkflowID = 4,
+                    Active = true,
+                };
+                db.Add(workflowOrder);
+            }
+            db.OrderDetailsStatusLogs.Add(statusLog);
+            db.SaveChanges();
+            return orderDetails;
         }
     }
 }

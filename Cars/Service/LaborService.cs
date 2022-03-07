@@ -122,6 +122,13 @@ namespace Cars.Service
             }
 
         }
+
+        internal List<OrderDetails> GetReturnedOrderLine()
+        {
+            var orderDetails = db.OrderDetails.Where(c => c.StatusID == 11 && c.WorkflowID == 1).Include(c => c.OrderDetailsType).Include(c => c.Order.Vehicle).OrderBy(c => c.DTsCreate).ToList();
+            return orderDetails;
+        }
+
         internal OrderDetails GetOrderDetailsByOrderDetailsID(long orderDetailsID)
         {
             var orderDetails = db.OrderDetails.Where(c => c.StatusID ==2 && c.WorkflowID == 1).Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
@@ -135,6 +142,41 @@ namespace Cars.Service
                 return new SelectList(OrderDetailsTypes, "OrderDetailsTypeID", "NameEn");
             }
             return null;
+        }
+
+        internal OrderDetails EditOrderDetailsReturned(long orderDetailsID, decimal labor_Hours, double labor_Value, string UserId)
+        {
+            OrderDetails orderDetails = db.OrderDetails.FirstOrDefault(c => c.OrderDetailsID == orderDetailsID && c.StatusID == 11 && c.WorkflowID == 1);
+            orderDetails.Labor_Hours = labor_Hours;
+            orderDetails.Labor_Value = labor_Value;
+            orderDetails.UsedByUser = null;
+            orderDetails.UsedDateTime = null;
+            orderDetails.UsedByUser2 = null;
+            orderDetails.UsedDateTime2 = null;
+            orderDetails.StatusID = 2;
+            OrderDetailsStatusLog statusLog = new OrderDetailsStatusLog()
+            {
+                DTsCreate = DateTime.Now,
+                OrderDetailsID = orderDetails.OrderDetailsID,
+                SystemUserID = UserId,
+                StatusID =2,
+                WorkflowID =1,
+                Detatils = "change status from 11 (ReversLabor) to 2 (WIP) by Labor team after edit order details"
+            };
+            db.OrderDetailsStatusLogs.Add(statusLog);
+            orderDetails.WorkflowID = 4;
+            WorkflowOrderDetailsLog workflowOrder = new WorkflowOrderDetailsLog()
+            {
+                DTsCreate = DateTime.Now,
+                OrderDetailsID = orderDetails.OrderDetailsID,
+                SystemUserID = UserId,
+                WorkflowID = 1,
+                Active = true,
+                Details = "from labor team"
+            };
+            db.WorkflowOrderDetailsLogs.Add(workflowOrder);
+            db.SaveChanges();
+            return orderDetails;
         }
 
         internal long EditOrderDetailsFromSales(string items, int quantity, int type, bool approved, decimal? labor_hours, double? labor_value, long orderDetailsID,string UserId)

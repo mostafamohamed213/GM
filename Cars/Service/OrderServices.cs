@@ -472,7 +472,6 @@ namespace Cars.Service
             
             return List;
         }
-
         internal int AddOrderDetails(string items, int quantity, int type, bool approved,long orderID,string user)
         {
           
@@ -536,6 +535,41 @@ namespace Cars.Service
                 return new SelectList(OrderDetailsTypes, "OrderDetailsTypeID", "NameEn");
             }
             return null;
+        }
+
+        internal List<OrderDetails> GetReturnedOrderLine(string UserId)
+        {
+            var orderDetails = db.OrderDetails.Where(c => c.StatusID == 8 && c.WorkflowID == 1 && c.Order.SystemUserCreate == UserId).Include(c => c.OrderDetailsType).Include(c => c.Order.Vehicle).OrderBy(c => c.DTsCreate).ToList();
+            return orderDetails;
+        }
+        internal OrderDetails GetOrderDetailsReturnedByID(long orderDetailsID, string UserId)
+        {
+            return db.OrderDetails.Include(c => c.OrderDetailsType).Include(c => c.Order.Vehicle).FirstOrDefault(c => c.OrderDetailsID == orderDetailsID && c.StatusID == 8 && c.WorkflowID == 1 && c.Order.SystemUserCreate == UserId);
+        }
+        internal OrderDetails EditOrderDetailsReturned(long orderDetailsID, string items, int orderDetailsTypeID, int quantity, bool isApproved, string UserId)
+        {
+            OrderDetails orderDetails = db.OrderDetails.FirstOrDefault(c => c.OrderDetailsID == orderDetailsID && c.StatusID == 8 && c.WorkflowID == 1 && c.Order.SystemUserCreate == UserId);
+            orderDetails.Items = items.Trim();
+            orderDetails.OrderDetailsTypeID = orderDetailsTypeID;
+            orderDetails.Quantity = quantity;
+            orderDetails.IsApproved = isApproved;
+            orderDetails.StatusID = 9;
+            orderDetails.UsedByUser = null;
+            orderDetails.UsedDateTime = null;
+            orderDetails.UsedByUser2 = null;
+            orderDetails.UsedDateTime2 = null;
+            OrderDetailsStatusLog statusLog = new OrderDetailsStatusLog()
+            {
+                DTsCreate = DateTime.Now,
+                OrderDetailsID = orderDetails.OrderDetailsID,
+                SystemUserID = UserId,
+                StatusID = 9,
+                Detatils = "change status from 8 (ReversSales) to 9 (ReversPricingAndLabor) by Sales team after edit order details",
+                WorkflowID = 1
+            };
+            db.OrderDetailsStatusLogs.Add(statusLog);
+            db.SaveChanges();
+            return orderDetails;
         }
     }
 }

@@ -188,6 +188,22 @@
                         </li>
 
                     </ul>
+                    <ul class="navbar-nav flex-fill w-100 mb-2">
+                        <li class="nav-item dropdown">
+                            <a href="#ui-elements-SalesOperations" data-toggle="collapse" aria-expanded="false" id="anavbarSalesOperations" class="dropdown-toggle nav-link">
+                                <i class="fe fe-16 fe-settings"></i>
+                                <span class="ml-3 item-text">@localizer["Operations"]</span>
+                            </a>
+                            <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements-SalesOperations">
+                                <li class="nav-item">
+                                    <a class="nav-link pl-3" asp-action="OrderLinesReturned" asp-controller="Sales" id="aSalesReturnedOperations">
+                                        <span class="ml-1 item-text">Order Line Returned</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+
                     <p class="text-muted nav-heading mt-4 mb-1">
                         <span>@localizer["Quotation"]</span>
                     </p>
@@ -212,22 +228,18 @@
                         </li>
 
                     </ul>
-
-                    <p class="text-muted nav-heading mt-4 mb-1">
-                        <span>@localizer["Operations"]</span>
-                    </p>
                     <ul class="navbar-nav flex-fill w-100 mb-2">
                         <li class="nav-item dropdown">
-                            <a href="#ui-elements-Operations" data-toggle="collapse" aria-expanded="false" id="anavbarOperations" class="dropdown-toggle nav-link">
-                                <i class="fe fe-box fe-16"></i>
+                            <a href="#ui-elements-QuotationOperations" data-toggle="collapse" aria-expanded="false" id="anavbarOperationsOperations" class="dropdown-toggle nav-link">
+                                <i class="fe fe-16 fe-settings"></i>
                                 <span class="ml-3 item-text">@localizer["Operations"]</span>
                             </a>
-                            <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements-Quotation">
+                            <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements-QuotationOperations">
                                 <li class="nav-item">
-                                    <a class="nav-link pl-3" asp-action="ReversOrderLine" asp-controller="Quotation" asp-route-currentPage="1" id="aOperationsQuotation">
-                                        <span class="ml-1 item-text">Reverse Order Line</span>
+                                    <a class="nav-link pl-3" asp-action="ViewOrderLines" asp-controller="Quotation" id="aOperationsQuotation">
+                                        <span class="ml-1 item-text">Reverse</span>
                                     </a>
-                                </li>                              
+                                </li>
                             </ul>
                         </li>
                     </ul>
@@ -275,8 +287,24 @@
                                     </a>
                                 </li>
                             </ul>
+
                         </li>
 
+                    </ul>
+                    <ul class="navbar-nav flex-fill w-100 mb-2">
+                        <li class="nav-item dropdown">
+                            <a href="#ui-elements-PricingOperations" data-toggle="collapse" aria-expanded="false" id="anavbarPricingOperations" class="dropdown-toggle nav-link">
+                                <i class="fe fe-16 fe-settings"></i>
+                                <span class="ml-3 item-text">@localizer["Operations"]</span>
+                            </a>
+                            <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements-PricingOperations">
+                                <li class="nav-item">
+                                    <a class="nav-link pl-3" asp-action="OrderLinesReturned" asp-controller="Pricing" id="aPricingReturnedOperations">
+                                        <span class="ml-1 item-text">Order Line Returned</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 }
                 @if (AuthorizationService.AuthorizeAsync(User, Permissions.Labor.Manage).Result.Succeeded && !AuthorizationService.AuthorizeAsync(User, Permissions.Users.Create).Result.Succeeded)
@@ -290,11 +318,24 @@
 
                             <a class="nav-link" asp-controller="Labor" asp-action="GetOrderLines" asp-route-currentPage="1" id="addLabor">
                                 <i class="fe fe-folder fe-16"></i>
-                                <span class="ml-3 item-text ">Labor</span>
+                                <span class="ml-3 item-text ">Order Lines</span>
                             </a>
                         </li>
-
-
+                    </ul>
+                    <ul class="navbar-nav flex-fill w-100 mb-2">
+                        <li class="nav-item dropdown">
+                            <a href="#ui-elements-LaborOperations" data-toggle="collapse" aria-expanded="false" id="anavbarLaborOperations" class="dropdown-toggle nav-link">
+                                <i class="fe fe-16 fe-settings"></i>
+                                <span class="ml-3 item-text">@localizer["Operations"]</span>
+                            </a>
+                            <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements-LaborOperations">
+                                <li class="nav-item">
+                                    <a class="nav-link pl-3" asp-action="OrderLinesReturned" asp-controller="Labor" id="aLaborReturnedOperations">
+                                        <span class="ml-1 item-text">Order Line Returned</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 }
 
@@ -1022,7 +1063,7 @@
                 $("#" + ParentID).click();
 
             }
-            let ItemIds = ['aOrderHeaders', 'aAddOrderHeader', 'aDraftOrderHeader', 'aOrderLines', 'aAdministration', 'aOrderLinesUsed', 'aOrderLinesForPricing', 'aQuotations', 'aAddQuotations', 'aPurchasing', 'addLabor', 'aAllOrderLines', 'aVendorLocation', 'aRunnerOrder', 'aInventory', 'Delivery', 'aTeamDuration','aOperationsQuotation'];
+            let ItemIds = ['aLaborReturnedOperations','aPricingReturnedOperations', 'aSalesReturnedOperations','aOrderHeaders', 'aAddOrderHeader', 'aDraftOrderHeader', 'aOrderLines', 'aAdministration', 'aOrderLinesUsed', 'aOrderLinesForPricing', 'aQuotations', 'aAddQuotations', 'aPurchasing', 'addLabor', 'aAllOrderLines', 'aVendorLocation', 'aRunnerOrder', 'aInventory', 'Delivery', 'aTeamDuration','aOperationsQuotation'];
             ItemIds.forEach(function (i) {
 
                 if (i == ItemID) {

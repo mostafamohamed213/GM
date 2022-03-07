@@ -195,12 +195,130 @@ namespace Cars.Service
            
         }
 
-        internal object ReverseOrderLine(string UserId)
+        internal OrderDetails GetOrderDetails(long orderDetailsID, string UserId)
         {
-            var orderDetails = db.OrderDetails.Where(c =>  c.StatusID == 2 && c.WorkflowID == 4 && !c.ParentOrderDetailsID.HasValue && !c.QuotationID.HasValue && c.Order.SystemUserCreate == UserId).Include(c => c.UserBranch.Branch).Include(c => c.Order).OrderBy(c => c.DTsCreate).ToList();
-            return null;
+            return db.OrderDetails.Where(c => c.OrderDetailsID == orderDetailsID  && c.StatusID == 2 && c.WorkflowID == 4  && !c.QuotationID.HasValue && c.Order.SystemUserCreate == UserId).Include(c => c.OrderDetailsType).Include(c => c.Order.Vehicle).FirstOrDefault();
         }
 
+        internal void ReverseOrderLine(long orderDetailsID, string backToSales, string backToPricing, string backTolabor ,string userId)
+        {
+            OrderDetails orderDetails = db.OrderDetails.FirstOrDefault(c=>c.OrderDetailsID == orderDetailsID);
+            if (!string.IsNullOrEmpty(backToSales))
+            {
+                orderDetails.StatusID = 8;
+                orderDetails.WorkflowID = 1;
+                WorkflowOrderDetailsLog workflowOrder = new WorkflowOrderDetailsLog()
+                {
+                    DTsCreate = DateTime.Now,
+                    OrderDetailsID = orderDetails.OrderDetailsID,
+                    SystemUserID = userId,
+                    WorkflowID = 4,
+                    Active = true,
+                    Details= "back order line to sales from quotation"
+                };
+                OrderDetailsStatusLog statusLog = new OrderDetailsStatusLog()
+                {
+                    DTsCreate = DateTime.Now,
+                    OrderDetailsID = orderDetails.OrderDetailsID,
+                    SystemUserID = userId,
+                    StatusID = 8,
+                    WorkflowID = 4,
+                    Detatils = "change status from 2 (WIP) to 8 (ReversSales) by Quotation team"
+                };
+                db.OrderDetailsStatusLogs.Add(statusLog);
+                db.WorkflowOrderDetailsLogs.Add(workflowOrder);
+                db.SaveChanges();
+            }
+            else if (!string.IsNullOrEmpty(backToPricing) && !string.IsNullOrEmpty(backTolabor) && string.IsNullOrEmpty(backToSales))
+            {
+                orderDetails.StatusID = 9;
+                orderDetails.WorkflowID = 1;
+                WorkflowOrderDetailsLog workflowOrder = new WorkflowOrderDetailsLog()
+                {
+                    DTsCreate = DateTime.Now,
+                    OrderDetailsID = orderDetails.OrderDetailsID,
+                    SystemUserID = userId,
+                    WorkflowID = 4,
+                    Active = true,
+                    Details = "back order line from quotation to pricing and labor without sales"
+                };
+                OrderDetailsStatusLog statusLog = new OrderDetailsStatusLog()
+                {
+                    DTsCreate = DateTime.Now,
+                    OrderDetailsID = orderDetails.OrderDetailsID,
+                    SystemUserID = userId,
+                    StatusID = 9,
+                    Detatils = "change status from 2 (WIP) to 9 (ReversPricingAndLabor) by Quotation team",
+                    WorkflowID = 4
+                };
+                db.OrderDetailsStatusLogs.Add(statusLog);
+                db.WorkflowOrderDetailsLogs.Add(workflowOrder);
+                db.SaveChanges();
+            }
+            else if (!string.IsNullOrEmpty(backToPricing) && string.IsNullOrEmpty(backToSales) && string.IsNullOrEmpty(backTolabor))
+            {
+                orderDetails.StatusID = 10;
+                orderDetails.WorkflowID = 1;
+                WorkflowOrderDetailsLog workflowOrder = new WorkflowOrderDetailsLog()
+                {
+                    DTsCreate = DateTime.Now,
+                    OrderDetailsID = orderDetails.OrderDetailsID,
+                    SystemUserID = userId,
+                    WorkflowID = 4,
+                    Active = true,
+                    Details = "back order line from quotation to pricing only"
+                };
+                OrderDetailsStatusLog statusLog = new OrderDetailsStatusLog()
+                {
+                    DTsCreate = DateTime.Now,
+                    OrderDetailsID = orderDetails.OrderDetailsID,
+                    SystemUserID = userId,
+                    StatusID = 10,
+                    Detatils = "change status from 2 (WIP) to 10 (ReversPricing) by Quotation team",
+                    WorkflowID = 4
+                };
+                db.OrderDetailsStatusLogs.Add(statusLog);
+                db.WorkflowOrderDetailsLogs.Add(workflowOrder);
+                db.SaveChanges();
+            }
+            else if (!string.IsNullOrEmpty(backTolabor) && string.IsNullOrEmpty(backToSales) && string.IsNullOrEmpty(backToPricing))
+            {
+                orderDetails.StatusID = 11;
+                orderDetails.WorkflowID = 1;
+                WorkflowOrderDetailsLog workflowOrder = new WorkflowOrderDetailsLog()
+                {
+                    DTsCreate = DateTime.Now,
+                    OrderDetailsID = orderDetails.OrderDetailsID,
+                    SystemUserID = userId,
+                    WorkflowID = 4,
+                    Active = true,
+                    Details = "back order line from quotation to labor only"
+                };
+                OrderDetailsStatusLog statusLog = new OrderDetailsStatusLog()
+                {
+                    DTsCreate = DateTime.Now,
+                    OrderDetailsID = orderDetails.OrderDetailsID,
+                    SystemUserID = userId,
+                    StatusID = 11,
+                    Detatils = "change status from 2 (WIP) to 10 (Reverslabor) by Quotation team",
+                    WorkflowID = 4
+                };
+                db.OrderDetailsStatusLogs.Add(statusLog);
+                db.WorkflowOrderDetailsLogs.Add(workflowOrder);
+                db.SaveChanges();
+            }
+        }
+       
+        internal List<OrderDetails> GetReverseOrderLine(string UserId)
+        {
+            var orderDetails = db.OrderDetails.Where(c =>  c.StatusID == 2 && c.WorkflowID == 4 && !c.ParentOrderDetailsID.HasValue && !c.QuotationID.HasValue && c.Order.SystemUserCreate == UserId).Include(c => c.OrderDetailsType).Include(c => c.Order.Vehicle).Include(c => c.Alternatives.Where(x => x.StatusID == 2 && x.WorkflowID == 4  && !x.QuotationID.HasValue )).Include("Alternatives.OrderDetailsType").OrderBy(c => c.DTsCreate).ToList();
+            return orderDetails;
+        }
+        internal List<OrderDetails> GetReverseOrderLinedoNotHaveParent(string UserId ,List<long> parents)
+        {
+            var orderDetails = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 4 && c.ParentOrderDetailsID.HasValue && !parents.Contains(c.ParentOrderDetailsID.Value) && !c.QuotationID.HasValue && c.Order.SystemUserCreate == UserId).Include(c => c.OrderDetailsType).Include(c => c.Order.Vehicle).OrderBy(c => c.DTsCreate).ToList();
+            return orderDetails;
+        }
         internal int Confirmation(long quotationId,string user)
         {
             Quotation quotation = db.Quotations.Include(c=>c.OrderDetails).FirstOrDefault(c => c.QuotationID == quotationId);

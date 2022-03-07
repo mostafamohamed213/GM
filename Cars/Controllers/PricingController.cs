@@ -199,8 +199,6 @@ namespace Cars.Controllers
                     model.ParentOrderDetailsId = orderDetails.OrderDetailsID;
                     model.VendorLocations = services.GetSelectListVendorLocations();
                     model.Quantity = orderDetails.Quantity;
-
-
                 }
                 else
                 {
@@ -215,5 +213,73 @@ namespace Cars.Controllers
             }
                   
         }
+        [HttpGet]
+        public IActionResult OrderLinesReturned()
+        {
+            try
+            {
+                var orderDetails = services.GetReturnedOrderLine();
+                return View(orderDetails);
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+
+        }
+        [HttpGet]
+        public IActionResult EditOrderDetailsReturned(long orderDetailsID)
+        {
+            try
+            {
+                 List<int> status=  new List<int>();
+                status.Add(9);
+                status.Add(10);
+                OrderDetails orderDetails = usedService.CloseOrderDetailsReturned(orderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier), status);
+                if (orderDetails is not null)
+                {
+                    ViewBag.vendorLocations = services.GetSelectListVendorLocations();
+                    return View(orderDetails);
+                }
+                return View("UsedByUser");
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+        }
+        [HttpPost]
+        public IActionResult EditOrderDetailsReturned(long OrderDetailsID, string PartNumber, decimal Price, int VendorLocationID, string Comments)
+        {
+            try
+            {
+                if (OrderDetailsID > 0 && !string.IsNullOrEmpty(PartNumber) && Price > 1 && VendorLocationID > 0)
+                {
+                    OrderDetails model = services.EditOrderDetailsReturned(OrderDetailsID, PartNumber, Price, VendorLocationID, Comments, User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                    if (model is not null)
+                    {                     
+                        return RedirectToAction("OrderLinesReturned");
+                    }
+                    return View("_CustomError");
+                }
+                List<int> status = new List<int>();
+                status.Add(9);
+                status.Add(10);
+                OrderDetails orderDetails = usedService.CloseOrderDetailsReturned(OrderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier), status);
+                if (orderDetails is not null)
+                {
+                    ViewBag.vendorLocations = services.GetSelectListVendorLocations();
+                    return View(orderDetails);
+                }
+                return View("UsedByUser");
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+
+        }
     }
 }
+

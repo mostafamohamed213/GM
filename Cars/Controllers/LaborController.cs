@@ -29,7 +29,7 @@ namespace Cars.Controllers
             return View();
         }
 
-        public IActionResult GetOrderLines(int currentPage,string? type, decimal? from , decimal? to ,int?vendor)
+        public IActionResult GetOrderLines(int currentPage,string type, decimal? from , decimal? to ,int?vendor)
         {
             try
             {
@@ -148,6 +148,69 @@ namespace Cars.Controllers
             }
 
         }
- 
+        [HttpGet]
+        public IActionResult OrderLinesReturned()
+        {
+            try
+            {
+                var orderDetails = services.GetReturnedOrderLine();
+                return View(orderDetails);
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+
+        }
+        [HttpGet]
+        public IActionResult EditOrderDetailsReturned(long orderDetailsID)
+        {
+            try
+            {
+                List<int> status = new List<int>();
+                status.Add(11);             
+                OrderDetails orderDetails = usedService.CloseOrderDetailsReturned(orderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier), status);
+                if (orderDetails is not null)
+                {                  
+                    return View(orderDetails);
+                }
+                return View("UsedByUser");
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+        }
+        [HttpPost]
+        public IActionResult EditOrderDetailsReturned(long OrderDetailsID, decimal Labor_Hours, double Labor_Value)
+        {
+            try
+            {
+                if (OrderDetailsID > 0  && Labor_Hours > 0 && Labor_Value > 0)
+                {
+                    OrderDetails model = services.EditOrderDetailsReturned(OrderDetailsID, Labor_Hours, Labor_Value,User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                    if (model is not null)
+                    {
+                        return RedirectToAction("OrderLinesReturned");
+                    }
+                    return View("_CustomError");
+                }
+                List<int> status = new List<int>();
+                status.Add(11);
+                OrderDetails orderDetails = usedService.CloseOrderDetailsReturned(OrderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier), status);
+                if (orderDetails is not null)
+                {
+                    return View(orderDetails);
+                }
+                return View("UsedByUser");
+            }
+            catch (Exception)
+            {
+                return View("_CustomError");
+            }
+
+        }
+
     }
 }

@@ -30,7 +30,7 @@ namespace Cars.Controllers
                 //ViewBag.countOrderLines = services.getCountOrderLines(userId);
                 return View(services.getQuotations(currentPage, userId));
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 return View("_CustomError");
             }
@@ -250,12 +250,54 @@ namespace Cars.Controllers
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
         [HttpGet]
-        public IActionResult ReverseOrderLine()
+        public IActionResult ViewOrderLines()
         {
             try
             {
-                var quotation = services.ReverseOrderLine(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                return View("Display", quotation);
+                var orderDetails = services.GetReverseOrderLine(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                ViewBag.orderDetailsDoNotHaveParent = services.GetReverseOrderLinedoNotHaveParent(User.FindFirstValue(ClaimTypes.NameIdentifier), orderDetails.Select(c=>c.OrderDetailsID).ToList());
+                return View("ViewOrderLines", orderDetails);
+            }
+            catch (Exception)
+            {
+
+                return View("_CustomError");
+            }
+
+        }
+        [HttpGet]
+        public IActionResult ViewOrderLineDetails(long orderDetailsID)
+        {
+            try
+            {
+                var orderDetails = services.GetOrderDetails(orderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier));
+                if (orderDetails is not null)
+                {
+                    return View("ViewOrderLinesDetails", orderDetails);
+                }
+                return View("_CustomError");
+
+            }
+            catch (Exception)
+            {
+
+                return View("_CustomError");
+            }
+
+        }
+        [HttpGet]
+        public IActionResult ReverseOrderLine(long OrderDetailsID,string BackToSales, string BackToPricing, string BackTolabor)
+        {
+            try
+            { 
+                if (OrderDetailsID > 0 &&( !string.IsNullOrEmpty(BackToSales) || !string.IsNullOrEmpty(BackToPricing) || !string.IsNullOrEmpty(BackTolabor)))
+                {
+                    services.ReverseOrderLine(OrderDetailsID, BackToSales, BackToPricing, BackTolabor, User.FindFirstValue(ClaimTypes.NameIdentifier));
+                    return RedirectToAction("ViewOrderLines", "Quotation");
+                }
+              
+                return View("_CustomError");
+
             }
             catch (Exception)
             {

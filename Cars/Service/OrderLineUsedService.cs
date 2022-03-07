@@ -223,6 +223,63 @@ namespace Cars.Service
             }
         }
 
+        internal OrderDetails CloseOrderDetailsReturned(long orderDetailsID, string user,List<int> status)
+        {
+            // this function used by pricing and labor team 
+            try
+            {
+                lock (_object)
+                {
+                    var userRoles = db.UserRoles.Where(c => c.UserId == user).FirstOrDefault();
+                    var orderDetails = db.OrderDetails.Where(c => status.Contains(c.StatusID)  && c.OrderDetailsID == orderDetailsID).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Include("Order").Include(c => c.Order.UserBranch.Branch).Include("Order.Vehicle").FirstOrDefault();
 
+                    if (userRoles is null || orderDetails is null)
+                    {
+                        return null;
+                    }       
+                    else if (userRoles.RoleId.Trim() == "29f2bbf4-3fa6-447a-8d5e-e16e2510d31b".Trim())//Pricing
+                    {
+                        if (string.IsNullOrEmpty(orderDetails.UsedByUser))
+                        {
+                            orderDetails.UsedByUser = user;
+                            orderDetails.UsedDateTime = DateTime.Now;
+                            db.SaveChanges();
+                            return orderDetails;
+                        }
+                        else
+                        {
+                            if (orderDetails.UsedByUser == user)
+                            {
+                                return orderDetails;
+                            }
+                            return null;
+                        }
+                    }
+                    else if (userRoles.RoleId.Trim() == "9c9a27b5-1686-4714-9242-13ffa884fab2".Trim())//Labor
+                    {
+                        if (string.IsNullOrEmpty(orderDetails.UsedByUser2))
+                        {
+                            orderDetails.UsedByUser2 = user;
+                            orderDetails.UsedDateTime2 = DateTime.Now;
+                            db.SaveChanges();
+                            return orderDetails;
+                        }
+                        else
+                        {
+                            if (orderDetails.UsedByUser2 == user)
+                            {
+                                return orderDetails;
+                            }
+                            return null;
+                        }
+                    }
+                    else { return null; }
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
     }
 }

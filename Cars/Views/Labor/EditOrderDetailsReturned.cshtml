@@ -1,0 +1,114 @@
+﻿@model Cars.Models.OrderDetails
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer localizer
+@{
+    ViewData["Title"] = "Edite Order Line";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header">
+        <strong class="card-title">@localizer["Edite Order Line"]</strong>
+    </div>
+    <br /><br />
+    <div class="col-12 mb-4">
+        <div class="card shadow">
+            <div class="card-header">
+                <strong class="card-title h4">@localizer["Order Header Details"]</strong>
+            </div>
+            <div class="card-body">
+                <div class="row h5">
+                    <div class="col-md-4 border-right">
+                        @localizer["Car"] : @Model.Order.Vehicle.Name
+                    </div>
+                    <div class="col-md-4 border-left border-right">
+                        @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Brand))
+                        {
+                            <span>@localizer["Brand"] : @Model.Order.Vehicle.Brand</span>
+                        }
+                    </div>
+                    <div class="col-md-4 border-left">
+                        @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Model))
+                        {
+                            <span>@localizer["Model"] : @Model.Order.Vehicle.Model</span>
+                        }
+                    </div>
+                </div>
+                <div class="row h5">
+                    <div class="col-md-4 border-right">
+                        @localizer["Chases"] : @Model.Order.Vehicle.Chases
+                    </div>
+
+                    <div class="col-md-4 border-left border-right">
+                        @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Year))
+                        {
+                            <span>@localizer["Year"] : @Model.Order.Vehicle.Year</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="col-12 mb-4">
+        <div class="card shadow">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <strong class="card-title h4">Order Line</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row h5">
+                    <div class="col-md-3">
+                        @localizer["Item"] : @Model.Items
+                    </div>
+                    <div class="col-md-3 border-left border-right">
+                        @localizer["Quantity"] : @Model.Quantity
+                    </div>
+                    <div class="col-md-3 border-left border-right">
+                        @localizer["Type"] : @Model.OrderDetailsType.NameEn
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+     
+    <div class="card-body">
+        <form class="needs-validation" asp-action="EditOrderDetailsReturned" asp-controller="Labor" method="post">
+            <div class="row">
+                <input asp-for="OrderDetailsID" type="hidden" />
+                <div class="col-md-6">
+                    <div class="form-group mb-4">
+                        <label for="simpleinput">@localizer["Hours"]</label>
+                        <input type="number" step=".01" asp-for="Labor_Hours" class="form-control" required />
+                        <span asp-validation-for="Labor_Hours" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-4">
+                        <label for="simpleinput">@localizer["Value"]</label>
+                        <input type="number" asp-for="Labor_Value" class="form-control" required />
+                        <span asp-validation-for="Labor_Value" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-11">
+                        <a class="btn btn-danger" onclick="OpenOrderDetails('@Model.OrderDetailsID')" style=" width: 100px;" href="~/"> @localizer["Cancel"]</a>
+                        <input class="btn btn-success" style=" width: 100px;" type="submit" value="@localizer["Save"]" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    </div>
+    @section Scripts {
+        <script>
+        ChangeColorSidebarItem("anavbarLaborOperations", "aLaborReturnedOperations");
+        window.addEventListener('beforeunload', function (e) {
+           OpenOrderDetails("@Model.OrderDetailsID");
+        });
+        </script>
+    }
+

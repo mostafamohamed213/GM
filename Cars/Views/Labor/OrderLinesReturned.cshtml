@@ -1,0 +1,97 @@
+﻿
+@model List<Cars.Models.OrderDetails>
+
+@{
+    ViewData["Title"] = "Reverse";
+    int counter = 1;
+}
+
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <h2 class="mb-2 page-title">Returned</h2>
+            <div class="row my-4">
+                <div class="col-md-12">
+                    <div class="card shadow">
+                        <div class="card-body">
+
+                            <table class="table table-borderless table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Item</th>
+                                        <th>Car</th>
+                                        <th>Brand</th>
+                                        <th>Model</th>
+                                        <th>Type</th>
+                                        <th>Part Number</th>
+                                        <th>Date</th>
+                                        <th></th>
+                                        <th></th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @counter
+                                            </td>
+                                            <td>
+                                                @item.Items
+                                            </td>
+                                            <td>
+                                                @item.Order.Vehicle.Name
+                                            </td>
+                                            <td>
+                                                @item.Order.Vehicle.Brand
+                                            </td>
+                                            <td>
+                                                @item.Order.Vehicle.Model
+                                            </td>
+                                            <td>
+                                                @item.OrderDetailsType.NameEn
+                                            </td>
+                                            <td>
+                                                @item.PartNumber
+                                            </td>
+                                            <td>
+                                                @item.DTsCreate
+                                            </td>
+                                            <td>
+                                                @if (item.ParentOrderDetailsID.HasValue)
+                                                {
+                                                    <span title="Alternative" class="fe fe-24 fe-minus text-danger"></span>
+                                                }
+                                                else
+                                                {
+                                                    <span title="Main Oder line" class="fe fe-24 fe-chevrons-down  text-success"></span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <a title="Edit" asp-action="EditOrderDetailsReturned" asp-controller="Labor" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-primary"></span></span></a>
+                                            </td>
+
+                                        </tr>
+
+                                        counter++;
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        ChangeColorSidebarItem("anavbarLaborOperations", "aLaborReturnedOperations");
+    </script>
+}

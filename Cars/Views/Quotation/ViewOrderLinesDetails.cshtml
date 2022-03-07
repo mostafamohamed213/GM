@@ -1,0 +1,158 @@
+﻿@model Cars.Models.OrderDetails
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer localizer
+@{
+    ViewData["Title"] = "Order Line";
+
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header">
+        <strong class="card-title">@localizer["Order Line"]</strong>
+    </div>
+    <br /><br />
+    <div class="col-12 mb-4">
+        <div class="card shadow">
+            <div class="card-header">
+                <strong class="card-title h4">Order Header Details</strong>
+            </div>
+            <div class="card-body">
+                <div class="row h5">
+                    <div class="col-md-4 border-right">
+                        @localizer["Car"] : @Model.Order.Vehicle.Name
+                    </div>
+                    <div class="col-md-4 border-left border-right">
+                        @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Brand))
+                        {
+                            <span>@localizer["Brand"] : @Model.Order.Vehicle.Brand</span>
+                        }
+                    </div>
+                    <div class="col-md-4 border-left">
+                        @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Model))
+                        {
+                            <span>@localizer["Model"] : @Model.Order.Vehicle.Model</span>
+                        }
+                    </div>
+                </div>
+                <div class="row h5">
+                    <div class="col-md-4 border-right">
+                        @localizer["Chases"] : @Model.Order.Vehicle.Chases
+                    </div>
+
+                    <div class="col-md-4 border-left border-right">
+                        @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Year))
+                        {
+                            <span>@localizer["Year"] : @Model.Order.Vehicle.Year</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row h5">
+            <div class="col-md-4 border-right">
+                @localizer["Item"] : @Model.Items
+            </div>
+            <div class="col-md-4 border-left border-right">
+                @localizer["Quantity"] : @Model.Quantity
+            </div>
+            <div class="col-md-4 border-left">
+                @localizer["PartNumber"] : @Model.PartNumber
+            </div>
+        </div>
+        <div class="row h5">
+            <div class="col-md-4 border-right">
+                @localizer["Create Date Time"] : @Model.DTsCreate
+            </div>
+            <div class="col-md-4 border-left border-right">
+                @localizer["SP-price"] : @Model.Price
+            </div>
+            @if (Model.Labor_Value.HasValue && Model.Labor_Value.Value > 0)
+            {
+                <div class="col-md-4 border-left">
+                    @localizer["L-price"] : @Model.Labor_Value
+                </div>
+            }
+
+        </div>
+
+    </div>
+    @*<div class="col-12 mb-4">
+        <div class="card shadow">
+            <div class="card-header">
+                <strong class="card-title h4">Order Line</strong>
+            </div>
+            <div class="card-body">
+                <div class="row h5">
+                    <div class="col-md-4 border-right">
+                        @localizer["Item"] : @Model.Items
+                    </div>
+                    <div class="col-md-4 border-left border-right">
+                        @localizer["Quantity"] : @Model.Quantity
+                    </div>
+                    <div class="col-md-4 border-left">
+                        @localizer["PartNumber"] : @Model.PartNumber
+                    </div>
+                </div>
+                <div class="row h5">
+                    <div class="col-md-4 border-right">
+                        @localizer["Create Date Time"] : @Model.DTsCreate
+                    </div>
+                    <div class="col-md-4 border-left border-right">
+                        @localizer["SP-price"] : @Model.Price
+                    </div>
+                    @if (Model.Labor_Value.HasValue && Model.Labor_Value.Value > 0)
+                    {
+                        <div class="col-md-4 border-left">
+                            @localizer["L-price"] : @Model.Labor_Value
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+        </div>
+    </div>*@
+    <div class="col-12 mb-4">
+        <form class="needs-validation" asp-action="ReverseOrderLine" asp-controller="Quotation" method="get">
+            <input type="hidden" name="OrderDetailsID" value="@Model.OrderDetailsID"/>
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class='custom-control-input' name="BackToSales" id="BackToSales" onchange="ReversePricingAndLabor(this.checked)">
+                <label class="custom-control-label" for="BackToSales"> Back To Sales</label>
+            </div>
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class='custom-control-input' name="BackToPricing" id="BackToPricing">
+                <label class="custom-control-label" for="BackToPricing">Back To Pricing</label>
+            </div>
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class='custom-control-input' name="BackTolabor" id="BackTolabor">
+                <label class="custom-control-label" for="BackTolabor">Back To labor</label>
+            </div> 
+            <br />
+            <input class="btn btn-success" style=" width: 100px;" type="submit" value="@localizer["Reverse"]" />
+        </form>
+
+    </div>
+</div>
+@section Scripts {
+    <script>
+        ChangeColorSidebarItem("anavbarOperationsOperations", "aOperationsQuotation");
+        function ReversePricingAndLabor(val) {
+            if (val) {
+                document.getElementById("BackToPricing").checked = true;
+                document.getElementById("BackToPricing").disabled = true;
+                document.getElementById("BackTolabor").checked = true;
+                document.getElementById("BackTolabor").disabled = true;
+            } else {
+                document.getElementById("BackToPricing").checked = false;
+                document.getElementById("BackToPricing").disabled = false;
+                document.getElementById("BackTolabor").checked = false;
+                document.getElementById("BackTolabor").disabled = false;
+            }
+        }
+    </script>
+}
+
+
+

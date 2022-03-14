@@ -84,13 +84,14 @@
                                 <table class="table table-bordered table-hover mb-0">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
+                                            @*<th>ID</th>*@
                                             <th>Item</th>
                                             <th>Quantity</th>
                                             <th>SP-price</th>
                                             @*<th>Hours</th>*@
                                             <th>L-price</th>
                                             @*<th>Maintenance</th>*@
+                                            <th></th>
                                             <th>Select</th>
                                         </tr>
                                     </thead>
@@ -99,43 +100,53 @@
                                          {
                                             foreach (var item in orderDetails.Value)
                                             {
-                                        <tr class='@(item.ParentOrderDetailsID.HasValue ? "bg-success text-white":"bg-danger text-white")'>
-                                            <td>@item.Prefix</td>
-                                            <td>@item.Items</td>
-                                            <td>@item.Quantity</td>
-                                            <td>@item.Price</td>
-                                            @if (item.Order.WithMaintenance.HasValue && item.Order.WithMaintenance.Value)
-                                            {
-                                                @*<td>@item.Labor_Hours</td>*@
-                                                <td>@item.Labor_Value</td>
-                                            }
-                                            else
-                                            {
-                                                <td>--</td>
-                                                <td>--</td>
-                                            }
+                                                <tr>
+                                                    @*<td>@item.Prefix</td>*@
+                                                    <td>@item.Items</td>
+                                                    <td>@item.Quantity</td>
+                                                    <td>@item.Price</td>
+                                                    @if (item.Order.WithMaintenance.HasValue && item.Order.WithMaintenance.Value)
+                                                    {
+                                                        @*<td>@item.Labor_Hours</td>*@
+                                                        <td>@item.Labor_Value</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        @*<td>--</td>*@
+                                                        <td>--</td>
+                                                    }
 
-                                            @*<td>
-                                                @if (item.Order.WithMaintenance.HasValue && item.Order.WithMaintenance.Value)
-                                                {
-                                                <div class="custom-control custom-switch">
-                                                    <input type="checkbox" checked class='custom-control-input' onchange="addOrRemoveWithMaintenance(this,@item.OrderDetailsID)" id="WithMaintenance @item.OrderDetailsID">
-                                                    <label class="custom-control-label" for="WithMaintenance @item.OrderDetailsID"></label>
-                                                </div>
-                                                }
-                                                else
-                                                {
-                                                   <span>--</span>
-                                                }
-                                                
-                                            </td>*@
-                                            <td>
-                                                    <div class="custom-control custom-switch">
-                                                        <input type="checkbox" class='custom-control-input @(item.ParentOrderDetailsID.HasValue? item.ParentOrderDetailsID.Value: item.OrderDetailsID)' onchange="addOrRemoveOrderLinesId(@(item.ParentOrderDetailsID.HasValue? item.ParentOrderDetailsID.Value: item.OrderDetailsID),@item.OrderDetailsID)" id="@item.OrderDetailsID">
-                                                        <label class="custom-control-label" for="@item.OrderDetailsID"></label>
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                                    @if (item.ParentOrderDetailsID.HasValue)
+                                                    {
+                                                        <td>  <span title="Alternative" class="fe fe-24 fe-minus text-danger"></span></td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>
+                                                            <span title="Main Oder line" class="fe fe-24 fe-chevrons-down  text-success"></span>
+                                                        </td>
+                                                    }
+                                                       @*<td>
+                                                            @if (item.Order.WithMaintenance.HasValue && item.Order.WithMaintenance.Value)
+                                                            {
+                                                            <div class="custom-control custom-switch">
+                                                                <input type="checkbox" checked class='custom-control-input' onchange="addOrRemoveWithMaintenance(this,@item.OrderDetailsID)" id="WithMaintenance @item.OrderDetailsID">
+                                                                <label class="custom-control-label" for="WithMaintenance @item.OrderDetailsID"></label>
+                                                            </div>
+                                                            }
+                                                            else
+                                                            {
+                                                               <span>--</span>
+                                                            }
+
+                                                        </td>*@
+                                                    <td>
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox" class='custom-control-input @(item.ParentOrderDetailsID.HasValue? item.ParentOrderDetailsID.Value: item.OrderDetailsID)' onchange="addOrRemoveOrderLinesId(@(item.ParentOrderDetailsID.HasValue? item.ParentOrderDetailsID.Value: item.OrderDetailsID),@item.OrderDetailsID)" id="@item.OrderDetailsID">
+                                                            <label class="custom-control-label" for="@item.OrderDetailsID"></label>
+                                                        </div>
+                                                    </td>
+                                                </tr>
 
                                             }
                                     <tr>
@@ -144,9 +155,7 @@
                                         <td>---</td>
                                         <td>---</td>
                                         <td>---</td>
-                                        <td>---</td>
-                                        @*<td>---</td>*@
-                                        <td>---</td>
+                                        <td>---</td>                                      
                                     </tr>
                                          }
                                     </tbody>

@@ -84,7 +84,7 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>@localizer["ID"]</th>
+                    @*<th>@localizer["ID"]</th>*@
                     <th>@localizer["Chassis"]</th>
                     <th>@localizer["Name"]</th>
                     <th>@localizer["Phone"]</th>                 
@@ -99,9 +99,9 @@
                     <td>
                         @counter
                     </td>
-                    <td>
+                    @*<td>
                         @(item.UserBranch is not null ? item.UserBranch.Branch.BranchIP : "00"):@item.OrderID
-                    </td>
+                    </td>*@
                     <td>
                         @item.Vehicle.Chases
                     </td>

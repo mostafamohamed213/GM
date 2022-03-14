@@ -140,7 +140,7 @@ namespace Cars.Service
             try
             {
                 Order order = db.Orders.Where(c => c.OrderID == orderId && c.SystemUserCreate == UserId).Include("Vehicle").Include("Customer")
-                               .Include("UserBranch").Include("UserBranch.Branch").Include("Customer.CustomerContacts").Include(c=>c.OrderDetails.Where(x=> x.StatusID != 5).OrderByDescending(c=>c.DTsCreate)).Include("OrderDetails.OrderDetailsType").Include("OrderDetails.UserBranch.Branch").FirstOrDefault();
+                               .Include("UserBranch").Include("UserBranch.Branch").Include("Customer.CustomerContacts").Include(c=>c.OrderDetails.Where(x=> x.StatusID != 5).OrderBy(c=>c.DeliveryID).ThenByDescending(c=>c.DTsCreate)).Include("OrderDetails.OrderDetailsType").Include("OrderDetails.UserBranch.Branch").FirstOrDefault();
                 //db.OrderDetails.Where(c => c.OrderID == order.OrderID && c.StatusID != 5).Include(c => c.UserBranch.Branch);
                 if (order is not null)
                 {
@@ -452,7 +452,7 @@ namespace Cars.Service
 
         internal List<OrderDetailsViewModel> GetOrderDetailsByOrderId(long orderid ,string userId)
         {
-            var List = db.OrderDetails.Where(c => c.Order.SystemUserCreate == userId && c.OrderID == orderid && c.StatusID != 5).Include(c=>c.Order).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").OrderByDescending(C=>C.DTsCreate).ToList();
+            var List = db.OrderDetails.Where(c => c.Order.SystemUserCreate == userId && c.OrderID == orderid && c.StatusID != 5).Include(c=>c.Order).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").OrderBy(c=>c.DeliveryID).ThenByDescending(C=>C.DTsCreate).ToList();
             if (List.Count > 0)
             {
                 List<OrderDetailsViewModel> model = new List<OrderDetailsViewModel>();

@@ -45,7 +45,7 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
+                                            @*<th>ID</th>*@
                                             <th>Branch</th>
                                             <th>Item</th>
                                             <th>Car</th>
@@ -63,8 +63,8 @@
                                             @foreach (var order in Model.OrderDetails)
                                             {
                                         <tr>
-                                            <td>@order.Prefix</td>
-                                            <td>@(order.UserBranch != null ? order.UserBranch.Branch.Name : "--" ) </td>
+                                            @*<td>@order.Prefix</td>*@
+                                            <td>@(order.UserBranch != null ? order.UserBranch.Branch.Name : (order.Order?.UserBranch?.Branch?.Name is null ? "--": order.Order.UserBranch.Branch.Name)) </td>
                                             <td>@order.Items</td>
                                             <td>@order.Order.Vehicle.Name</td>
                                             <td>@order.Quantity</td>

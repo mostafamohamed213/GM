@@ -30,7 +30,7 @@
 
                     </div>
                     <div class="col-md-3">
-                        Total Price: @Model.OrderDetails.Sum(c=>c.Price)
+                        Total SP-price: @Model.OrderDetails.Sum(c => c.Price)
                     </div>
                     <div class="col-md-3">
 
@@ -50,9 +50,9 @@
                                             <th>Item</th>
                                             <th>Car</th>
                                             <th>Quantity</th>
-                                            <th>Price</th>
-                                            <th>Value</th>
-                                            <th>Hours</th>
+                                            <th>SP-price</th>
+                                            <th>L-price</th>
+                                            @*<th>Hours</th>*@
                                             <th>Maintenance</th>
                                         </tr>
                                     </thead>
@@ -70,7 +70,7 @@
                                             <td>@order.Quantity</td>
                                             <td>@order.Price</td>
                                             <td>@order.Labor_Value</td>
-                                            <td>@order.Labor_Hours</td>
+                                            @*<td>@order.Labor_Hours</td>*@
                                             <td>
                                                 @if (order.Maintenance)
                                                  {

@@ -147,7 +147,7 @@
                                         <th>#</th>
                                         <th>@localizer["ID"]</th>
                                         <th>@localizer["Type"]</th>
-                                        <th>@localizer["Price"]</th>
+                                        <th>@localizer["SP-price"]</th>
                                         <th>@localizer["Part Number"]</th>
                                         <th>@localizer["Vendor Location"]</th>
                                         <th>@localizer["Date"]</th>
@@ -195,7 +195,7 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label for="example-password">@localizer["Price"]</label>
+                        <label for="example-password">@localizer["SP-price"]</label>
                         @*<input asp-for="Price" type="" class="form-control" required />*@
                         <input asp-for="Price" type="number" step="any" class="form-control" required />
                         <span asp-validation-for="Price" class="text-danger"></span>

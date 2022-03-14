@@ -12,12 +12,12 @@
                 <strong class="card-title">Details</strong>
             </div>
             <div class="card-body">
-                <div class="row">
+                @*<div class="row">
                     <div class="col-md-3">
                         <h5>ID : @Model.Prefix</h5>
                     </div>
                 </div>
-                <hr />
+                <hr />*@
                 <div class="card shadow">
                     <div class="card-body">
                         <div class="row h5">
@@ -28,7 +28,7 @@
                                 Quantity  :  @Model.Quantity
                             </div>
                             <div class="col-md-2 border-left border-right">
-                                Price  :  @Model.Price
+                                SP-price  :  @Model.Price
                             </div>
                             <div class="col-md-2 border-left border-right">
                                 Status  :  @((Model.Status!=null)? Model.Status.Name:"")

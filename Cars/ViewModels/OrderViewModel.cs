@@ -10,7 +10,7 @@ namespace Cars.ViewModels
     {
         public int OrderID { get; set; }
         [Required]
-        [StringLength(14, MinimumLength = 1, ErrorMessage = "The field must be no more than 14 characters")] 
+        [StringLength(17, MinimumLength = 1, ErrorMessage = "The field must be no more than 17 characters")] 
         public string Chases { get; set; }
         [Required]
         public string VehicleName { get; set; }

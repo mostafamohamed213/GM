@@ -87,9 +87,9 @@
                                             <th>ID</th>
                                             <th>Item</th>
                                             <th>Quantity</th>
-                                            <th>Price</th>
-                                            <th>Hours</th>
-                                            <th>Value</th>
+                                            <th>SP-price</th>
+                                            @*<th>Hours</th>*@
+                                            <th>L-price</th>
                                             @*<th>Maintenance</th>*@
                                             <th>Select</th>
                                         </tr>
@@ -106,7 +106,7 @@
                                             <td>@item.Price</td>
                                             @if (item.Order.WithMaintenance.HasValue && item.Order.WithMaintenance.Value)
                                             {
-                                                <td>@item.Labor_Hours</td>
+                                                @*<td>@item.Labor_Hours</td>*@
                                                 <td>@item.Labor_Value</td>
                                             }
                                             else

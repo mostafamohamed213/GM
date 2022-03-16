@@ -98,6 +98,37 @@ namespace Cars.Service
             viewModel.Tablelength = TablesMaxRows.IndexOrderLinesMaxRows;
             return viewModel;
         }
+
+        internal SelectList getYearsByModel(long modelID)
+        {
+            var Models = db.ModelYears.Where(c => c.ModelID == modelID).ToList();
+            if (Models.Count() > 0)
+            {
+                return new SelectList(Models, "ModelYearID", "Year");
+            }
+            return null;
+        }
+
+        internal SelectList getModelsByBrandID(long brandID)
+        {
+            var Models = db.BrandModels.Where(c=>c.BrandID==brandID).ToList();
+            if (Models.Count() > 0)
+            {
+                return new SelectList(Models, "ModelID", "Name");
+            }
+            return null;
+        }
+
+        internal SelectList getBrands()
+        {
+            var Brands = db.Brand.ToList();
+            if (Brands.Count() > 0)
+            {
+                return new SelectList(Brands, "BrandID", "Name");
+            }
+            return null;
+        }
+
         public PagingViewModel<Order> getOrdersDraft(int currentPage,string userId)
         {
             var orders = db.Orders.Where(c => c.StatusID == 1 && c.SystemUserCreate == userId).Skip((currentPage - 1) * TablesMaxRows.IndexOrdersDraftMaxRows).Take(TablesMaxRows.IndexOrdersDraftMaxRows).Include("Vehicle").Include(c => c.Vehicle.BrandModel).Include(c => c.Vehicle.Brand).Include(c => c.UserBranch.Branch).Include(c => c.UserBranch).Include("Customer").Include("Customer.CustomerContacts").ToList();
@@ -265,9 +296,9 @@ namespace Cars.Service
                         SystemUserCreate = user,
                         Chases = model.Chases.Trim(),
                         Name = model.VehicleName.Trim(),
-                        ModelYearID = model.Year.HasValue ? model.Year.Value : null,
-                        BrandModelID = model.Model.HasValue ? model.Model.Value : null,
-                        BrandID = model.Brand.HasValue ? model.Brand.Value : null,
+                        ModelYearID = model.Year.HasValue && model.Year.Value > 0 ?  model.Year.Value : null,
+                        BrandModelID = model.Model.HasValue && model.Model.Value > 0 ? model.Model.Value : null,
+                        BrandID = model.Brand.HasValue && model.Brand.Value > 0 ? model.Brand.Value : null,
                     };
                     Customer customer = new Customer()
                     {

@@ -1,0 +1,46 @@
+﻿@model Cars.Models.Brand
+
+@{
+    ViewData["Title"] = "Add";
+    Layout = "~/Views/Shared/_AuthenticatedLayout.cshtml";
+}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<h1>Add Brand</h1>
+
+<h4>Brand</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Add" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary mb-3" style="width:auto" />
+                <a asp-action="Index" class="btn btn-primary mb-3" style="width:auto">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.ErrorMessage");
+        };
+    </script>
+
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            ChangeColorSidebarItem("linkbrand", "abrands");
+        });
+    </script>
+}

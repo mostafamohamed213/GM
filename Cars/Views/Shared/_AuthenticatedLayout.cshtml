@@ -566,7 +566,30 @@
                     </ul>
 
                 }
+                <p class="text-muted nav-heading mt-4 mb-1">
+                    <span>@localizer["Brands"]</span>
+                </p>
+                <ul class="navbar-nav flex-fill w-100 mb-2">
+                    <li class="nav-item dropdown">
+                        <a href="#ui-elements-Brands" data-toggle="collapse" aria-expanded="false" id="anavbarBrands" class="dropdown-toggle nav-link">
+                            <i class="fe fe-box fe-16"></i>
+                            <span class="ml-3 item-text">@localizer["Brands"]</span>
+                        </a>
+                        <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements-Brands">
+                            <li class="nav-item">
+                                <a class="nav-link pl-3" asp-action="Index" asp-controller="Brand" asp-route-currentPage="1" id="aBrands">
+                                    <span class="ml-1 item-text">Brands</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link pl-3" asp-action="Add" asp-controller="Brand">
+                                    <span class="ml-1 item-text">Add Brand</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
 
+                </ul>
 
 
 

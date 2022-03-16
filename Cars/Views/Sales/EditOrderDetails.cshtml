@@ -8,13 +8,13 @@
 
 <div class="card shadow mb-4">
     <div class="card-header">
-        <strong class="card-title">@localizer["EditOrderLine"]</strong>
+        <strong class="card-title">@localizer["Edit Order Line"]</strong>
     </div>
     <br /><br />
     <div class="col-12 mb-4">
         <div class="card shadow">
             <div class="card-header">
-                <strong class="card-title h4">@localizer["OrderHeaderDetails"]</strong>
+                <strong class="card-title h4">@localizer["Order Header Details"]</strong>
             </div>
             <div class="card-body">
                 <div class="row h5">
@@ -41,48 +41,33 @@
                 </div>
                 <div class="row h5">
 
-                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Brand))
+                    @if (Model.Order.Vehicle.Brand is not null)
                     {
                         <div class="col-md-3">
-                            @localizer["Brand"] : @Model.Order.Vehicle.Brand
+                            @localizer["Brand"] : @Model.Order.Vehicle.Brand.Name
                         </div>
                     }
-                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Model))
+                    @if (Model.Order.Vehicle.BrandModel is not null)
                     {
                         <div class="col-md-3 border-left border-right">
-                            @localizer["Model"] : @Model.Order.Vehicle.Model
+                            @localizer["Model"] : @Model.Order.Vehicle.BrandModel.Name
                         </div>
                     }
-                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Year))
+                    @if (Model.Order.Vehicle.ModelYear is not null)
                     {
                         <div class="col-md-3">
-                            @localizer["Year"] : @Model.Order.Vehicle.Year
+                            @localizer["Year"] : @Model.Order.Vehicle.ModelYear.Year
                         </div>
                     }
 
 
                 </div>
-                <div class="row h5">
-                    <div class="col-md-4">
-                        @if (Model.StatusID != 1)
-                        {
-                        <h3>ID : @(Model.Order.UserBranch is not null ? Model.Order.UserBranch.Branch.BranchIP : "00"):@Model.OrderID</h3>
-                        }
-                       
-                    </div>
-                    <div class="col-md-4">
-                    </div>
-                    <div class="col-md-4">
-                    </div>
-                </div>
+                
             </div>
         </div>
     </div>
     <div class="card-body">
-        @if (Model.StatusID != 1)
-        {
-        <h3> ID : @Model.Prefix</h3>
-        }
+      
     <form class="needs-validation" asp-action="EditOrderDetails" asp-controller="Sales" method="post">
         <div class="row">
             <input asp-for="OrderDetailsID" style="display:none" />

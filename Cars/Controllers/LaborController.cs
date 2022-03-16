@@ -168,7 +168,7 @@ namespace Cars.Controllers
             try
             {
                 List<int> status = new List<int>();
-                status.Add(11);             
+                status.Add(11); // this id from database            
                 OrderDetails orderDetails = usedService.CloseOrderDetailsReturned(orderDetailsID, User.FindFirstValue(ClaimTypes.NameIdentifier), status);
                 if (orderDetails is not null)
                 {                  

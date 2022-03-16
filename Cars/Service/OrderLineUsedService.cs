@@ -22,7 +22,7 @@ namespace Cars.Service
 
                 lock (_object) { 
                         var userRoles = db.UserRoles.Where(c => c.UserId == user).FirstOrDefault();
-                        var orderDetails = db.OrderDetails.Where(c => c.StatusID != 5 && c.OrderDetailsID == orderDetailsID).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Include("Order").Include(c => c.Order.UserBranch.Branch).Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault();
+                        var orderDetails = db.OrderDetails.Where(c => c.StatusID != 5 && c.OrderDetailsID == orderDetailsID).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Include("Order").Include(c => c.Order.UserBranch.Branch).Include("Order.Vehicle.Brand").Include("Order.Vehicle.BrandModel").Include("Order.Vehicle.ModelYear").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault();
                
                         if (userRoles is null || orderDetails is null)
                         {
@@ -87,37 +87,11 @@ namespace Cars.Service
                         }
                     else { return null; }
 
-                }
-
-                //lock (_object)
-                //{
-                //    var orderDetails = db.OrderDetails.Where(c=>c.StatusID != 5 && c.OrderDetailsID == orderDetailsID).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Include("Order").Include(c=>c.Order.UserBranch.Branch).Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault();
-                //    if (orderDetails is not null && string.IsNullOrEmpty(orderDetails.UsedByUser))
-                //    {
-                //        orderDetails.UsedByUser = user;
-                //        orderDetails.UsedDateTime = DateTime.Now;
-                //        db.SaveChanges();
-                //        return orderDetails;
-                //    }
-                //    else if (orderDetails is not null && !string.IsNullOrEmpty(orderDetails.UsedByUser) && orderDetails.UsedByUser == user) //equals current user
-                //    {
-                //        return orderDetails;
-                //    }
-                //    else if (orderDetails is not null && !string.IsNullOrEmpty(orderDetails.UsedByUser) && orderDetails.UsedByUser != user)// not equals current user
-                //    {
-                //        return null;
-                //    }
-                //    else
-                //    {
-                //        return null;
-                //    }
-                //}
-              
+                }    
 
             }
             catch (Exception)
             {
-
                 return null;
             }
         }
@@ -231,7 +205,7 @@ namespace Cars.Service
                 lock (_object)
                 {
                     var userRoles = db.UserRoles.Where(c => c.UserId == user).FirstOrDefault();
-                    var orderDetails = db.OrderDetails.Where(c => status.Contains(c.StatusID)  && c.OrderDetailsID == orderDetailsID).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Include("Order").Include(c => c.Order.UserBranch.Branch).Include("Order.Vehicle").FirstOrDefault();
+                    var orderDetails = db.OrderDetails.Where(c => status.Contains(c.StatusID)  && c.OrderDetailsID == orderDetailsID).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Include("Order").Include(c => c.Order.UserBranch.Branch).Include("Order.Vehicle").Include("Order.Vehicle.Brand").Include("Order.Vehicle.BrandModel").Include("Order.Vehicle.ModelYear").FirstOrDefault();
 
                     if (userRoles is null || orderDetails is null)
                     {

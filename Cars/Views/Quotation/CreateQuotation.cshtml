@@ -1,7 +1,4 @@
 ﻿@model Dictionary<long, List<Cars.Models.OrderDetails>>
-@*@using Newtonsoft.Json;*@
-@using Cars.ViewModels;
-@using System.Text.Json;;
 
 @{
     ViewData["Title"] = "Create Quotation";
@@ -12,25 +9,7 @@
         {
             maxcount = item.Value.Count;
         }
-    }
-    //OrderMaintenanceViewModel[,] array2D = new OrderMaintenanceViewModel[Model.Count, maxcount];
-    //List<List<OrderMaintenanceViewModel>> list = new List<List<OrderMaintenanceViewModel>>();
-    //int i = 0;
-    //int j = 0;
-    //foreach (var item in Model)
-    //{
-    //    j = 0;
-    //    var s = new List<OrderMaintenanceViewModel>();
-    //    foreach (var orderdetails in item.Value)
-    //    {
-    //        s.Add(new OrderMaintenanceViewModel { orderDetailsId = orderdetails.OrderDetailsID, maintenance = true });
-    //        j++;
-    //    }
-    //    list.Add(s);
-    //    i++;
-    //}
-    ////var jsxn = JsonConvert.SerializeObject(list,);
-    //var json = JsonSerializer.Serialize<List<List<OrderMaintenanceViewModel>>>(list);
+    }  
 }
 <link rel="stylesheet" href="~/Template/css/dataTables.bootstrap4.css">
 <!-- Date Range Picker CSS -->
@@ -91,7 +70,8 @@
                                             @*<th>Hours</th>*@
                                             <th>L-price</th>
                                             @*<th>Maintenance</th>*@
-                                            <th></th>
+                                            <th>Status</th>
+                                            <th>Maintenance</th>
                                             <th>Select</th>
                                         </tr>
                                     </thead>
@@ -126,11 +106,11 @@
                                                             <span title="Main Oder line" class="fe fe-24 fe-chevrons-down  text-success"></span>
                                                         </td>
                                                     }
-                                                       @*<td>
+                                                       <td>
                                                             @if (item.Order.WithMaintenance.HasValue && item.Order.WithMaintenance.Value)
                                                             {
                                                             <div class="custom-control custom-switch">
-                                                                <input type="checkbox" checked class='custom-control-input' onchange="addOrRemoveWithMaintenance(this,@item.OrderDetailsID)" id="WithMaintenance @item.OrderDetailsID">
+                                                                <input type="checkbox" checked class='custom-control-input MaintenanceClass' onchange="addOrRemoveWithMaintenance(this,@item.OrderDetailsID)" id="WithMaintenance @item.OrderDetailsID">
                                                                 <label class="custom-control-label" for="WithMaintenance @item.OrderDetailsID"></label>
                                                             </div>
                                                             }
@@ -139,7 +119,7 @@
                                                                <span>--</span>
                                                             }
 
-                                                        </td>*@
+                                                        </td>
                                                     <td>
                                                         <div class="custom-control custom-switch">
                                                             <input type="checkbox" class='custom-control-input @(item.ParentOrderDetailsID.HasValue? item.ParentOrderDetailsID.Value: item.OrderDetailsID)' onchange="addOrRemoveOrderLinesId(@(item.ParentOrderDetailsID.HasValue? item.ParentOrderDetailsID.Value: item.OrderDetailsID),@item.OrderDetailsID)" id="@item.OrderDetailsID">
@@ -155,7 +135,8 @@
                                         <td>---</td>
                                         <td>---</td>
                                         <td>---</td>
-                                        <td>---</td>                                      
+                                        <td>---</td>
+                                        <td>---</td>
                                     </tr>
                                          }
                                     </tbody>
@@ -205,31 +186,48 @@
 
         let orderLinesIds = [];
 
+        (function () {
+            var mElementIds = document.getElementsByClassName("MaintenanceClass");
+            if (mElementIds.length > 0) {
+                Array.prototype.forEach.call(mElementIds, function (el) {
+                    el.disabled = true;
+                });
+            }
+        })();
+
         function addOrRemoveOrderLinesId(classgroup, orderLineid) {
 
             var els = document.getElementsByClassName(classgroup);
             var element = document.getElementById(orderLineid);
+            var maintenance = document.getElementById("WithMaintenance " + orderLineid);
 
             if (element.checked) {
-                //var maintenance = document.getElementById("WithMaintenance " + orderLineid);
-                //var el = { id: orderLineid, maintenance: maintenance.checked };
-                var el = { id: orderLineid, maintenance: true };
+                var maintenanceValue = false;
+                if (maintenance != null) {
+                    maintenanceValue = maintenance.checked;
+                    maintenance.disabled = false;
+                } 
+                var el = { id: orderLineid, maintenance: maintenanceValue };            
                 orderLinesIds.push(el);
                 Array.prototype.forEach.call(els, function (el) {
                     if (el.id != orderLineid) {
-                        el.disabled = true;
+                        el.disabled = true;                         
                     }
                 });
             } else {
+             
+                if (maintenance != null) {
+                    maintenance.disabled = true;
+                }
                 orderLinesIds = arrayRemove(orderLinesIds, orderLineid);
                 Array.prototype.forEach.call(els, function (el) {
-                        el.disabled = false;
+                    el.disabled = false;                
                 });
             }
             console.log(orderLinesIds);
         }
-        function arrayRemove(arr, value) {
 
+        function arrayRemove(arr, value) {
             return arr.filter(function (ele) {
                 return ele.id != value;
             });
@@ -244,7 +242,6 @@
                         } else {
                             e.maintenance = false;
                         }
-
                     }
                 });
             console.log(orderLinesIds);

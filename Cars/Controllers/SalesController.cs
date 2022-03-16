@@ -37,7 +37,7 @@ namespace Cars.Controllers
             {               
                 return View("Index", orderServices.getOrders(currentPage, User.FindFirstValue(ClaimTypes.NameIdentifier)));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return View("_CustomError");
             }

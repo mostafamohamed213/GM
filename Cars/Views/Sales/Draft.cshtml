@@ -101,10 +101,10 @@
                         @item.Customer.CustomerContacts.FirstOrDefault().Phone
                     </td>
                     <td>
-                        @item.Vehicle.Brand
+                        @item.Vehicle.Brand?.Name
                     </td>
                     <td>
-                        @item.Vehicle.Model
+                        @item.Vehicle.BrandModel?.Name
                     </td>
 
                     <td>

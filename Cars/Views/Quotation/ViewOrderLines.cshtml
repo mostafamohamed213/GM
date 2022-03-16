@@ -46,10 +46,10 @@
                                                 @item.Order.Vehicle.Name
                                             </td>
                                             <td>
-                                                @item.Order.Vehicle.Brand
+                                                @item.Order.Vehicle.Brand?.Name
                                             </td>
                                             <td>
-                                                @item.Order.Vehicle.Model
+                                                @item.Order.Vehicle.BrandModel?.Name
                                             </td>
                                             <td>
                                                 @item.OrderDetailsType.NameEn
@@ -86,10 +86,10 @@
                                                         @item.Order.Vehicle.Name
                                                     </td>
                                                     <td>
-                                                        @item.Order.Vehicle.Brand
+                                                        @item.Order.Vehicle.Brand?.Name
                                                     </td>
                                                     <td>
-                                                        @item.Order.Vehicle.Model
+                                                        @item.Order.Vehicle.BrandModel?.Name
                                                     </td>
                                                     <td>
                                                         @alternative.OrderDetailsType.NameEn

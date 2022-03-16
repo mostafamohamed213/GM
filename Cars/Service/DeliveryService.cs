@@ -39,7 +39,7 @@ namespace Cars.Service
         }
         internal OrderDetails GetOrderDetailsByOrderDetailsID(long orderDetailsID)
         {
-            var orderDetails = db.OrderDetails.Where(c => c.OrderDetailsID == orderDetailsID).Include(c=>c.Order.UserBranch.Branch).Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").Include(c=>c.VendorLocation).FirstOrDefault();
+            var orderDetails = db.OrderDetails.Where(c => c.OrderDetailsID == orderDetailsID).Include(c=>c.Order.UserBranch.Branch).Include("Order").Include("Order.Vehicle").Include("Order.Vehicle.Brand").Include("Order.Vehicle.BrandModel").Include("Order.Vehicle.ModelYear").Include("Order.Customer").Include("Order.Customer.CustomerContacts").Include(c=>c.VendorLocation).FirstOrDefault();
             return orderDetails;
         }
         public PagingViewModel<OrderDetails> getOrderLines(int currentPage, string search ,string DeliveryID)

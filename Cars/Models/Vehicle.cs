@@ -17,9 +17,20 @@ namespace Cars.Models
         public string Chases { get; set; }
         [Required]
         public string Name { get; set; }
-        public string Brand { get; set; }
-        public string Model { get; set; }
-        public string Year { get; set; }
+        //public string Brand { get; set; }
+        //public string Model { get; set; }
+        //public string Year { get; set; }
+        public long? BrandID { get; set; }
+        [ForeignKey("BrandID")]
+        public Brand Brand { get; set; }
+
+        public long? BrandModelID { get; set; }
+        [ForeignKey("BrandModelID")]
+        public BrandModel BrandModel { get; set; }
+
+        public long? ModelYearID { get; set; }
+        [ForeignKey("ModelYearID")]
+        public ModelYear ModelYear { get; set; }
         public virtual List<Order> Orders { get; set; }
         [Required]
         public string SystemUserCreate { get; set; }

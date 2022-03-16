@@ -42,22 +42,22 @@
                 </div>
                 <div class="row h5">
 
-                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Brand))
+                    @if (Model.Order.Vehicle.Brand is not null)
                     {
                         <div class="col-md-3">
-                            @localizer["Brand"] : @Model.Order.Vehicle.Brand
+                            @localizer["Brand"] : @Model.Order.Vehicle.Brand.Name
                         </div>
                     }
-                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Model))
+                    @if (Model.Order.Vehicle.BrandModel is not null)
                     {
                         <div class="col-md-3 border-left border-right">
-                            @localizer["Model"] : @Model.Order.Vehicle.Model
+                            @localizer["Model"] : @Model.Order.Vehicle.BrandModel.Name
                         </div>
                     }
-                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Year))
+                    @if (Model.Order.Vehicle.ModelYear is not null)
                     {
                         <div class="col-md-3">
-                            @localizer["Year"] : @Model.Order.Vehicle.Year
+                            @localizer["Year"] : @Model.Order.Vehicle.ModelYear.Year
                         </div>
                     }
 
@@ -80,10 +80,7 @@
         </div>
     </div>
     <div class="card-body">
-        @if (Model.StatusID != 1)
-        {
-            <h3> ID :@Model.Prefix</h3>
-        }
+       
         <form class="needs-validation" asp-action="SubmitToDone" asp-controller="Delivery" method="post">
             <div class="row">
                 <input asp-for="OrderDetailsID" style="display:none" readonly="readonly" disabled />
@@ -149,7 +146,6 @@
 @section Scripts {
     <script>
         ChangeColorSidebarItem("anavbarDelivery", "Delivery");
-
         window.addEventListener('beforeunload', function (e) {
            OpenOrderDetails("@Model.OrderDetailsID");
         });

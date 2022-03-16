@@ -41,28 +41,28 @@
                 </div>
                 <div class="row h5">
 
-                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Brand))
+                    @if (Model.Order.Vehicle.Brand is not null)
                     {
                         <div class="col-md-3">
-                            @localizer["Brand"] : @Model.Order.Vehicle.Brand
+                            @localizer["Brand"] : @Model.Order.Vehicle.Brand.Name
                         </div>
                     }
-                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Model))
+                    @if (Model.Order.Vehicle.BrandModel is not null)
                     {
                         <div class="col-md-3 border-left border-right">
-                            @localizer["Model"] : @Model.Order.Vehicle.Model
+                            @localizer["Model"] : @Model.Order.Vehicle.BrandModel.Name
                         </div>
                     }
-                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Year))
+                    @if (Model.Order.Vehicle.ModelYear is not null)
                     {
                         <div class="col-md-3">
-                            @localizer["Year"] : @Model.Order.Vehicle.Year
+                            @localizer["Year"] : @Model.Order.Vehicle.ModelYear.Year
                         </div>
                     }
 
 
                 </div>
-                <div class="row h5">
+                @*<div class="row h5">
                     <div class="col-md-4">
                         @if (Model.StatusID != 1)
                         {
@@ -74,7 +74,7 @@
                     </div>
                     <div class="col-md-4">
                     </div>
-                </div>
+                </div>*@
             </div>
         </div>
         <br />
@@ -122,7 +122,7 @@
                     </div>
 
                 </div>
-                <div class="row h5">
+                @*<div class="row h5">
                     <div class="col-md-4">
                         @if (Model.StatusID != 1)
                         {
@@ -133,7 +133,7 @@
                     <div class="col-md-8">
                     </div>
 
-                </div>
+                </div>*@
             </div>
             @if (Model.Children is not null && Model.Children.Count > 0)
             {
@@ -145,7 +145,7 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>@localizer["ID"]</th>
+                                        @*<th>@localizer["ID"]</th>*@
                                         <th>@localizer["Type"]</th>
                                         <th>@localizer["SP-price"]</th>
                                         <th>@localizer["Part Number"]</th>
@@ -161,7 +161,7 @@
                                     {
                                         <tr>
                                             <td>@counter</td>
-                                            <td>@item.Prefix</td>
+                                            @*<td>@item.Prefix</td>*@
                                             <td>@item.OrderDetailsType.NameEn</td>
                                             <td>@item.Price</td>
                                             <td>@item.PartNumber</td>

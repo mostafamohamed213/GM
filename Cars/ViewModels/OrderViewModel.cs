@@ -17,10 +17,9 @@ namespace Cars.ViewModels
         [StringLength(11, MinimumLength = 11, ErrorMessage = "field must be 11 number")]
         public string CustomerPhone { get; set; }
         public bool WithMaintenance { get; set; }
-        public string Brand { get; set; }
-        public string Model { get; set; }
-        public string Year { get; set; }
-        //public long? DraftId  { get; set; }
-        //public bool saveDraft { get; set; }
+        public long? Model { get; set; }
+        public long? Year { get; set; }
+        public long? Brand { get; set; }
+        
     }
 }

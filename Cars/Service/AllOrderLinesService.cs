@@ -38,10 +38,10 @@ namespace Cars.Service
         }
         internal OrderDetails GetOrderDetailsByOrderDetailsID(long orderDetailsID)
         {
-            var orderDetails = db.OrderDetails.Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
+            var orderDetails = db.OrderDetails.Include(c => c.Order.Vehicle.Brand).Include(c => c.Order.Vehicle.BrandModel).Include(c=>c.Order.Vehicle.ModelYear).Include("Order").Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts").FirstOrDefault(c => c.OrderDetailsID == orderDetailsID);
             return orderDetails;
         }
-        public PagingViewModel<OrderDetails> getOrderLines(int currentPage,string? search)
+        public PagingViewModel<OrderDetails> getOrderLines(int currentPage,string search)
         {
             var orders = db.OrderDetails.Where( c=>c.WorkflowID >= 1).Include("OrderDetailsType").Skip((currentPage - 1) * TablesMaxRows.IndexAllOrderLinesRows).Take(TablesMaxRows.IndexAllOrderLinesRows).ToList();
 

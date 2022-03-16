@@ -20,7 +20,7 @@
             <div class="card-body">
                 <div class="row h5">
                     <div class="col-md-3">
-                        @localizer["Chases"] : @Model.Order.Vehicle.Chases
+                        @localizer["Chassis"] : @Model.Order.Vehicle.Chases
                     </div>
                     <div class="col-md-3 border-left border-right">
                         @localizer["CarName"] : @Model.Order.Vehicle.Name
@@ -29,41 +29,41 @@
                         @localizer["Phone"] : @Model.Order.Customer.CustomerContacts.FirstOrDefault().Phone
                     </div>
                     <div class="col-md-3">
-                        @localizer["Maintenance"] : @if (Model.Order.WithMaintenance.HasValue && Model.Order.WithMaintenance.Value)
+                        @*@localizer["Maintenance"] : @if (Model.Order.WithMaintenance.HasValue && Model.Order.WithMaintenance.Value)
                         {
                             <span class="fe fe-24 fe-check"></span>
                         }
                         else
                         {
                             <span class="fe fe-24 fe-x"></span>
-                        }
+                        }*@
                     </div>
 
                 </div>
                 <div class="row h5">
 
-                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Brand))
+                    @if (Model.Order.Vehicle.Brand is not null)
                     {
                         <div class="col-md-3">
-                            @localizer["Brand"] : @Model.Order.Vehicle.Brand
+                            @localizer["Brand"] : @Model.Order.Vehicle.Brand.Name
                         </div>
                     }
-                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Model))
+                    @if (Model.Order.Vehicle.BrandModel is not null)
                     {
                         <div class="col-md-3 border-left border-right">
-                            @localizer["Model"] : @Model.Order.Vehicle.Model
+                            @localizer["Model"] : @Model.Order.Vehicle.BrandModel.Name
                         </div>
                     }
-                    @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Year))
+                    @if (Model.Order.Vehicle.ModelYear is not null)
                     {
                         <div class="col-md-3">
-                            @localizer["Year"] : @Model.Order.Vehicle.Year
+                            @localizer["Year"] : @Model.Order.Vehicle.ModelYear.Year
                         </div>
                     }
 
 
                 </div>
-                <div class="row h5">
+                @*<div class="row h5">
                     <div class="col-md-4">
                         @if (Model.StatusID != 1)
                         {
@@ -75,15 +75,15 @@
                     </div>
                     <div class="col-md-4">
                     </div>
-                </div>
+                </div>*@
             </div>
         </div>
     </div>
     <div class="card-body">
-        @if (Model.StatusID != 1)
+        @*@if (Model.StatusID != 1)
         {
             <h3> ID : @Model.Prefix</h3>
-        }
+        }*@
         <form class="needs-validation" asp-action="AddLaborvalues" asp-controller="Labor" method="post">
             <div class="row">
                 <input asp-for="OrderDetailsID" style="display:none" />
@@ -117,7 +117,7 @@
                 </div> <!-- /.col -->
                 <div class="col-md-6">
                     <div class="form-group mb-4">
-                        <label for="simpleinput">@localizer["Value"]</label>
+                        <label for="simpleinput">@localizer["L-price"]</label>
                         <input type="number" asp-for="Labor_Value" class="form-control" required />
                         <span asp-validation-for="Labor_Value" class="text-danger"></span>
                     </div>

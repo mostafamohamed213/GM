@@ -1,0 +1,9 @@
+﻿@model SelectList
+<option value="-1">--Select--</option>
+@if (Model is not null)
+{
+    foreach (var item in Model)
+    {
+        <option value="@item.Value">@item.Text</option>
+    }
+}

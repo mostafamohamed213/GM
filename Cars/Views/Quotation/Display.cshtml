@@ -30,7 +30,7 @@
 
                     </div>
                     <div class="col-md-3">
-                        Total Price: @Model.OrderDetails.Sum(c=>c.Price)
+                        Total SP-price: @Model.OrderDetails.Sum(c => c.Price)
                     </div>
                     <div class="col-md-3">
 
@@ -45,14 +45,14 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
+                                            @*<th>ID</th>*@
                                             <th>Branch</th>
                                             <th>Item</th>
                                             <th>Car</th>
                                             <th>Quantity</th>
-                                            <th>Price</th>
-                                            <th>Value</th>
-                                            <th>Hours</th>
+                                            <th>SP-price</th>
+                                            <th>L-price</th>
+                                            @*<th>Hours</th>*@
                                             <th>Maintenance</th>
                                         </tr>
                                     </thead>
@@ -63,14 +63,14 @@
                                             @foreach (var order in Model.OrderDetails)
                                             {
                                         <tr>
-                                            <td>@order.Prefix</td>
-                                            <td>@(order.UserBranch != null ? order.UserBranch.Branch.Name : "--" ) </td>
+                                            @*<td>@order.Prefix</td>*@
+                                            <td>@(order.UserBranch != null ? order.UserBranch.Branch.Name : (order.Order?.UserBranch?.Branch?.Name is null ? "--": order.Order.UserBranch.Branch.Name)) </td>
                                             <td>@order.Items</td>
                                             <td>@order.Order.Vehicle.Name</td>
                                             <td>@order.Quantity</td>
                                             <td>@order.Price</td>
                                             <td>@order.Labor_Value</td>
-                                            <td>@order.Labor_Hours</td>
+                                            @*<td>@order.Labor_Hours</td>*@
                                             <td>
                                                 @if (order.Maintenance)
                                                  {
@@ -117,7 +117,7 @@
                                                     <td>@file.Comment</td>
 
                                                     <td>
-                                                        <a href="@file.Path" download">Download</a>
+                                                        <a href="@file.Path" download" target="_blank">Download</a>
 
                                                         @*<button onclick="downloadFiles(@file.QuotationDocumentID)" class="btn btn-success">Download</button>*@
                                                     </td>

@@ -60,12 +60,9 @@ namespace Cars.Controllers
 
         public IActionResult orderdetails(long OrderDetailsID)
         {
-
             try
             {
-
                 var orderDetails = services.GetOrderDetailsByOrderDetailsID(OrderDetailsID);
-
                 if (orderDetails is not null)
                 {
                     var reason = db.OrderDetailsStatusLogs.Where(r => r.OrderDetailsID == orderDetails.OrderDetailsID).FirstOrDefault();

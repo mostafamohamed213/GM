@@ -20,28 +20,29 @@
                     <div class="col-md-4 border-right">
                         @localizer["Car"] : @Model.Order.Vehicle.Name
                     </div>
-                    <div class="col-md-4 border-left border-right">
-                        @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Brand))
-                        {
-                            <span>@localizer["Brand"] : @Model.Order.Vehicle.Brand</span>
-                        }
+                    <div class="col-md-4 border-right border-left">
+                        @localizer["Chassis"] : @Model.Order.Vehicle.Chases
                     </div>
                     <div class="col-md-4 border-left">
-                        @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Model))
+                        @if (Model.Order.Vehicle.Brand is not null)
                         {
-                            <span>@localizer["Model"] : @Model.Order.Vehicle.Model</span>
+                            <span>@localizer["Brand"] : @Model.Order.Vehicle.Brand.Name</span>
                         }
                     </div>
+
                 </div>
                 <div class="row h5">
                     <div class="col-md-4 border-right">
-                        @localizer["Chases"] : @Model.Order.Vehicle.Chases
-                    </div>
+                        @if (Model.Order.Vehicle.BrandModel is not null)
+                        {
+                            <span>@localizer["Model"] : @Model.Order.Vehicle.BrandModel.Name</span>
+                        }
+                    </div>      
 
                     <div class="col-md-4 border-left border-right">
-                        @if (!string.IsNullOrEmpty(@Model.Order.Vehicle.Year))
+                        @if (Model.Order.Vehicle.ModelYear is not null)
                         {
-                            <span>@localizer["Year"] : @Model.Order.Vehicle.Year</span>
+                            <span>@localizer["Year"] : @Model.Order.Vehicle.ModelYear.Year</span>
                         }
                     </div>
                 </div>
@@ -87,7 +88,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group mb-4">
-                        <label for="simpleinput">@localizer["Value"]</label>
+                        <label for="simpleinput">@localizer["L-price"]</label>
                         <input type="number" asp-for="Labor_Value" class="form-control" required />
                         <span asp-validation-for="Labor_Value" class="text-danger"></span>
                     </div>

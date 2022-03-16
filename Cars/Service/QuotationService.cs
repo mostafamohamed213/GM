@@ -150,15 +150,14 @@ namespace Cars.Service
                     foreach (var item in OrderDetails)
                     {
                         item.DTsWorflowEnter = DateTime.Now;
-                        item.Maintenance = item.Order.WithMaintenance.HasValue ? item.Order.WithMaintenance.Value :false;
-                    //foreach (var model in models)
-                    //{
-                    //    if (model.id==item.OrderDetailsID)
-                    //    {
-                    //        item.Maintenance = model.maintenance;
-                    //    }
-                    //}
-                }
+                        foreach (var model in models)
+                        {
+                            if (model.id == item.OrderDetailsID)
+                            {
+                                item.Maintenance = model.maintenance;
+                            }
+                        }
+                    }
                
                     db.SaveChanges();
                     QuotationStatusLogs log = new QuotationStatusLogs()
@@ -197,7 +196,7 @@ namespace Cars.Service
 
         internal OrderDetails GetOrderDetails(long orderDetailsID, string UserId)
         {
-            return db.OrderDetails.Where(c => c.OrderDetailsID == orderDetailsID  && c.StatusID == 2 && c.WorkflowID == 4  && !c.QuotationID.HasValue && c.Order.SystemUserCreate == UserId).Include(c => c.OrderDetailsType).Include(c => c.Order.Vehicle).FirstOrDefault();
+            return db.OrderDetails.Where(c => c.OrderDetailsID == orderDetailsID  && c.StatusID == 2 && c.WorkflowID == 4  && !c.QuotationID.HasValue && c.Order.SystemUserCreate == UserId).Include(c => c.OrderDetailsType).Include(c => c.Order.Vehicle).Include(c => c.Order.Vehicle.Brand).Include(c => c.Order.Vehicle.BrandModel).Include(c => c.Order.Vehicle.ModelYear).FirstOrDefault();
         }
 
         internal void ReverseOrderLine(long orderDetailsID, string backToSales, string backToPricing, string backTolabor ,string userId)
@@ -311,12 +310,12 @@ namespace Cars.Service
        
         internal List<OrderDetails> GetReverseOrderLine(string UserId)
         {
-            var orderDetails = db.OrderDetails.Where(c =>  c.StatusID == 2 && c.WorkflowID == 4 && !c.ParentOrderDetailsID.HasValue && !c.QuotationID.HasValue && c.Order.SystemUserCreate == UserId).Include(c => c.OrderDetailsType).Include(c => c.Order.Vehicle).Include(c => c.Alternatives.Where(x => x.StatusID == 2 && x.WorkflowID == 4  && !x.QuotationID.HasValue )).Include("Alternatives.OrderDetailsType").OrderBy(c => c.DTsCreate).ToList();
+            var orderDetails = db.OrderDetails.Where(c =>  c.StatusID == 2 && c.WorkflowID == 4 && !c.ParentOrderDetailsID.HasValue && !c.QuotationID.HasValue && c.Order.SystemUserCreate == UserId).Include(c => c.OrderDetailsType).Include(c => c.Order.Vehicle.Brand).Include(c => c.Order.Vehicle.BrandModel).Include(c => c.Alternatives.Where(x => x.StatusID == 2 && x.WorkflowID == 4  && !x.QuotationID.HasValue )).Include("Alternatives.OrderDetailsType").OrderBy(c => c.DTsCreate).ToList();
             return orderDetails;
         }
         internal List<OrderDetails> GetReverseOrderLinedoNotHaveParent(string UserId ,List<long> parents)
         {
-            var orderDetails = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 4 && c.ParentOrderDetailsID.HasValue && !parents.Contains(c.ParentOrderDetailsID.Value) && !c.QuotationID.HasValue && c.Order.SystemUserCreate == UserId).Include(c => c.OrderDetailsType).Include(c => c.Order.Vehicle).OrderBy(c => c.DTsCreate).ToList();
+            var orderDetails = db.OrderDetails.Where(c => c.StatusID == 2 && c.WorkflowID == 4 && c.ParentOrderDetailsID.HasValue && !parents.Contains(c.ParentOrderDetailsID.Value) && !c.QuotationID.HasValue && c.Order.SystemUserCreate == UserId).Include(c => c.OrderDetailsType).Include(c => c.Order.Vehicle).Include(c => c.Order.Vehicle.Brand).Include(c => c.Order.Vehicle.BrandModel).OrderBy(c => c.DTsCreate).ToList();
             return orderDetails;
         }
         internal int Confirmation(long quotationId,string user)

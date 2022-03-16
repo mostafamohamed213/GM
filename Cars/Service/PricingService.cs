@@ -226,7 +226,7 @@ namespace Cars.Service
         }
         internal List<OrderDetails> GetReturnedOrderLine()
         {
-            var orderDetails = db.OrderDetails.Where(c => (c.StatusID == 10 || c.StatusID == 9 ) && c.WorkflowID == 1 ).Include(c => c.OrderDetailsType).Include(c => c.Order.Vehicle).OrderBy(c => c.DTsCreate).ToList();
+            var orderDetails = db.OrderDetails.Where(c => (c.StatusID == 10 || c.StatusID == 9 ) && c.WorkflowID == 1 ).Include(c => c.OrderDetailsType).Include(c => c.Order.Vehicle.Brand).Include(c => c.Order.Vehicle.BrandModel).OrderBy(c => c.DTsCreate).ToList();
             return orderDetails;
         }
         internal OrderDetails EditOrderDetailsReturned(long orderDetailsID, string partNumber, decimal price, int vendorLocationID, string comments, string UserId)

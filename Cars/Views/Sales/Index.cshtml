@@ -73,7 +73,7 @@
                     <form class="form" id="searchforms" method="get" asp-action="SearchOrderHeader" asp-controller="Sales" asp-route-currentPage="1">
                         <div class="form-group col-auto">
                             <label for="search" class="sr-only">Search</label>
-                            <input type="text" class="form-control" id="searchs" placeholder="Chases,Name" name="search" value="@ViewData["CurrentFilter"]">
+                            <input type="text" class="form-control" id="searchs" placeholder="Chassis,Name" name="search" value="@ViewData["CurrentFilter"]">
                         </div>
                     </form>
                 </div>
@@ -84,8 +84,8 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>@localizer["ID"]</th>
-                    <th>@localizer["Chases"]</th>
+                    @*<th>@localizer["ID"]</th>*@
+                    <th>@localizer["Chassis"]</th>
                     <th>@localizer["Name"]</th>
                     <th>@localizer["Phone"]</th>                 
                     <th>@localizer["Date"]</th>
@@ -99,9 +99,9 @@
                     <td>
                         @counter
                     </td>
-                    <td>
+                    @*<td>
                         @(item.UserBranch is not null ? item.UserBranch.Branch.BranchIP : "00"):@item.OrderID
-                    </td>
+                    </td>*@
                     <td>
                         @item.Vehicle.Chases
                     </td>

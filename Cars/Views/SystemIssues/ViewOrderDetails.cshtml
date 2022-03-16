@@ -23,7 +23,7 @@
             <div class="card-body">
                 <div class="row h5">
                     <div class="col-md-3">
-                        @localizer["Chases"] : @Model.orderDetails.Order.Vehicle.Chases
+                        @localizer["Chassis"] : @Model.orderDetails.Order.Vehicle.Chases
                     </div>
                     <div class="col-md-3 border-left border-right">
                         @localizer["CarName"] : @Model.orderDetails.Order.Vehicle.Name
@@ -45,41 +45,31 @@
                 </div>
                 <div class="row h5">
 
-                    @if (!string.IsNullOrEmpty(@Model.orderDetails.Order.Vehicle.Brand))
+                    @if (Model.orderDetails.Order.Vehicle.Brand is not null)
                     {
                         <div class="col-md-3">
-                            @localizer["Brand"] : @Model.orderDetails.Order.Vehicle.Brand
+                            @localizer["Brand"] : @Model.orderDetails.Order.Vehicle.Brand.Name
                         </div>
                     }
-                    @if (!string.IsNullOrEmpty(@Model.orderDetails.Order.Vehicle.Model))
+                    @if (Model.orderDetails.Order.Vehicle.BrandModel is not null)
                     {
                         <div class="col-md-3 border-left border-right">
-                            @localizer["Model"] : @Model.orderDetails.Order.Vehicle.Model
+                            @localizer["Model"] : @Model.orderDetails.Order.Vehicle.BrandModel.Name
                         </div>
                     }
-                    @if (!string.IsNullOrEmpty(@Model.orderDetails.Order.Vehicle.Year))
+                    @if (Model.orderDetails.Order.Vehicle.ModelYear is not null)
                     {
                         <div class="col-md-3">
-                            @localizer["Year"] : @Model.orderDetails.Order.Vehicle.Year
+                            @localizer["Year"] : @Model.orderDetails.Order.Vehicle.ModelYear.Year
                         </div>
                     }
 
 
-                </div>
-                <div class="row h5">
-                    <div class="col-md-4">
-                        ID :   @(Model.orderDetails.Order.UserBranch is not null ? Model.orderDetails.Order.UserBranch.Branch.BranchIP : "00"):@Model.orderDetails.OrderID
-                    </div>
-                    <div class="col-md-4">
-                    </div>
-                    <div class="col-md-4">
-                    </div>
-                </div>
+                </div>     
             </div>
         </div>
     </div>
-    <div class="card-body">
-        <h3> ID : @Model.orderDetails.Prefix</h3>
+    <div class="card-body">     
         <div class="row">
             <input asp-for="orderDetails.OrderDetailsID" style="display:none" />
             <input asp-for="orderDetails.OrderID" style="display:none" />

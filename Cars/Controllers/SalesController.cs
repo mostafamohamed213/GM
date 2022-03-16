@@ -32,7 +32,6 @@ namespace Cars.Controllers
         [HttpGet]
         public IActionResult GetOrders(int currentPage = 1)
         {
-
             try
             {               
                 return View("Index", orderServices.getOrders(currentPage, User.FindFirstValue(ClaimTypes.NameIdentifier)));
@@ -138,17 +137,25 @@ namespace Cars.Controllers
             }
         }
         [HttpGet]
+        public IActionResult getModelsByBrandID(long BrandID)
+        {             
+            return PartialView("ModelsByBrandID",orderServices.getModelsByBrandID(BrandID));
+        }
+        [HttpGet]
+        public IActionResult getYearsByModel(long ModelID)
+        {
+            return PartialView("YearsByModel", orderServices.getYearsByModel(ModelID));
+        }
+        [HttpGet]
         public IActionResult CreateOrder()
         {
-
+            ViewBag.Brands = orderServices.getBrands();
             return View(new OrderViewModel { OrderID =-1});
         }
         [HttpPost]
         public IActionResult CreateOrder(OrderViewModel orderModel)
         {
-            //if (!orderModel.saveDraft)
-            //{
-                if (ModelState.IsValid)
+            if (ModelState.IsValid)
                 {
                     long orderId = orderServices.AddOrder(orderModel, User.FindFirstValue(ClaimTypes.NameIdentifier));
                     if (orderId > 0)
@@ -164,23 +171,10 @@ namespace Cars.Controllers
                     {
                         return View("_CustomError");
                     }
-                }
-                return View(orderModel);
-            //}
-            //else
-            //{
-            //   int status =  orderServices.SaveOrderAsDraft(orderModel);
-            //    if(status == 1 )
-            //    {
-            //        return RedirectToAction("Draft",new { currentPage = 1 });
-            //    }
-            //    else
-            //    {
-            //        return View("_CustomError");
-            //    }
-               
-            //}
-            
+            }
+
+            ViewBag.Brands = orderServices.getBrands();
+            return View(orderModel);           
         }
        
         [HttpGet]

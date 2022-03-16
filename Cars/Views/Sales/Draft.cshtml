@@ -63,7 +63,7 @@
                     <form class="form" id="searchforms" method="get" asp-action="SearchOrderDraft" asp-controller="Sales" asp-route-currentPage="1">
                         <div class="form-group col-auto">
                             <label for="search" class="sr-only">Search</label>
-                            <input type="text" class="form-control" id="searchs" placeholder="Chases,Name" name="search" value="@ViewData["CurrentFilter"]">
+                            <input type="text" class="form-control" id="searchs" placeholder="Chassis,Name" name="search" value="@ViewData["CurrentFilter"]">
                         </div>
                     </form>
                 </div>
@@ -75,7 +75,7 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>@localizer["Chases"]</th>
+                    <th>@localizer["Chassis"]</th>
                     <th>@localizer["Name"]</th>
                     <th>@localizer["Phone"]</th>
                     <th>@localizer["Brand"]</th>
@@ -101,10 +101,10 @@
                         @item.Customer.CustomerContacts.FirstOrDefault().Phone
                     </td>
                     <td>
-                        @item.Vehicle.Brand
+                        @item.Vehicle.Brand?.Name
                     </td>
                     <td>
-                        @item.Vehicle.Model
+                        @item.Vehicle.BrandModel?.Name
                     </td>
 
                     <td>

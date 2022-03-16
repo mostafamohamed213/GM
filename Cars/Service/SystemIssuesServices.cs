@@ -75,13 +75,9 @@ namespace Cars.Service
         }
         internal OrderDetailsUsedByUserViewModel GetOrderDetailsByOrderDetailsID(long orderDetailsID)
         {
-            var orderDetails = db.OrderDetails.Where(c => c.StatusID != 5 && c.OrderDetailsID == orderDetailsID).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Include("Order").Include(c=>c.Order.UserBranch.Branch).Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts")
-                .Select(c => new OrderDetailsUsedByUserViewModel { orderDetails = c, user = db.Users.FirstOrDefault(x => x.Id == c.UsedByUser || x.Id == c.UsedByUser2) }).FirstOrDefault();
-           
-          
+            var orderDetails = db.OrderDetails.Where(c => c.StatusID != 5 && c.OrderDetailsID == orderDetailsID).Include(c => c.UserBranch.Branch).Include("OrderDetailsType").Include("Order").Include(c => c.Order.Vehicle.Brand).Include(c => c.Order.Vehicle.BrandModel).Include(c => c.Order.Vehicle.ModelYear).Include(c=>c.Order.UserBranch.Branch).Include("Order.Vehicle").Include("Order.Customer").Include("Order.Customer.CustomerContacts")
+                .Select(c => new OrderDetailsUsedByUserViewModel { orderDetails = c, user = db.Users.FirstOrDefault(x => x.Id == c.UsedByUser || x.Id == c.UsedByUser2) }).FirstOrDefault();        
             return orderDetails;
         }
-
-
     }
 }

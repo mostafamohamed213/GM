@@ -27,10 +27,10 @@
                                 <table class="table table-bordered table-hover mb-0">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
+                                            @*<th>ID</th>*@
                                             <th>car</th>
-                                            <th>Chases</th>
-                                            <th>Total Price</th>
+                                            <th>Chassis</th>
+                                            <th>Total SP-price</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -38,7 +38,7 @@
                                         @foreach (var item in Model)
                                         {
                                             <tr>
-                                                <td>@item.order.UserBranch.Branch.Name : @item.order.OrderID</td>
+                                                @*<td>@item.order.UserBranch.Branch.Name : @item.order.OrderID</td>*@
                                                 <td>@item.order.Vehicle.Name</td>
                                                 <td>@item.order.Vehicle.Chases</td>
                                                 <td>@item.TotalPrice</td>

@@ -20,7 +20,7 @@
                         <h5>Car : @Model.Order.Vehicle.Name</h5>
                     </div>
                     <div class="col-md-3">
-                        <h5>Chases : @Model.Order.Vehicle.Chases</h5>
+                        <h5>Chassis : @Model.Order.Vehicle.Chases</h5>
                     </div>
                 </div>
                 <hr />
@@ -36,7 +36,7 @@
                                         Quantity  :  @Model.Quantity
                                     </div>
                                     <div class="col-md-3">
-                                        Price  :  @Model.Price
+                                        SP-price  :  @Model.Price
                                     </div>
                                 </div>
                             </div>
@@ -88,7 +88,7 @@
                 </div>
                 <br />
                 <a class="btn btn-primary" asp-action="BackToIndex" asp-controller="Finance" asp-route-orderDetailsID="@Model.OrderDetailsID">Back</a>
-                <a class="btn btn-primary" asp-action="Submit" asp-controller="Finance" asp-route-orderDetailsID="@Model.OrderDetailsID">Submit</a>
+                <a class="btn btn-success" asp-action="Submit" asp-controller="Finance" asp-route-orderDetailsID="@Model.OrderDetailsID">Approve</a>
             </div>
         </div>
     </div>

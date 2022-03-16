@@ -18,7 +18,7 @@
         <div class="card-body">
             <div class="row h5">
                 <div class="col-md-3">
-                    @localizer["Chases"] : @Model.Vehicle.Chases
+                    @localizer["Chassis"] : @Model.Vehicle.Chases
                 </div>
                 <div class="col-md-3 border-left border-right">
                     @localizer["CarName"] : @Model.Vehicle.Name
@@ -40,22 +40,22 @@
             </div>
             <div class="row h5">
 
-                @if (!string.IsNullOrEmpty(@Model.Vehicle.Brand))
+                @if (Model.Vehicle.Brand is not null)
                 {
                     <div class="col-md-3">
-                        @localizer["Brand"] : @Model.Vehicle.Brand
+                        @localizer["Brand"] : @Model.Vehicle.Brand.Name
                     </div>
                 }
-                @if (!string.IsNullOrEmpty(@Model.Vehicle.Model))
+                @if (Model.Vehicle.BrandModel is not null)
                 {
                     <div class="col-md-3 border-left border-right">
-                        @localizer["Model"] : @Model.Vehicle.Model
+                        @localizer["Model"] : @Model.Vehicle.BrandModel.Name
                     </div>
                 }
-                @if (!string.IsNullOrEmpty(@Model.Vehicle.Year))
+                @if (Model.Vehicle.ModelYear is not null)
                 {
                     <div class="col-md-3">
-                        @localizer["Year"] : @Model.Vehicle.Year
+                        @localizer["Year"] : @Model.Vehicle.ModelYear.Year
                     </div>
                 }
 
@@ -114,7 +114,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>@localizer["ID"]</th>
+                        @*<th>@localizer["ID"]</th>*@
                         <th>@localizer["Item"]</th>
                         <th>@localizer["Quantity"]</th>
                         <th>@localizer["Type"]</th>
@@ -131,7 +131,7 @@
                     {
                     <tr>
                         <td>@counter</td>
-                        @if (item.StatusID != 1)
+                        @*@if (item.StatusID != 1)
                         {
 
                             <td>@item.Prefix</td>
@@ -139,7 +139,7 @@
                         else
                         {
                             <td></td>
-                        }
+                        }*@
 
                         <td>@item.Items</td>
                         <td>@item.Quantity</td>
@@ -344,7 +344,15 @@
 
 @section Scripts {
     <script>
-        ChangeColorSidebarItem("anavbarOrders", "aOrderHeaders");
+        if ("@Model.StatusID" != 1)
+        {
+           
+            ChangeColorSidebarItem("anavbarOrders", "aOrderHeaders");
+        }
+        else if ("@Model.StatusID" == 1)
+        {
+            ChangeColorSidebarItem("anavbarOrders", "aDraftOrderHeader");
+        }
 
         $("#btnSaveOrderDetails").click(function () {
             $.ajax({
@@ -365,22 +373,22 @@
                                 var row_1 = document.createElement('tr');
                                 var row_data_0 = document.createElement('td');
                                 row_data_0.innerHTML = counter;
-                                var row_data_1 = document.createElement('td');
-                                if (value.statusID != 1 && value.statusID != '1')
-                                {
-                                    if (value.branchIP != "0" ) {
+                                //var row_data_1 = document.createElement('td');
+                                //if (value.statusID != 1 && value.statusID != '1')
+                                //{
+                                //    if (value.branchIP != "0" ) {
 
-                                        row_data_1.innerHTML = value.prefix;
+                                //        row_data_1.innerHTML = value.prefix;
 
-                                        } else {
-                                        row_data_1.innerHTML = " ";
+                                //        } else {
+                                //        row_data_1.innerHTML = " ";
 
-                                        }
-                                    }
-                                    else
-                                    {
-                                       row_data_1.innerHTML = "";
-                                    }
+                                //        }
+                                //    }
+                                //    else
+                                //    {
+                                //       row_data_1.innerHTML = "";
+                                // }
 
                                 var row_data_2 = document.createElement('td');
                                 row_data_2.innerHTML = value.items;
@@ -481,7 +489,7 @@
                                     }
                                 }
                                 row_1.append(row_data_0);
-                                row_1.append(row_data_1);
+                             /*   row_1.append(row_data_1);*/
                                 row_1.append(row_data_2);
                                 row_1.append(row_data_3);
                                 row_1.append(row_data_4);

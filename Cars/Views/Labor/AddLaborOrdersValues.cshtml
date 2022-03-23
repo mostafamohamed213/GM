@@ -1,0 +1,120 @@
+﻿@model List<Cars.Models.OrderDetails>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer localizer
+
+@{ViewData["Title"] = "Add Labor Orders Values"; }
+@{ViewData["IDs"] = Model.Select(x => x.OrderDetailsID).ToList(); }
+<form class="needs-validation" asp-action="AddLaborsvalues" asp-controller="Labor" method="post">
+    @for (int i = 0; i < Model.Count(); i++)
+    {
+        <div class="card shadow mb-4">
+            <div class="col-12 mb-4 mt-3">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <strong class="card-title h4">@localizer["Order Header Details"]</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="row h5">
+                            <div class="col-md-3">
+                                @localizer["Chassis"] : @Model[i].Order.Vehicle.Chases
+                            </div>
+                            <div class="col-md-3 border-left border-right">
+                                @localizer["CarName"] : @Model[i].Order.Vehicle.Name
+                            </div>
+                            <div class="col-md-3 border-left border-right">
+                                @localizer["Phone"] : @Model[i].Order.Customer.CustomerContacts.FirstOrDefault().Phone
+                            </div>
+                            <div class="col-md-3">
+                            </div>
+                        </div>
+                        <div class="row h5">
+                            @if (Model[i].Order.Vehicle.Brand is not null)
+                            {
+                                <div class="col-md-3">
+                                    @localizer["Brand"] : @Model[i].Order.Vehicle.Brand.Name
+                                </div>
+                            }
+                            @if (Model[i].Order.Vehicle.BrandModel is not null)
+                            {
+                                <div class="col-md-3 border-left border-right">
+                                    @localizer["Model"] : @Model[i].Order.Vehicle.BrandModel.Name
+                                </div>
+                            }
+                            @if (Model[i].Order.Vehicle.ModelYear is not null)
+                            {
+                                <div class="col-md-3">
+                                    @localizer["Year"] : @Model[i].Order.Vehicle.ModelYear.Year
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <input asp-for="@Model[i].OrderDetailsID" style="display:none" />
+                    <input asp-for="@Model[i].OrderID" style="display:none" />
+                    <input asp-for="@Model[i].SystemUserCreate" style="display:none" />
+
+                    <div class="col-md-6">
+                        <div class="form-group mb-4">
+                            <label for="simpleinput">@localizer["Hours"]</label>
+                            <input type="number" step=".01" asp-for="@Model[i].Labor_Hours" class="form-control" required />
+                            <span asp-validation-for="@Model[i].Labor_Hours" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label for="simpleinput">@localizer["Items"]</label>
+                            <input asp-for="@Model[i].Items" class="form-control" required readonly="readonly" />
+                            <span asp-validation-for="@Model[i].Items" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="example-password">@localizer["Type"]</label>
+                            <select name="OrderDetailsTypeID" asp-for="@Model[i].OrderDetailsTypeID" asp-items="@ViewBag.types" class="form-control" readonly="readonly"></select>
+                            <span asp-validation-for="@Model[i].OrderDetailsTypeID" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-4">
+                            <label for="simpleinput">@localizer["L-price"]</label>
+                            <input type="number" asp-for="@Model[i].Labor_Value" class="form-control" required />
+                            <span asp-validation-for="@Model[i].Labor_Value" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="example-email">@localizer["Quantity"]</label>
+                            <input asp-for="@Model[i].Quantity" class="form-control" required readonly="readonly" />
+                            <span asp-validation-for="@Model[i].Quantity" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label for="example-helping">
+                                @localizer["Approved"]  :
+                                @if (Model[i].IsApproved.HasValue && Model[i].IsApproved.Value)
+                                {
+                                    <input id="IsApproved" type="checkbox" value="true" name="IsApproved" checked readonly="readonly" />
+                                    <input type="hidden" value="false" name="IsApproved" readonly="readonly" />
+                                }
+                                else
+                                {
+                                    <input id="IsApproved" type="checkbox" value="true" name="IsApproved" readonly="readonly" />
+                                    <input type="hidden" value="false" name="IsApproved" readonly="readonly" />
+                                }
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="row">
+        <a class="btn btn-danger ml-3" style=" width: 100px;" asp-controller="Labor" asp-action="OpenOrdersDetails" 
+           asp-all-route-data="@Model.ToDictionary(keySelector: m => "ids[" + @Model.FindIndex(x => x.OrderDetailsID == m.OrderDetailsID) + "]", elementSelector: m => m.OrderDetailsID.ToString());">@localizer["Cancel"]</a>
+        <input class="btn btn-success ml-2" style=" width: 100px;" type="submit" value="@localizer["Save"]" />
+    </div>
+</form>
+@section Scripts {
+    <script>
+        ChangeColorSidebarItem("", "addLabor");
+    </script>
+}

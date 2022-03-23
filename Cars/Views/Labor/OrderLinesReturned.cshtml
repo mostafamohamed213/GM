@@ -1,5 +1,5 @@
 ﻿
-@model List<Cars.Models.OrderDetails>
+@model List<Cars.ViewModels.LaborOrdersViewModel>
 
 @{
     ViewData["Title"] = "Reverse";
@@ -15,72 +15,76 @@
                 <div class="col-md-12">
                     <div class="card shadow">
                         <div class="card-body">
-
-                            <table class="table table-borderless table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Item</th>
-                                        <th>Car</th>
-                                        <th>Brand</th>
-                                        <th>Model</th>
-                                        <th>Type</th>
-                                        <th>Part Number</th>
-                                        <th>Date</th>
-                                        <th></th>
-                                        <th></th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model)
-                                    {
+                            <form method="post" asp-action="BulkEditReturned" asp-controller="Labor">
+                                <table class="table table-borderless table-hover">
+                                    <thead>
                                         <tr>
-                                            <td>
-                                                @counter
-                                            </td>
-                                            <td>
-                                                @item.Items
-                                            </td>
-                                            <td>
-                                                @item.Order.Vehicle.Name
-                                            </td>
-                                            <td>
-                                                @item.Order.Vehicle.Brand?.Name
-                                            </td>
-                                            <td>
-                                                @item.Order.Vehicle.BrandModel?.Name
-                                            </td>
-                                            <td>
-                                                @item.OrderDetailsType.NameEn
-                                            </td>
-                                            <td>
-                                                @item.PartNumber
-                                            </td>
-                                            <td>
-                                                @item.DTsCreate
-                                            </td>
-                                            <td>
-                                                @if (item.ParentOrderDetailsID.HasValue)
-                                                {
-                                                    <span title="Alternative" class="fe fe-24 fe-minus text-danger"></span>
-                                                }
-                                                else
-                                                {
-                                                    <span title="Main Oder line" class="fe fe-24 fe-chevrons-down  text-success"></span>
-                                                }
-                                            </td>
-                                            <td>
-                                                <a title="Edit" asp-action="EditOrderDetailsReturned" asp-controller="Labor" asp-route-orderDetailsID="@item.OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-primary"></span></span></a>
-                                            </td>
+                                            <th>#</th>
+                                            <th>Select</th>
+                                            <th>Item</th>
+                                            <th>Car</th>
+                                            <th>Brand</th>
+                                            <th>Model</th>
+                                            <th>Type</th>
+                                            <th>Part Number</th>
+                                            <th>Date</th>
+                                            <th></th>
+                                            <th></th>
 
                                         </tr>
-
-                                        counter++;
-                                    }
-
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.Count; i++)
+                                        {
+                                            <tr>
+                                                <td hidden> @Html.HiddenFor(m => m[i].OrderDetailsID)</td>
+                                                <td>
+                                                    @counter
+                                                </td>
+                                                <td>
+                                                    @Html.CheckBoxFor(m => m[i].IsSelected)
+                                                </td>
+                                                <td>
+                                                    @Model[i].Items
+                                                </td>
+                                                <td>
+                                                    @Model[i].Order.Vehicle.Name
+                                                </td>
+                                                <td>
+                                                    @Model[i].Order.Vehicle.Brand?.Name
+                                                </td>
+                                                <td>
+                                                    @Model[i].Order.Vehicle.BrandModel?.Name
+                                                </td>
+                                                <td>
+                                                    @Model[i].OrderDetailsType.NameEn
+                                                </td>
+                                                <td>
+                                                    @Model[i].PartNumber
+                                                </td>
+                                                <td>
+                                                    @Model[i].DTsCreate
+                                                </td>
+                                                <td>
+                                                    @if (Model[i].ParentOrderDetailsID.HasValue)
+                                                    {
+                                                        <span title="Alternative" class="fe fe-24 fe-minus text-danger"></span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span title="Main Oder line" class="fe fe-24 fe-chevrons-down  text-success"></span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <a title="Edit" asp-action="EditOrderDetailsReturned" asp-controller="Labor" asp-route-orderDetailsID="@Model[i].OrderDetailsID"> <span class="small text-muted"><span class="fe fe-24 fe-edit  text-primary"></span></span></a>
+                                                </td>
+                                            </tr>
+                                            counter++;
+                                        }
+                                    </tbody>
+                                </table>
+                                <button type="submit" class="btn btn-primary">Edit Selected Returned Orders</button>
+                            </form>
                         </div>
                     </div>
                 </div>

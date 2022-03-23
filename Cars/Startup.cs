@@ -26,6 +26,8 @@ using Cars.Service.HangfireAuth;
 using Cars.Service.Hangfire;
 using Hangfire.MemoryStorage;
 using Cars.Service.Email;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Cars
 {
@@ -41,6 +43,15 @@ namespace Cars
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Auto Mapper Config
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new Profiles());
+            });
+
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
+
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 
             services.AddMvc()
